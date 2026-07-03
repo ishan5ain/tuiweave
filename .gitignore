@@ -1,0 +1,9 @@
+# Binaries and build artifacts
+/bin/
+*.test
+*.out
+
+# Editor/OS noise
+.DS_Store
+.idea/
+.vscode/
