@@ -1,0 +1,1 @@
+1: " gotui " [fg=Surface bg=Accent bold] | " main.go " [fg=Text bg=SurfaceRaised] | "                                  " [bg=SurfaceRaised] | " ok " [fg=Success bg=SurfaceRaised] | " 12:4 " [fg=TextMuted bg=SurfaceRaised]

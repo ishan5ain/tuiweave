@@ -16,9 +16,11 @@ reliably write TUIs with it.
 |---|---|
 | `gotui` (root) | Semantic theme roles (`Theme`), `Dark()`/`Light()` defaults |
 | `gotui/layout` | Flexbox-like layout: constraints → rectangles → component sizes |
-| `gotui/snaptest` | Snapshot test harness: deterministic render-to-golden with readable diffs |
+| `gotui/snaptest` | Snapshot test harness: plain-text, raw-ANSI, and role-labeled cell-grid goldens |
+| `gotui/statusbar` | One-line status bar with themed left/right segments |
+| `examples/…` | One runnable example per component (`go run ./examples/statusbar`) |
 
-Components arrive in Phase 1+ (see [PLAN.md](PLAN.md)); agentic domain
+More primitives arrive through Phase 2 (see [PLAN.md](PLAN.md)); agentic domain
 components (chat, tool-call blocks, diff viewer, markdown) land under
 `gotui/agentic` in Phase 3. The driving application is a custom TUI for the
 Pi coding agent.

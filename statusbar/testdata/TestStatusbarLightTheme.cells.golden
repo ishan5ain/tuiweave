@@ -1,0 +1,1 @@
+1: " light " [fg=Surface bg=Accent bold] | "                           " [bg=SurfaceRaised] | " warn " [fg=Warning bg=SurfaceRaised]

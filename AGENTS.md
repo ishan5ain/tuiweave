@@ -79,10 +79,17 @@ no agent-backend clients (JSON-RPC etc.) in this repo.
 func TestWidgetDefault(t *testing.T) {
     w := widget.New(gotui.Dark())
     w.SetSize(40, 5)
-    snaptest.Snap(t, w.View())        // plain-text golden
-    // snaptest.SnapStyled(t, ...)    // add when styling itself is the subject
+    snaptest.Snap(t, w.View())        // plain-text golden: layout & content
+    snaptest.SnapCells(t, w.View(),   // style-run golden: which role styles what
+        snaptest.WithRoles(gotui.Dark()))
+    // snaptest.SnapStyled(t, ...)    // raw-bytes golden: rarely needed
 }
 ```
+
+`SnapCells` goldens read like `" gotui " [fg=TextInverted bg=Accent bold]` —
+use them to assert roles, e.g. that a selected row uses `SelectionBg`. (Roles
+sharing one color label as the first matching Theme field, so `TextInverted`
+may appear as `Surface` in the default themes.)
 
 Snapshot states, not just defaults: focused/blurred, empty/full, truncation
 at small sizes. The plain `.golden` file is the artifact to read when judging
@@ -90,4 +97,25 @@ whether output is correct.
 
 ## Recipes
 
-*(grows one entry per component, starting in Phase 1)*
+### statusbar
+
+One-line bar with themed segments left and right; lay out with `layout.Len(1)`.
+Full wiring: [examples/statusbar](examples/statusbar/main.go).
+
+```go
+sb := statusbar.New(theme)
+sb.SetSize(width, 1)
+sb.SetLeft(
+    statusbar.Segment{Text: "gotui", Kind: statusbar.KindAccent}, // "mode" badge; max one per side
+    statusbar.Segment{Text: "main.go", Kind: statusbar.KindNormal},
+)
+sb.SetRight(statusbar.Segment{Text: "12:4", Kind: statusbar.KindMuted})
+```
+
+- Kinds map to roles: `KindAccent` = accent-bg badge, `KindMuted` = secondary
+  info, `KindSuccess/Warning/Danger/Info` = intent-colored text. Pick by
+  meaning, not by color.
+- The bar is passive (its `Update` handles nothing) and drops right segments,
+  then truncates left, when narrow — don't pre-truncate text yourself.
+- Styles are derived from the theme in `New`; to switch themes, construct a
+  new statusbar (see `rebuildStatusbar` in the example).

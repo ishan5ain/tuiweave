@@ -31,12 +31,12 @@ an agent reading AGENTS.md + DESIGN.md can write a conforming component.
 One primitive built end-to-end to validate every convention before mass
 component production.
 
-- [ ] First primitive: **statusbar** (theme roles, `SetSize`, MVU, golden tests)
-- [ ] First runnable example under `examples/statusbar/`
-- [ ] CI (GitHub Actions): build, vet, test, examples compile
-- [ ] Extend snaptest: styled cell-grid dump via UV `Buffer` (style assertions,
-      e.g. "selected row uses Accent")
-- [ ] AGENTS.md grows from skeleton to real recipes based on what the statusbar taught
+- [x] First primitive: **statusbar** (theme roles, `SetSize`, MVU, golden tests)
+- [x] First runnable example under `examples/statusbar/`
+- [x] CI (GitHub Actions): build, vet, test, examples compile
+- [x] Extend snaptest: styled cell-grid dump via UV buffer (`SnapCells`,
+      role-labeled style runs, e.g. `" gotui " [fg=TextInverted bg=Accent bold]`)
+- [x] AGENTS.md grows from skeleton to real recipes based on what the statusbar taught
 
 **Exit criteria:** an agent can clone the statusbar pattern to produce a second
 primitive without human correction.
