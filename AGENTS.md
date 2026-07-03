@@ -119,3 +119,83 @@ sb.SetRight(statusbar.Segment{Text: "12:4", Kind: statusbar.KindMuted})
   then truncates left, when narrow — don't pre-truncate text yourself.
 - Styles are derived from the theme in `New`; to switch themes, construct a
   new statusbar (see `rebuildStatusbar` in the example).
+
+### viewport / list / table (scrolling components)
+
+All three follow the same shape — `SetSize`, `Focus`/`Blur`, vim-ish keys
+(`j/k`, `g/G`, `pgup/pgdown`) handled only while focused:
+
+```go
+vp := viewport.New(theme); vp.SetContent(text)        // pre-styled ok
+l  := list.New(theme);     l.SetItems("a", "b")       // l.SelectedItem()
+tb := table.New(theme)
+tb.SetColumns(table.Column{Title: "ID", Width: 4}, table.Column{Title: "Name"}) // Width 0 = flex
+tb.SetRows([]string{"1", "api"})
+```
+
+- They ignore keys when blurred by design — never gate delegation yourself.
+- Viewport handles `tea.MouseWheelMsg` even when blurred; forward wheel
+  events to it unconditionally.
+- Selection styling uses `SelectionBg/Fg` only while focused.
+
+### textinput
+
+```go
+ti := textinput.New(theme)
+ti.Placeholder = "type…"
+ti.Focus()                       // cursor renders; keys accepted
+// enter is NOT handled: check it in the app and read ti.Value(), then ti.Reset()
+```
+
+### spinner
+
+Intrinsic-size; start with `Tick` and forward `TickMsg`:
+
+```go
+func (m app) Init() tea.Cmd { return m.spin.Tick() }
+case spinner.TickMsg:
+    m.spin, cmd = m.spin.Update(msg)
+```
+
+### help
+
+`h := help.New(theme); h.SetBindings(help.Binding{Key: "tab", Desc: "focus"}, …)`
+— renders whole hints only; drops from the right when narrow.
+
+### focus (tab order)
+
+`focus.Manager` is a **value type holding only an index** — never store
+component pointers for focus (they go stale when the MVU model is copied):
+
+```go
+m.fm = focus.NewManager(3)              // in the model: fm focus.Manager
+case "tab":
+    m.fm.Next()
+    m.fm.Apply(&m.list, &m.view, &m.input) // fresh addresses, every time
+```
+
+### dialog + overlay (modals)
+
+The app owns visibility; the dialog answers via a `ResultMsg` command:
+
+```go
+case "ctrl+d":
+    m.showDialog = true                  // route ALL keys to the dialog while open
+case dialog.ResultMsg:
+    m.showDialog = false
+    if msg.OK { /* confirmed */ }
+// in render:
+if m.showDialog { base = overlay.Center(base, m.dlg.View()) }
+```
+
+`overlay.Place/Center` composite in cell space — overlays cleanly replace
+what's beneath, styles included. Never splice overlay strings manually.
+
+### Key-routing pattern (multi-component apps)
+
+Order matters; see [examples/demo](examples/demo/main.go) for the full shape:
+
+1. If a modal is open, all keys go to it — nothing else.
+2. Global keys next (`ctrl+c`, `tab`/`shift+tab` + `fm.Apply`, app actions).
+3. Everything else is delegated to *all* components; blurred ones ignore
+   keys themselves.

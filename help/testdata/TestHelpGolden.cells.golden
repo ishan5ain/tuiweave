@@ -1,0 +1,1 @@
+1: "tab" [fg=TextMuted bold] | " focus • " [fg=TextFaint] | "enter" [fg=TextMuted bold] | " send • " [fg=TextFaint] | "q" [fg=TextMuted bold] | " quit" [fg=TextFaint]

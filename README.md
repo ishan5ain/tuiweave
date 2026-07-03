@@ -18,12 +18,20 @@ reliably write TUIs with it.
 | `gotui/layout` | Flexbox-like layout: constraints → rectangles → component sizes |
 | `gotui/snaptest` | Snapshot test harness: plain-text, raw-ANSI, and role-labeled cell-grid goldens |
 | `gotui/statusbar` | One-line status bar with themed left/right segments |
-| `examples/…` | One runnable example per component (`go run ./examples/statusbar`) |
+| `gotui/list` | Scrolling list with selection cursor |
+| `gotui/viewport` | Scrollable window over pre-rendered content (keys + mouse wheel) |
+| `gotui/textinput` | Single-line input: cursor, placeholder, horizontal scroll |
+| `gotui/table` | Fixed + flex columns, header, row selection |
+| `gotui/help` | One-line key-hint bar |
+| `gotui/spinner` | Tick-driven activity indicator |
+| `gotui/dialog` | Modal confirm box answering via `ResultMsg` |
+| `gotui/overlay` | Cell-space compositing for modals/popovers (UV inside) |
+| `gotui/focus` | Copy-safe tab-order manager |
+| `examples/…` | Runnable apps: `go run ./examples/demo` (multi-pane), `./examples/statusbar` |
 
-More primitives arrive through Phase 2 (see [PLAN.md](PLAN.md)); agentic domain
-components (chat, tool-call blocks, diff viewer, markdown) land under
-`gotui/agentic` in Phase 3. The driving application is a custom TUI for the
-Pi coding agent.
+Phase 2 (core primitives) is complete — see [PLAN.md](PLAN.md). Next: agentic
+domain components (chat, tool-call blocks, diff viewer, markdown) under
+`gotui/agentic` in Phase 3, driven by a custom TUI for the Pi coding agent.
 
 ## Design pillars
 

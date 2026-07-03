@@ -1,0 +1,6 @@
+1: "ID   Name              State  " [fg=TextMuted bold]
+2: "──────────────────────────────" [fg=BorderMuted]
+3: "1    service-01        ok     " [fg=Text]
+4: "2    service-02        ok     " [fg=Text bg=SelectionBg]
+5: "3    service-03        ok     " [fg=Text]
+6: "4    service-04        ok     " [fg=Text]

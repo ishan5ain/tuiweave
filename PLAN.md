@@ -46,14 +46,20 @@ primitive without human correction.
 The generic component set and the opt-in utilities that target known agent
 failure modes.
 
-- [ ] Components: `list`, `textinput`, `viewport`, `spinner`, `table`, `help`/keybar
-- [ ] `dialog`/modal + overlay compositing (UV cell buffers enter here,
-      library-internal only)
-- [ ] Glue utilities: focus manager (tab-order registry), delegation helpers
-- [ ] Example per component, golden tests throughout
+- [x] Components: `list`, `textinput`, `viewport`, `spinner`, `table`, `help`/keybar
+- [x] `dialog`/modal + `overlay` compositing (UV cell buffers, library-internal only)
+- [x] Glue utilities: focus manager (index-based value type — component
+      pointers go stale across MVU copies, a bug the demo caught)
+- [x] Golden tests throughout; examples: statusbar + the multi-pane demo cover
+      every component (dedicated per-component examples deferred — recipes in
+      AGENTS.md point into the demo)
+- [ ] Deferred to later phases: `textarea` (multi-line editing), scrollbars,
+      list filtering, per-component standalone examples
 
-**Exit criteria:** a non-trivial multi-pane demo app composed purely from gotui
-components, laid out via `gotui/layout`, fully snapshot-tested.
+**Exit criteria (met):** a non-trivial multi-pane demo app composed purely from
+gotui components, laid out via `gotui/layout`, fully snapshot-tested —
+`examples/demo` (list + viewport + textinput + help + statusbar + spinner +
+modal dialog, focus cycling, golden-tested screens).
 
 ## Phase 3 — Agentic components
 
