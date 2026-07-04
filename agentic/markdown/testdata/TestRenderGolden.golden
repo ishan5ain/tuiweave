@@ -1,0 +1,12 @@
+# Title
+Some bold and italic text with inline
+code and a link https://example.com.
+
+• first item
+• second item
+
+│ a quote
+
+ func main() {
+ 	fmt.Println("hi") // greet
+ }

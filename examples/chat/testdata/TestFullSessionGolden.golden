@@ -1,0 +1,22 @@
+applied layout fix:
+
+--- a/app.go
++++ b/app.go
+@@ -1,3 +1,4 @@
+ func (m app) layout(w, h int) {
+-    m.chat.SetSize(w, h-1)
++    layout.Vertical(layout.Fill(1), layout.Len(1)).
++        Apply(layout.NewRect(0, 0, w, h), &m.chat, &m.input)
+ }
+
+✦ assistant
+All green. Here's the pattern in practice:
+
+ layout.Vertical(
+     layout.Fill(1), // transcript
+     layout.Len(1),  // input
+ ).Apply(area, &m.chat, &m.input)
+
+That's the whole wiring — rectangles in, sized components out.
+> ask the mock agent anything…
+ pi-large                                      ↑1.2k ↓39  $0.00  ctx 2%

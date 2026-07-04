@@ -66,16 +66,24 @@ modal dialog, focus cycling, golden-tested screens).
 The domain layer (`gotui/agentic/...`) built on the primitives — the actual
 reuse target for the family of tools.
 
-- [ ] `MarkdownView`: glamour-backed, **behind a swappable interface**, theme-role
-      style mapping, streaming via re-render + completed-block caching
-- [ ] Chat message list (streaming assistant/user turns)
-- [ ] Tool-call block (collapsible, status-aware)
-- [ ] Diff viewer
-- [ ] Permission prompt
-- [ ] Status/usage bar (model, tokens, cost)
+- [x] `agentic/markdown`: glamour v2-backed, **behind the swappable `Renderer`
+      interface**, theme-role style mapping (incl. chroma), per-width renderer
+      cache; streaming re-render with caching in the chat assistant cell
+- [x] `agentic/chat`: cell-based transcript (user/assistant/note cells +
+      `CellFunc` adapter), streaming via mutate-and-`Invalidate`, auto-follow
+      with unstick/re-stick
+- [x] `agentic/toolcall`: status-aware collapsible block (pending/running/✓/✗,
+      output cap with "+N more")
+- [x] `agentic/diffview`: styled unified diffs — `Sprint` for inline cells,
+      `Model` for scrollable panes
+- [x] `agentic/permission`: vertical numbered options, number quick-select,
+      esc = safest (last) option
+- [x] `agentic/usagebar`: model/tokens/cost/context with threshold styling
 
-**Exit criteria:** a mock-backed chat demo renders a full agentic session
-(streaming markdown, tool calls, diffs) from goldens.
+**Exit criteria (met):** `examples/chat` renders a full mock agentic session —
+streaming markdown, permission-gated tool call, inline diff, live usage bar —
+from goldens (mid-stream permission overlay + final screen) and verified live
+in a pty.
 
 ## Phase 4 — Pi TUI parity (separate app repo)
 

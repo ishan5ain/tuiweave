@@ -1,0 +1,1 @@
+1: "✓" [fg=Success] | " " | "Bash" [fg=Text bold] | " " | "go test ./..." [fg=TextMuted] | " " | "(2 output lines)" [fg=TextFaint]

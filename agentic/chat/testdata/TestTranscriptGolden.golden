@@ -1,0 +1,13 @@
+session started
+
+❯ you
+  explain the layout package
+
+✦ assistant
+The layout package splits space with:
+
+• Len fixed
+• Fill grow
+
+
+

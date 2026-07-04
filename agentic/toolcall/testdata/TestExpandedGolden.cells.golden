@@ -1,0 +1,3 @@
+1: "✓" [fg=Success] | " " | "Bash" [fg=Text bold] | " " | "go test ./..." [fg=TextMuted]
+2: "  " | " ok      gotui/layout    0.3s                           " [fg=TextMuted bg=SurfaceSunken]
+3: "  " | " ok      gotui/snaptest    0.2s                         " [fg=TextMuted bg=SurfaceSunken]

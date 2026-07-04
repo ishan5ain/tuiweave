@@ -1,0 +1,22 @@
+mock session — responses are scripted
+
+❯ you
+  how does layout work?
+
+✦ assistant    ╭────────────────────────────────────────╮
+Good question! │                                        │ith
+constraints:   │  Run "go test ./..."?                  │
+               │  The agent wants to run a shell        │
+• Len(n) — fixe│  command.                              │
+• Fill(w) — gro│                                        │
+               │   1  Allow once                        │
+Let me verify t│   2  Allow always                      │
+               │   3  Deny                              │
+               │                                        │
+               ╰────────────────────────────────────────╯
+
+
+
+
+> ask the mock agent anything…
+ pi-large                                      ↑1.2k ↓21  $0.00  ctx 1%

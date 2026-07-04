@@ -27,11 +27,17 @@ reliably write TUIs with it.
 | `gotui/dialog` | Modal confirm box answering via `ResultMsg` |
 | `gotui/overlay` | Cell-space compositing for modals/popovers (UV inside) |
 | `gotui/focus` | Copy-safe tab-order manager |
-| `examples/…` | Runnable apps: `go run ./examples/demo` (multi-pane), `./examples/statusbar` |
+| `agentic/markdown` | Theme-mapped markdown rendering behind a swappable `Renderer` interface (glamour v2 today) |
+| `agentic/chat` | Streaming transcript: user/assistant/tool cells, auto-follow |
+| `agentic/toolcall` | Status-aware collapsible tool-call block |
+| `agentic/diffview` | Styled unified diffs, inline or scrollable |
+| `agentic/permission` | Numbered permission prompt (esc = safe default) |
+| `agentic/usagebar` | Model / tokens / cost / context bar with thresholds |
+| `examples/…` | Runnable apps: `go run ./examples/chat` (mock agentic session), `./examples/demo`, `./examples/statusbar` |
 
-Phase 2 (core primitives) is complete — see [PLAN.md](PLAN.md). Next: agentic
-domain components (chat, tool-call blocks, diff viewer, markdown) under
-`gotui/agentic` in Phase 3, driven by a custom TUI for the Pi coding agent.
+Phases 0–3 are complete — see [PLAN.md](PLAN.md). Next: the Pi coding agent
+TUI built on this library (Phase 4, separate app repo), then the custom
+streaming markdown renderer (Phase 5).
 
 ## Design pillars
 

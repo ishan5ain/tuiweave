@@ -191,6 +191,52 @@ if m.showDialog { base = overlay.Center(base, m.dlg.View()) }
 `overlay.Place/Center` composite in cell space — overlays cleanly replace
 what's beneath, styles included. Never splice overlay strings manually.
 
+### chat transcript (agentic apps)
+
+The transcript is a stack of **cells** — pointers you keep and mutate as the
+session progresses. After mutating a cell in place, call `Invalidate()`
+(Append/SetSize do it for you). Full wiring: [examples/chat](examples/chat/main.go).
+
+```go
+c := chat.New(theme)
+c.Append(chat.NewUser(theme, question))
+
+a := chat.NewAssistant(theme, mdRenderer)  // keep the pointer
+c.Append(a)
+// per streamed delta:
+a.Append(delta); c.Invalidate()
+```
+
+- Auto-follow is built in: stuck to bottom until the user scrolls up,
+  re-sticks at bottom. Never call GotoBottom per delta.
+- Start a **new** Assistant cell after interleaved content (tool call, diff),
+  or the continuation renders above it.
+- Adapt anything to a cell with `chat.CellFunc(func(w int) string {...})`
+  — e.g. `diffview.Sprint(theme, diff, w)`.
+
+### markdown
+
+`markdown.NewRenderer(theme)` is glamour-backed behind the `Renderer`
+interface — depend on the interface, never on glamour. `markdown.Sprint`
+falls back to raw source on error; transcript UIs should degrade, not fail.
+
+### toolcall
+
+`toolcall.New(theme, name, summary)` returns a `*Block` chat cell: mutate
+`SetStatus`/`AppendOutput`/`Expanded` as the tool progresses. Collapsed
+blocks show a line-count hint; expanded output is capped by `MaxOutputLines`.
+
+### permission
+
+Same modal pattern as dialog (app owns visibility, answer arrives as a
+`ResultMsg` command), with vertical numbered options; number keys answer
+directly, esc picks the **last** option — order options safest-last.
+
+### usagebar
+
+`u.SetStats(usagebar.Stats{Model, TokensIn, TokensOut, Cost, ContextUsed})` —
+context ≥80% styles Warning, ≥95% Danger, automatically.
+
 ### Key-routing pattern (multi-component apps)
 
 Order matters; see [examples/demo](examples/demo/main.go) for the full shape:
