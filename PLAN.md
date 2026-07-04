@@ -54,9 +54,8 @@ failure modes.
 - [x] Golden tests throughout; examples: statusbar + the multi-pane demo cover
       every component (dedicated per-component examples deferred — recipes in
       AGENTS.md point into the demo)
-Deferred out of this phase: `textarea` (multi-line editing — scope during
-Phase 4 when Pi parity demands it), scrollbars, list filtering, per-component
-standalone examples.
+Deferred out of this phase: `textarea`, scrollbars, list filtering,
+per-component standalone examples — all picked up in **Phase 3.5** below.
 
 **Exit criteria (met):** a non-trivial multi-pane demo app composed purely from
 gotui components, laid out via `gotui/layout`, fully snapshot-tested —
@@ -86,6 +85,42 @@ reuse target for the family of tools.
 streaming markdown, permission-gated tool call, inline diff, live usage bar —
 from goldens (mid-stream permission overlay + final screen) and verified live
 in a pty.
+
+## Phase 3.5 — Deferred primitives *(complete)*
+
+The Phase 2 deferrals, done library-side **before** the Pi app starts so
+Phase 4 begins against a complete component set.
+
+- [x] **`gotui/scrollbar`**: standalone package —
+      `Vertical(theme, height, total, visible, offset)` (track `BorderMuted`,
+      thumb `Border`) + `For(theme, s)` over the `Scrollable` interface
+      (`TotalLines/VisibleLines/YOffset`), implemented by viewport, list,
+      table, chat, and diffview. Apps place the bar as a 1-column layout
+      segment — components stay unaware of it.
+- [x] **List filtering**: `SetFilter(query)` — case-insensitive substring,
+      display-only state. `Selected()` keeps returning the index into the
+      **original** items (mapping maintained internally); navigation,
+      windowing, and scrollbar stats operate in filtered space. The app owns
+      the filter input UI.
+- [x] **`gotui/textarea`**: logical lines (`[][]rune`) with soft-wrap display
+      (character-level, deterministic), cursor mapping through wrapped rows
+      including the exact-multiple wrap-boundary case, visual-row up/down,
+      `ContentHeight()` for content-driven growth, `InsertString` (also the
+      app's newline hook, e.g. alt+enter), paste with embedded newlines via
+      `Key.Text`. Tier-1 keys: arrows/home/end/ctrl+a/e, backspace/delete
+      (joining at boundaries), ctrl+u/k/w. Deferred tier 2: undo, kill ring,
+      selections, IME, wide-rune (CJK) column math.
+- [x] **Example coverage gaps closed**: `examples/table` (mock git-status:
+      table + diffview.Model + scrollbars on both panes, golden-tested);
+      `examples/chat` input swapped to textarea (enter sends, alt+enter
+      newline, input grows to 4 rows via `ContentHeight`). Every public
+      component now appears in ≥1 example app.
+- [x] Recipes for scrollbar/filtering/textarea; docs updated.
+
+**Exit criteria (met):** textarea golden-tested at wrap edges and
+paste-with-newlines; every scrolling component wears a scrollbar via one
+interface; a filtered list reports original-index selection under test;
+every public component appears in at least one example app; suite green.
 
 ## Phase 4 — Pi TUI parity *(next — separate app repo)*
 

@@ -155,14 +155,50 @@ tb.SetRows([]string{"1", "api"})
   events to it unconditionally.
 - Selection styling uses `SelectionBg/Fg` only while focused.
 
-### textinput
+### textinput / textarea
 
 ```go
-ti := textinput.New(theme)
+ti := textinput.New(theme)       // single line
 ti.Placeholder = "type…"
 ti.Focus()                       // cursor renders; keys accepted
 // enter is NOT handled: check it in the app and read ti.Value(), then ti.Reset()
+
+ta := textarea.New(theme)        // multi-line, soft-wrapped
+// enter inserts a newline INSIDE the textarea — for chat-style "enter sends",
+// intercept enter at the app level and offer alt+enter for newlines:
+case "enter":     /* read ta.Value(), send, ta.Reset() */
+case "alt+enter": ta.InsertString("\n")
 ```
+
+Grow a chat input with its content by re-splitting the layout after edits:
+`layout.Len(min(4, ta.ContentHeight()))` — see [examples/chat](examples/chat/main.go).
+
+### scrollbar
+
+Components never render their own bars. Place one as a 1-column segment and
+feed it the component's scroll stats:
+
+```go
+layout.Horizontal(layout.Fill(1), layout.Len(1)).Split(area).Assign(&pane, &bar)
+m.list.SetSize(pane.Dx(), pane.Dy())
+// in render:
+lipgloss.JoinHorizontal(lipgloss.Top, m.list.View(), scrollbar.For(theme, m.list))
+```
+
+`For` works with every scrolling component (viewport, list, table, chat,
+diffview). Note: a table's bar spans its row area, two lines below its top —
+prepend two blank lines to align (see [examples/table](examples/table/main.go)).
+
+### list filtering
+
+```go
+l.SetFilter(query) // case-insensitive substring; "" clears
+l.Selected()       // STILL the original-items index — never remap yourself
+l.FilteredLen()    // how many items are displayed
+```
+
+The filter input UI is app-owned (a textinput above the list). Navigation,
+windowing, and the scrollbar all operate in filtered space automatically.
 
 ### spinner
 

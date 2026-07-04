@@ -194,8 +194,9 @@ github.com/ishansain/gotui
 ├── layout/          facade over ultraviolet/layout: Rect, constraints,
 │                    Vertical/Horizontal, Sizable, Apply
 ├── snaptest/        snapshot test harness (Snap, SnapCells, SnapStyled, -update)
-├── statusbar/  list/  viewport/  textinput/  table/  help/  spinner/
+├── statusbar/  list/  viewport/  textinput/  textarea/  table/  help/  spinner/
 │                    generic primitives, one package each
+├── scrollbar/       one-column bar for anything implementing Scrollable
 ├── dialog/          modal confirm box (ResultMsg pattern)
 ├── overlay/         cell-space compositing — Place/Center (UV internal)
 ├── focus/           copy-safe (index-only) tab-order manager
@@ -209,7 +210,8 @@ github.com/ishansain/gotui
 ├── examples/
 │   ├── statusbar/   canonical single-component wiring
 │   ├── demo/        multi-pane app (Phase 2 exit criterion), golden-tested
-│   └── chat/        mock agentic session (Phase 3 exit criterion), golden-tested
+│   ├── chat/        mock agentic session (Phase 3 exit criterion), golden-tested
+│   └── table/       git-status mock: table + diffview + scrollbars, golden-tested
 ├── .github/workflows/ci.yml   build + vet + test + tidy check
 ├── AGENTS.md        the agent-facing rulebook
 ├── DESIGN.md        this document
@@ -284,8 +286,10 @@ theme API from growing per-component.
 - **Module path / publication:** currently `github.com/ishansain/gotui`,
   private-by-circumstance. License (MIT recommended) and publication decision
   before any external consumer.
-- **Text editing depth:** `textarea` (multi-line editing, kill ring, IME) was
-  deferred out of Phase 2; scope it when Pi TUI parity (Phase 4) demands it.
+- **Text editing depth:** `textarea` shipped in Phase 3.5 with tier-1 editing
+  (soft wrap, visual-row movement, line joins, paste). Still open for later:
+  undo, kill ring, selections, IME, and wide-rune (CJK) column math — the
+  wrap logic currently counts runes, not cells.
 - **Streaming markdown renderer design** (Phase 5): incremental block parser
   vs full-document reparse with damage hints — decide when glamour's limits
   are measured, not guessed.

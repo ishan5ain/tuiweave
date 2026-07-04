@@ -28,7 +28,7 @@ import (
 	"github.com/ishansain/gotui/focus"
 	"github.com/ishansain/gotui/layout"
 	"github.com/ishansain/gotui/overlay"
-	"github.com/ishansain/gotui/textinput"
+	"github.com/ishansain/gotui/textarea"
 )
 
 const responsePart1 = `Good question! The **layout** package splits terminal space with
@@ -76,7 +76,7 @@ type model struct {
 	width, height int
 
 	transcript chat.Model
-	input      textinput.Model
+	input      textarea.Model
 	usage      usagebar.Model
 	perm       permission.Model
 	md         markdown.Renderer
@@ -96,7 +96,7 @@ func newModel() model {
 	m := model{
 		theme:      theme,
 		transcript: chat.New(theme),
-		input:      textinput.New(theme),
+		input:      textarea.New(theme),
 		usage:      usagebar.New(theme),
 		perm:       permission.New(theme),
 		md:         markdown.NewRenderer(theme),
@@ -188,6 +188,25 @@ func (m *model) bumpStats(tokens int) {
 	m.usage.SetStats(m.stats)
 }
 
+// layout re-splits the window; the input slot grows with its content
+// (up to 4 rows), chat-style.
+func (m *model) layout() {
+	if m.width <= 0 || m.height <= 0 {
+		return
+	}
+	inputH := min(4, m.input.ContentHeight())
+	var transcript, input, usage layout.Rect
+	layout.Vertical(
+		layout.Fill(1),
+		layout.Len(inputH),
+		layout.Len(1),
+	).Split(layout.NewRect(0, 0, m.width, m.height)).
+		Assign(&transcript, &input, &usage)
+	m.transcript.SetSize(transcript.Dx(), transcript.Dy())
+	m.input.SetSize(input.Dx(), input.Dy())
+	m.usage.SetSize(usage.Dx(), usage.Dy())
+}
+
 func (m model) Init() tea.Cmd { return nil }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -197,16 +216,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		m.width, m.height = msg.Width, msg.Height
-		var transcript, input, usage layout.Rect
-		layout.Vertical(
-			layout.Fill(1),
-			layout.Len(1),
-			layout.Len(1),
-		).Split(layout.NewRect(0, 0, msg.Width, msg.Height)).
-			Assign(&transcript, &input, &usage)
-		m.transcript.SetSize(transcript.Dx(), transcript.Dy())
-		m.input.SetSize(input.Dx(), input.Dy())
-		m.usage.SetSize(usage.Dx(), usage.Dy())
+		m.layout()
 		m.perm.SetSize(min(44, msg.Width-4), 12)
 
 	case tickMsg:
@@ -238,14 +248,23 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.fm.Next()
 			m.applyFocus()
 		case "enter":
+			// enter sends; alt+enter inserts a newline (below). The textarea
+			// never sees a bare enter.
 			if m.fm.Index() == 1 && m.step == stepIdle && strings.TrimSpace(m.input.Value()) != "" {
 				cmds = append(cmds, m.startSession(strings.TrimSpace(m.input.Value())))
+				m.layout()
+			}
+		case "alt+enter":
+			if m.fm.Index() == 1 {
+				m.input.InsertString("\n")
+				m.layout()
 			}
 		default:
 			m.transcript, cmd = m.transcript.Update(msg)
 			cmds = append(cmds, cmd)
 			m.input, cmd = m.input.Update(msg)
 			cmds = append(cmds, cmd)
+			m.layout() // input may have grown or shrunk
 		}
 
 	case tea.MouseWheelMsg:

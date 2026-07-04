@@ -20,9 +20,11 @@ until v1 (Phase 5).
 | `gotui/layout` | Flexbox-like layout: constraints → rectangles → component sizes |
 | `gotui/snaptest` | Snapshot test harness: plain-text, raw-ANSI, and role-labeled cell-grid goldens |
 | `gotui/statusbar` | One-line status bar with themed left/right segments |
-| `gotui/list` | Scrolling list with selection cursor |
+| `gotui/list` | Scrolling list with selection cursor and filtering (original-index selection) |
 | `gotui/viewport` | Scrollable window over pre-rendered content (keys + mouse wheel) |
 | `gotui/textinput` | Single-line input: cursor, placeholder, horizontal scroll |
+| `gotui/textarea` | Multi-line input: soft wrap, visual-row cursor, content-driven height |
+| `gotui/scrollbar` | One-column scroll indicator for any `Scrollable` component |
 | `gotui/table` | Fixed + flex columns, header, row selection |
 | `gotui/help` | One-line key-hint bar |
 | `gotui/spinner` | Tick-driven activity indicator |
@@ -35,10 +37,10 @@ until v1 (Phase 5).
 | `agentic/diffview` | Styled unified diffs, inline or scrollable |
 | `agentic/permission` | Numbered permission prompt (esc = safe default) |
 | `agentic/usagebar` | Model / tokens / cost / context bar with thresholds |
-| `examples/…` | Runnable apps: `go run ./examples/chat` (mock agentic session), `./examples/demo`, `./examples/statusbar` |
+| `examples/…` | Runnable apps: `go run ./examples/chat` (mock agentic session), `./examples/table` (git-status mock), `./examples/demo`, `./examples/statusbar` |
 
-Phases 0–3 are complete — see [PLAN.md](PLAN.md). Next: the Pi coding agent
-TUI built on this library (Phase 4, separate app repo), then the custom
+Phases 0–3.5 are complete — see [PLAN.md](PLAN.md). Next: the Pi coding
+agent TUI built on this library (Phase 4, separate app repo), then the custom
 streaming markdown renderer (Phase 5).
 
 ## Design pillars

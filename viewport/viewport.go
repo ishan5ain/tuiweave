@@ -53,6 +53,12 @@ func (m Model) Focused() bool { return m.focused }
 // YOffset returns the index of the first visible line.
 func (m Model) YOffset() int { return m.yoff }
 
+// TotalLines returns the number of content lines (scrollbar.Scrollable).
+func (m Model) TotalLines() int { return len(m.lines) }
+
+// VisibleLines returns how many lines are shown at once (scrollbar.Scrollable).
+func (m Model) VisibleLines() int { return m.height }
+
 // AtBottom reports whether the last content line is visible.
 func (m Model) AtBottom() bool { return m.yoff >= m.maxYOffset() }
 

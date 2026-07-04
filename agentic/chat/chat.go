@@ -95,6 +95,15 @@ func (m Model) Focused() bool { return m.vp.Focused() }
 // Following reports whether the transcript is stuck to the bottom.
 func (m Model) Following() bool { return m.follow }
 
+// TotalLines returns the rendered transcript length (scrollbar.Scrollable).
+func (m Model) TotalLines() int { return m.vp.TotalLines() }
+
+// VisibleLines returns how many lines are shown at once (scrollbar.Scrollable).
+func (m Model) VisibleLines() int { return m.vp.VisibleLines() }
+
+// YOffset returns the index of the first visible line (scrollbar.Scrollable).
+func (m Model) YOffset() int { return m.vp.YOffset() }
+
 // GotoBottom scrolls to the newest content and re-enables auto-follow.
 func (m *Model) GotoBottom() {
 	m.vp.GotoBottom()

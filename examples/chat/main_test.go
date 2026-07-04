@@ -61,6 +61,35 @@ func startSession(t *testing.T, m model) model {
 	return send(t, m, tea.KeyPressMsg{Code: tea.KeyEnter})
 }
 
+func TestMultilineInputGrowsAndSends(t *testing.T) {
+	m := sized(t)
+	for _, r := range "line one" {
+		m = send(t, m, tea.KeyPressMsg{Code: r, Text: string(r)})
+	}
+	m = send(t, m, tea.KeyPressMsg{Code: tea.KeyEnter, Mod: tea.ModAlt})
+	for _, r := range "line two" {
+		m = send(t, m, tea.KeyPressMsg{Code: r, Text: string(r)})
+	}
+	if got := m.input.Value(); got != "line one\nline two" {
+		t.Fatalf("input value = %q", got)
+	}
+	if got := m.input.ContentHeight(); got != 2 {
+		t.Fatalf("ContentHeight = %d, want 2", got)
+	}
+	// The frame must stay the terminal height: transcript shrank instead.
+	if got := len(strings.Split(m.render(), "\n")); got != 22 {
+		t.Fatalf("frame is %d rows, want 22", got)
+	}
+
+	m = send(t, m, tea.KeyPressMsg{Code: tea.KeyEnter}) // enter sends
+	if m.step != stepStreamingIntro {
+		t.Fatal("enter did not start the session")
+	}
+	if !m.input.Empty() {
+		t.Errorf("input not cleared after send: %q", m.input.Value())
+	}
+}
+
 func TestSessionReachesPermissionGolden(t *testing.T) {
 	m := startSession(t, sized(t))
 	m = runUntil(t, m, func(m model) bool { return m.step == stepAwaitPermission })

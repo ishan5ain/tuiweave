@@ -101,6 +101,15 @@ func (m *Model) Blur() { m.vp.Blur() }
 // Focused reports whether the pane handles keys.
 func (m Model) Focused() bool { return m.vp.Focused() }
 
+// TotalLines returns the number of diff lines (scrollbar.Scrollable).
+func (m Model) TotalLines() int { return m.vp.TotalLines() }
+
+// VisibleLines returns how many lines are shown at once (scrollbar.Scrollable).
+func (m Model) VisibleLines() int { return m.vp.VisibleLines() }
+
+// YOffset returns the index of the first visible line (scrollbar.Scrollable).
+func (m Model) YOffset() int { return m.vp.YOffset() }
+
 // Update delegates scrolling to the embedded viewport.
 func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 	var cmd tea.Cmd

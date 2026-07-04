@@ -103,6 +103,15 @@ func (m Model) Focused() bool { return m.focused }
 // rowArea returns how many rows are visible below the header.
 func (m Model) rowArea() int { return max(0, m.height-2) }
 
+// TotalLines returns the number of rows (scrollbar.Scrollable).
+func (m Model) TotalLines() int { return len(m.rows) }
+
+// VisibleLines returns how many rows are shown at once (scrollbar.Scrollable).
+func (m Model) VisibleLines() int { return m.rowArea() }
+
+// YOffset returns the index of the first visible row (scrollbar.Scrollable).
+func (m Model) YOffset() int { return m.off }
+
 func (m *Model) scrollIntoView() {
 	area := m.rowArea()
 	if area == 0 {

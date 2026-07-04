@@ -93,3 +93,84 @@ func TestListBlurredIgnoresKeys(t *testing.T) {
 		t.Errorf("blurred list moved selection to %d", got)
 	}
 }
+
+func TestFilterNarrowsAndReportsOriginalIndex(t *testing.T) {
+	l := New(gotui.Dark())
+	l.SetSize(14, 4)
+	l.SetItems("alpha", "beta", "gamma", "beacon")
+	l.Focus()
+
+	l.SetFilter("BE") // case-insensitive
+	if got := l.FilteredLen(); got != 2 {
+		t.Fatalf("FilteredLen = %d, want 2 (beta, beacon)", got)
+	}
+	if got := l.Selected(); got != 1 {
+		t.Fatalf("first match Selected() = %d, want 1 (beta's original index)", got)
+	}
+	l, _ = l.Update(keyPress("j"))
+	if got, item := l.Selected(), l.SelectedItem(); got != 3 || item != "beacon" {
+		t.Fatalf("second match = (%d, %q), want (3, beacon)", got, item)
+	}
+	snaptest.Snap(t, l.View())
+}
+
+func TestFilterKeepsSelectionWhenStillMatching(t *testing.T) {
+	l := New(gotui.Dark())
+	l.SetSize(14, 4)
+	l.SetItems("alpha", "beta", "gamma")
+	l.Select(2) // gamma
+	l.SetFilter("ma")
+	if got := l.SelectedItem(); got != "gamma" {
+		t.Errorf("selection not kept through filter: %q", got)
+	}
+	l.SetFilter("")
+	if got := l.Selected(); got != 2 {
+		t.Errorf("selection lost after clearing filter: %d", got)
+	}
+}
+
+func TestFilterNoMatches(t *testing.T) {
+	l := New(gotui.Dark())
+	l.SetSize(14, 3)
+	l.SetItems("alpha", "beta")
+	l.SetFilter("zzz")
+	if got := l.Selected(); got != -1 {
+		t.Errorf("no-match Selected() = %d, want -1", got)
+	}
+	if got := l.SelectedItem(); got != "" {
+		t.Errorf("no-match SelectedItem() = %q, want empty", got)
+	}
+	l.Focus()
+	l, _ = l.Update(keyPress("j")) // must not panic
+	_ = l.View()
+}
+
+func TestFilteredWindowingAndScrollable(t *testing.T) {
+	l := New(gotui.Dark())
+	l.SetSize(14, 2)
+	l.SetItems("m1", "x", "m2", "x", "m3", "x", "m4")
+	l.Focus()
+	l.SetFilter("m")
+
+	if got := l.TotalLines(); got != 4 {
+		t.Fatalf("TotalLines = %d, want 4 matches", got)
+	}
+	l, _ = l.Update(keyPress("G"))
+	if got := l.SelectedItem(); got != "m4" {
+		t.Fatalf("G selected %q, want m4", got)
+	}
+	if got := l.YOffset(); got != 2 {
+		t.Errorf("YOffset = %d, want 2 (window scrolled in filtered space)", got)
+	}
+}
+
+func TestSelectNonMatchingIndexIsNoop(t *testing.T) {
+	l := New(gotui.Dark())
+	l.SetSize(14, 4)
+	l.SetItems("alpha", "beta", "gamma")
+	l.SetFilter("al") // only alpha matches
+	l.Select(2)       // gamma doesn't match: no-op
+	if got := l.SelectedItem(); got != "alpha" {
+		t.Errorf("Select(non-matching) changed selection to %q", got)
+	}
+}
