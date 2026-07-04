@@ -1,9 +1,10 @@
 # gotui — Agent Conventions
 
 Rules for writing code **with** gotui (apps) and **in** gotui (components).
-This file is deliberately short; each rule links to a runnable example once
-one exists. Architecture rationale lives in [DESIGN.md](DESIGN.md) — read it
-before adding a component; you don't need it to build an app.
+This file is deliberately short; recipes link into the runnable example apps
+(`examples/statusbar`, `examples/demo`, `examples/chat`). Architecture
+rationale lives in [DESIGN.md](DESIGN.md) — read it before adding a
+component; you don't need it to build an app.
 
 ## The stack
 
@@ -11,6 +12,8 @@ before adding a component; you don't need it to build an app.
 - Styling: `charm.land/lipgloss/v2` (components render styled **strings**)
 - Layout: `github.com/ishansain/gotui/layout` (flexbox-like constraints → rects)
 - Testing: `github.com/ishansain/gotui/snaptest` (golden files)
+- Agentic UIs: `gotui/agentic/…` (markdown, chat, toolcall, diffview,
+  permission, usagebar) — built on the primitives, backend-agnostic
 
 ## Hard rules
 
@@ -19,6 +22,8 @@ before adding a component; you don't need it to build an app.
    stop and flag it; do not improvise a color.
 2. **Never import `ultraviolet` in app code or component packages.** Geometry
    comes from `gotui/layout` (`layout.Rect`); UV is a library-internal detail.
+   (Inside the library, exactly three packages touch it: `layout`, `overlay`,
+   `snaptest`.)
 3. **Every component sizes itself only via `SetSize(w, h)`** and must render
    exactly within that box — no measuring the terminal, no guessing.
 4. **MVU discipline:** always reassign the model returned by `Update` and
@@ -32,8 +37,8 @@ before adding a component; you don't need it to build an app.
    an intentional visual change: `go test ./... -update`, then read the golden
    diff in git and confirm it matches your intent before considering the task
    done. Never regenerate goldens to silence a failure you don't understand.
-6. **Every new component ships with:** golden tests, a runnable example under
-   `examples/<component>/`, and a recipe entry in this file.
+6. **Every new component ships with:** golden tests, coverage in a runnable
+   example app under `examples/`, and a recipe entry in this file.
 
 ## Wiring an app (the only layout pattern)
 
@@ -51,7 +56,10 @@ case tea.WindowSizeMsg:
 ```
 
 Compose the final frame with `lipgloss.JoinVertical` / `JoinHorizontal` and
-wrap it once, at the root: `return tea.NewView(view)`.
+wrap it once, at the root: `return tea.NewView(view)`. Full-screen apps set
+`v.AltScreen = true` on the returned view — bubbletea v2 has **no**
+`tea.WithAltScreen()` program option (a v1 idiom agents often reach for);
+mouse support is also a view field (`v.MouseMode = tea.MouseModeCellMotion`).
 
 ## Writing a gotui component
 
@@ -94,6 +102,15 @@ may appear as `Surface` in the default themes.)
 Snapshot states, not just defaults: focused/blurred, empty/full, truncation
 at small sizes. The plain `.golden` file is the artifact to read when judging
 whether output is correct.
+
+Two gotchas in hand-written assertions:
+
+- Strip ANSI before `strings.Contains` — renderers style words as separate
+  escape-code spans, so matching against raw output fails randomly. Use
+  `github.com/charmbracelet/x/ansi`'s `ansi.Strip`.
+- A scrolling component's `View()` is only the visible window. To assert on
+  full content (e.g. a chat transcript that auto-follows the bottom), render
+  the source of truth — `transcript.Cells()` — not the window.
 
 ## Recipes
 

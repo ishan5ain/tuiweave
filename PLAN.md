@@ -11,7 +11,7 @@ Pi iterating on its own TUI using this library.
 
 ---
 
-## Phase 0 — Foundation *(current)*
+## Phase 0 — Foundation *(complete)*
 
 Repo bootstrap and the three load-bearing pieces every later phase depends on.
 
@@ -23,10 +23,10 @@ Repo bootstrap and the three load-bearing pieces every later phase depends on.
 - [x] **Snapshot harness v0** (`gotui/snaptest`): deterministic render-to-golden,
       plain-text + styled artifacts, `-update` flag, readable diffs
 
-**Exit criteria:** `go build ./... && go vet ./... && go test ./...` green;
-an agent reading AGENTS.md + DESIGN.md can write a conforming component.
+**Exit criteria (met):** `go build ./... && go vet ./... && go test ./...`
+green; an agent reading AGENTS.md + DESIGN.md can write a conforming component.
 
-## Phase 1 — Prove the conventions
+## Phase 1 — Prove the conventions *(complete)*
 
 One primitive built end-to-end to validate every convention before mass
 component production.
@@ -38,10 +38,11 @@ component production.
       role-labeled style runs, e.g. `" gotui " [fg=TextInverted bg=Accent bold]`)
 - [x] AGENTS.md grows from skeleton to real recipes based on what the statusbar taught
 
-**Exit criteria:** an agent can clone the statusbar pattern to produce a second
-primitive without human correction.
+**Exit criteria (met in Phase 2):** an agent can clone the statusbar pattern to
+produce a second primitive without human correction — the Phase 2 component set
+was produced this way.
 
-## Phase 2 — Core primitives + glue
+## Phase 2 — Core primitives + glue *(complete)*
 
 The generic component set and the opt-in utilities that target known agent
 failure modes.
@@ -53,15 +54,16 @@ failure modes.
 - [x] Golden tests throughout; examples: statusbar + the multi-pane demo cover
       every component (dedicated per-component examples deferred — recipes in
       AGENTS.md point into the demo)
-- [ ] Deferred to later phases: `textarea` (multi-line editing), scrollbars,
-      list filtering, per-component standalone examples
+Deferred out of this phase: `textarea` (multi-line editing — scope during
+Phase 4 when Pi parity demands it), scrollbars, list filtering, per-component
+standalone examples.
 
 **Exit criteria (met):** a non-trivial multi-pane demo app composed purely from
 gotui components, laid out via `gotui/layout`, fully snapshot-tested —
 `examples/demo` (list + viewport + textinput + help + statusbar + spinner +
 modal dialog, focus cycling, golden-tested screens).
 
-## Phase 3 — Agentic components
+## Phase 3 — Agentic components *(complete)*
 
 The domain layer (`gotui/agentic/...`) built on the primitives — the actual
 reuse target for the family of tools.
@@ -85,7 +87,7 @@ streaming markdown, permission-gated tool call, inline diff, live usage bar —
 from goldens (mid-stream permission overlay + final screen) and verified live
 in a pty.
 
-## Phase 4 — Pi TUI parity (separate app repo)
+## Phase 4 — Pi TUI parity *(next — separate app repo)*
 
 The driving app. The JSON-RPC client lives in the **app repo**, not gotui —
 the library stays agent-tool-agnostic; agentic components consume plain Go types.
@@ -103,7 +105,7 @@ verified without a human looking at the screen.
 ## Phase 5 — Maturity
 
 - [ ] Custom streaming markdown renderer replaces glamour behind the existing
-      `MarkdownView` interface (no app-code changes)
+      `markdown.Renderer` interface (no app-code changes)
 - [ ] Theme gallery + palette-derivation helper (base palette → roles)
 - [ ] Second tool built on gotui (validates the family-of-tools goal)
 - [ ] API review and freeze toward a tagged v1; track bubbletea v2 / lipgloss v2
@@ -115,7 +117,8 @@ verified without a human looking at the screen.
 
 ## Standing rules (all phases)
 
-- Every component ships with: golden tests, a runnable example, an AGENTS.md recipe.
+- Every component ships with: golden tests, coverage in a runnable example
+  app, and an AGENTS.md recipe.
 - Colors only ever come from `gotui.Theme` roles — never literals in components
   or examples.
 - Public API stays string/lipgloss-based; ultraviolet types appear only in

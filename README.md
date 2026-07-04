@@ -8,7 +8,9 @@ beautiful, consistent terminal frontends. Designed **agent-authored first**:
 the API, conventions, and verification loop are optimized so coding agents can
 reliably write TUIs with it.
 
-**Status: pre-alpha, Phase 0 (foundation).** APIs will change freely.
+**Status: pre-v1.** Phases 0–3 are complete — foundation, proven conventions,
+the core primitive set, and the agentic domain layer. APIs still change freely
+until v1 (Phase 5).
 
 ## What's here
 

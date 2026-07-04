@@ -113,10 +113,16 @@ surface, the cheaper every upgrade. `layout.Rect` aliases `uv.Rectangle`
 
 Pi parity requires streaming markdown (progressive assistant responses, code
 blocks, syntax highlighting) — the hardest rendering problem in the driving
-app. Strategy: ship parity on **glamour** (theme roles mapped into its style
-sheets; re-render the in-progress message per chunk with completed-block
-caching) but **behind our own `MarkdownView` interface**, so a purpose-built
-incremental renderer can replace it later without touching app code.
+app. Strategy: ship parity on **glamour**, but **behind our own interface**,
+so a purpose-built incremental renderer can replace it later without touching
+app code.
+
+*Implemented (Phase 3)* as `markdown.Renderer` in `agentic/markdown`:
+glamour v2 with all theme roles mapped into its stylesheet (including chroma
+syntax-highlighting colors), a renderer cached per wrap width, and streaming
+handled by re-rendering the in-progress message — the chat assistant cell
+caches by (source length, width) so only real changes re-render. `Sprint`
+degrades to raw source on error; transcripts must not fail on bad markdown.
 
 ### D8 — Agentic components live in the library
 
@@ -134,10 +140,13 @@ JSON-RPC) live in app repos**, keeping gotui agent-tool-agnostic.
 components are string-rendering with explicit sizes and can therefore be
 rendered **deterministically** — no pty, no event loop, no timing flake:
 
-- Plain-text golden (ANSI stripped): layout/content, perfectly legible in a
-  git diff — the feedback format agents thrive on.
-- Styled golden (raw ANSI now; UV `Buffer` cell-grid dump in Phase 1 for
-  assertions like "selected row uses `Accent`").
+- `Snap`: plain-text golden (ANSI stripped) — layout/content, perfectly
+  legible in a git diff, the feedback format agents thrive on.
+- `SnapCells` (since Phase 1): the rendered view parsed into a UV cell grid
+  and dumped as role-labeled style runs, e.g.
+  `" gotui " [fg=TextInverted bg=Accent bold]` — the artifact for asserting
+  *which role* styles what. `WithRoles(theme)` maps colors back to role names.
+- `SnapStyled`: raw-ANSI golden for byte-exact styling regressions.
 - `-update` flag regenerates; failures print readable line diffs.
 - Doubles as the library's own regression suite.
 
@@ -155,9 +164,10 @@ of that gap.
 For a library whose primary consumer is an agent, the conventions doc **is the
 product's user interface**. AGENTS.md stays thin (~200 lines): explicit rules
 ("colors come from theme roles, never literals", "size from layout rects",
-"reassign model, collect cmds") plus pointers into one runnable example per
-component. Drift is neutralized by making examples real packages that compile
-and snapshot-test in CI — API changes that stale the docs break the build.
+"reassign model, collect cmds") plus pointers into the runnable example apps
+(`examples/statusbar`, `examples/demo`, `examples/chat`). Drift is
+neutralized by making examples real packages that compile and snapshot-test
+in CI — API changes that stale the docs break the build.
 
 ### D11 — Driving app: Pi TUI
 
@@ -180,18 +190,28 @@ a way to catch violations (D9→D10). Each choice load-bears for the others.
 
 ```
 github.com/ishansain/gotui
-├── gotui            (root) Theme roles, Dark/Light defaults, shared conventions
+├── gotui            (root) Theme roles, Dark/Light defaults
 ├── layout/          facade over ultraviolet/layout: Rect, constraints,
 │                    Vertical/Horizontal, Sizable, Apply
-├── snaptest/        snapshot test harness (golden files, -update, diffs)
-├── <component>/     one package per generic primitive (statusbar, list,
-│                    textinput, viewport, spinner, table, dialog, help, …)
+├── snaptest/        snapshot test harness (Snap, SnapCells, SnapStyled, -update)
+├── statusbar/  list/  viewport/  textinput/  table/  help/  spinner/
+│                    generic primitives, one package each
+├── dialog/          modal confirm box (ResultMsg pattern)
+├── overlay/         cell-space compositing — Place/Center (UV internal)
+├── focus/           copy-safe (index-only) tab-order manager
 ├── agentic/
-│   └── <component>/ domain components (chat, markdown, toolcall, diffview,
-│                    permission, usagebar)
+│   ├── markdown/    Renderer interface + glamour v2 implementation
+│   ├── chat/        cell-based streaming transcript (User/Assistant/Text cells)
+│   ├── toolcall/    status-aware collapsible tool-call block (chat cell)
+│   ├── diffview/    styled unified diffs (Sprint inline + scrollable Model)
+│   ├── permission/  numbered permission prompt (ResultMsg pattern)
+│   └── usagebar/    model/tokens/cost/context bar
 ├── examples/
-│   └── <component>/ one runnable example per component, compiled in CI
-├── AGENTS.md        the agent-facing rulebook (kept ~200 lines)
+│   ├── statusbar/   canonical single-component wiring
+│   ├── demo/        multi-pane app (Phase 2 exit criterion), golden-tested
+│   └── chat/        mock agentic session (Phase 3 exit criterion), golden-tested
+├── .github/workflows/ci.yml   build + vet + test + tidy check
+├── AGENTS.md        the agent-facing rulebook
 ├── DESIGN.md        this document
 └── PLAN.md          phased roadmap
 ```
@@ -212,12 +232,23 @@ Every gotui component:
 4. Derives every style from theme roles at construction/update time — no
    color literals anywhere.
 5. Exposes focus as `Focus()`/`Blur()` where interactive.
-6. Ships with golden tests (snaptest), a runnable example, and an AGENTS.md
-   recipe entry.
+6. Ships with golden tests (snaptest), coverage in a runnable example app,
+   and an AGENTS.md recipe entry.
 
 The root app model composes components, splits its area with `gotui/layout`
 on `tea.WindowSizeMsg`, delegates messages, and wraps the final composed
 string in `tea.NewView` — standard bubbletea v2, nothing hidden.
+
+Documented exceptions to rule 3: `spinner` is intrinsic-size (a single
+glyph; `SetSize` exists for the interface and is ignored), and the modal
+panels (`dialog`, `permission`) treat their box as an outer bound, rendering
+at natural content height.
+
+**Chat cells are a second, smaller contract** (`agentic/chat.Cell`):
+`Render(width int) string`. Cells are *pointers* the app keeps and mutates
+as a session progresses (streaming deltas, tool status); the transcript
+re-renders them on `Append`/`SetSize`/`Invalidate`. Cells are content, not
+components — no `Update`, no focus. Anything can adapt in via `CellFunc`.
 
 ## 5. Theme roles
 
@@ -238,11 +269,14 @@ theme API from growing per-component.
 
 ## 6. Dependency policy
 
-- `charm.land/bubbletea/v2`, `charm.land/lipgloss/v2` — beta; pinned,
-  upgraded deliberately.
-- `github.com/charmbracelet/ultraviolet` — v0, pseudo-versioned; expect churn;
-  confined to `gotui/layout` internals and (later) compositing internals.
-- `glamour` — arrives in Phase 3, already fenced behind `MarkdownView`.
+- `charm.land/bubbletea/v2` (v2.0.8), `charm.land/lipgloss/v2` (v2.0.5) —
+  beta; pinned, upgraded deliberately. Note: charm's v2 modules live on
+  `charm.land` vanity paths.
+- `github.com/charmbracelet/ultraviolet` — v0, pseudo-versioned; expect
+  churn; confined to `layout` (geometry), `overlay` (compositing), and
+  `snaptest` (cell-grid parsing). Nothing else imports it.
+- `charm.land/glamour/v2` (v2.0.1) — fenced behind `markdown.Renderer`;
+  only `agentic/markdown` imports it.
 - No dependency on `x/exp/teatest` in the core verification loop.
 
 ## 7. Open questions
@@ -250,8 +284,8 @@ theme API from growing per-component.
 - **Module path / publication:** currently `github.com/ishansain/gotui`,
   private-by-circumstance. License (MIT recommended) and publication decision
   before any external consumer.
-- **Text editing depth:** how much of textarea (multi-line editing, kill ring,
-  IME) Phase 2 takes on vs defers.
+- **Text editing depth:** `textarea` (multi-line editing, kill ring, IME) was
+  deferred out of Phase 2; scope it when Pi TUI parity (Phase 4) demands it.
 - **Streaming markdown renderer design** (Phase 5): incremental block parser
   vs full-document reparse with damage hints — decide when glamour's limits
   are measured, not guessed.
