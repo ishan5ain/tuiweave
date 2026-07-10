@@ -18,6 +18,7 @@ and example before reading the detailed recipes below.
 - Navigation: `github.com/ishansain/gotui/tabs` (focusable sibling-view tabs)
 - Actions: `github.com/ishansain/gotui/menu` (focusable action choices)
 - Toolbars: `github.com/ishansain/gotui/toolbar` (horizontal action strips)
+- Split panes: `github.com/ishansain/gotui/splitpane` (width-aware view composition)
 - Testing: `github.com/ishansain/gotui/snaptest` (golden files)
 - Domain packages: `gotui/agentic/…` (markdown, chat, toolcall, diffview,
   permission, usagebar) — optional, backend-agnostic layers built on the
@@ -295,6 +296,27 @@ case toolbar.SelectedMsg:
   disabled semantic actions for inspection.
 - The toolbar is one row of action chrome. It does not own a command's
   side-effects or the content that the action changes.
+
+### splitpane
+
+Use `splitpane.Horizontal` when two sibling views need a shared width split,
+natural-height alignment, and a themed divider. The callbacks receive their
+assigned widths; the app still owns component state and message routing.
+Full wiring is in [examples/frame](examples/frame/main.go).
+
+```go
+view := splitpane.Horizontal(theme, area.Dx(), splitpane.Options{Gap: 1},
+    func(width int) string { return leftView(width) },
+    func(width int) string { return rightView(width) },
+)
+```
+
+- `Ratio` controls the left pane percentage (default 50); `Gap: 0` means a
+  one-cell divider, while a negative gap removes the divider.
+- The helper aligns both views to the taller natural height and returns an
+  exact-width composition. Widths too narrow for both panes render empty.
+- Use the callbacks to render width-aware content; do not measure the terminal
+  inside a component or hide application routing inside the helper.
 
 ### statusbar
 

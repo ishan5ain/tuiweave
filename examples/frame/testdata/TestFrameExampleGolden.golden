@@ -1,14 +1,14 @@
  OPS  service overview
 ▸Overview   Activity   Settings
-╭ Actions ───────────────────────╮ ╭ Services ─────────────────────╮
-│                                │ │                               │
-│ ▸ Open workspace               │ │ api         healthy           │
-│   Refresh data                 │ │ worker      busy              │
-│   Delete workspace             │ │ ▸Refresh   Export   Delete    │
-│   Quit                         │ │                               │
-│                                │ ╰───────────────────────────────╯
-│                                │
-│                                │
-╰────────────────────────────────╯
+╭ Actions ───────────────────────╮│╭ Services ─────────────────────╮
+│                                │││                               │
+│ ▸ Open workspace               │││ api         healthy           │
+│   Refresh data                 │││ worker      busy              │
+│   Delete workspace             │││ ▸Refresh   Export   Delete    │
+│   Quit                         │││                               │
+│                                ││╰───────────────────────────────╯
+│                                ││
+│                                ││
+╰────────────────────────────────╯│
 ───────────────────────────────────────────────────────────────────
 q quit

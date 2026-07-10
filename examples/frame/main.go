@@ -19,6 +19,7 @@ import (
 	"github.com/ishansain/gotui/frame"
 	"github.com/ishansain/gotui/layout"
 	"github.com/ishansain/gotui/menu"
+	"github.com/ishansain/gotui/splitpane"
 	"github.com/ishansain/gotui/tabs"
 	"github.com/ishansain/gotui/toolbar"
 )
@@ -159,7 +160,11 @@ func (m model) render() string {
 		Foreground(m.theme.TextMuted).
 		Render(frame.Divider(m.theme, footer.Dx()-1) + " q quit")
 
-	return lipgloss.JoinVertical(lipgloss.Left, headerView, lipgloss.JoinHorizontal(lipgloss.Top, jobsView, " ", servicesView), footerView)
+	bodyView := splitpane.Horizontal(m.theme, body.Dx(), splitpane.Options{Gap: 1},
+		func(int) string { return jobsView },
+		func(int) string { return servicesView },
+	)
+	return lipgloss.JoinVertical(lipgloss.Left, headerView, bodyView, footerView)
 }
 
 func (m model) View() tea.View {

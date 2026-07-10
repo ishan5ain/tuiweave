@@ -1,0 +1,2 @@
+1: "left pane         " | "│" [fg=BorderMuted] | "right pane"
+2: "second line       " | "│" [fg=BorderMuted]

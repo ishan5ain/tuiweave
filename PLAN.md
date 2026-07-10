@@ -201,7 +201,11 @@ and useful in at least two unrelated application types.
       horizontal action strip with disabled-item skipping, activation
       commands, stable IDs, inspection/actions, narrow-width behavior, and
       scenario goldens; `examples/frame` demonstrates it in a panel.
-- [ ] Structural components: split panes and stacked
+- [x] **Split panes (initial slice)**: `gotui/splitpane.Horizontal` provides
+      width-aware callback composition, configurable left/right ratio,
+      natural-height alignment, themed dividers, and narrow-width handling;
+      `examples/frame` uses it for the dashboard body.
+- [ ] Structural components: stacked
       headers/footers
 - [ ] Common controls: toggles, buttons, progress indicators, selectable
       actions, and command-palette foundations

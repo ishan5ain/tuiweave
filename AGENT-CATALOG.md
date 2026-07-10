@@ -13,6 +13,7 @@ rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
 | Navigate sibling views | `tabs`; switch app-owned content from `SelectedID()` |
 | Choose or activate an action | `menu`; handle `menu.SelectedMsg` in the app |
 | Add a horizontal action strip | `toolbar`; handle `toolbar.SelectedMsg` in the app |
+| Compose two sibling panes | `splitpane.Horizontal`; callbacks receive pane widths |
 | Split panes or rows | `layout.Vertical` / `layout.Horizontal` + `SetSize` |
 | Show selectable records | `list` or `table`; add `scrollbar.For` |
 | Show long content | `viewport`; forward mouse wheels; add `scrollbar.For` |
@@ -56,6 +57,7 @@ rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
 | `tabs` | Navigating sibling views | `SetTabs`, `Focus`, `SelectedID`; left/right while focused |
 | `menu` | Choosing application-owned actions | `SetItems`, `Focus`, `SelectedMsg`; disabled entries are skipped |
 | `toolbar` | Rendering horizontal actions | `SetItems`, `Focus`, `SelectedMsg`; selected action stays visible when narrow |
+| `splitpane` | Composing two width-aware views | `Horizontal(theme, width, Options, left, right)`; natural-height alignment |
 
 ### Agentic domain components
 
@@ -150,6 +152,8 @@ that behavior is part of the scenario.
   `menu.SelectedMsg` asynchronously.
 - Treating a toolbar as the command implementation; `toolbar.SelectedMsg` is
   only an app-owned activation signal.
+- Reimplementing pane width arithmetic and height padding at every call site;
+  use `splitpane.Horizontal` for the shared composition pattern.
 - Splicing one pair of side borders around a multiline string; use
   `frame.Panel`, which frames every rendered line.
 - Mutating a chat cell without calling `transcript.Invalidate()`.
