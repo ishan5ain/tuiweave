@@ -3,6 +3,7 @@ package tabs
 import (
 	"strconv"
 
+	"github.com/ishansain/gotui/action"
 	"github.com/ishansain/gotui/inspect"
 )
 
@@ -21,7 +22,7 @@ func (m Model) Actions() []inspect.Action {
 			continue
 		}
 		actions = append(actions, inspect.Action{
-			ID:          ActionSelectPrefix + tab.ID,
+			ID:          action.SelectID(tab.ID),
 			Label:       "Select " + tab.Label,
 			Description: "Select this tab",
 			Enabled:     true,

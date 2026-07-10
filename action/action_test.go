@@ -25,3 +25,18 @@ func TestItemHelpers(t *testing.T) {
 		t.Fatal("Find() found a missing action")
 	}
 }
+
+func TestSelectionActionIDs(t *testing.T) {
+	if got := action.SelectID("open"); got != "select.open" {
+		t.Fatalf("SelectID() = %q, want select.open", got)
+	}
+
+	if got, ok := action.ParseSelectID("select.open"); !ok || got != "open" {
+		t.Fatalf("ParseSelectID() = %q, %v; want open, true", got, ok)
+	}
+	for _, id := range []string{"activate", "select."} {
+		if got, ok := action.ParseSelectID(id); ok || got != "" {
+			t.Fatalf("ParseSelectID(%q) = %q, %v; want empty, false", id, got, ok)
+		}
+	}
+}

@@ -11,6 +11,7 @@ import (
 	"github.com/charmbracelet/x/ansi"
 
 	"github.com/ishansain/gotui"
+	"github.com/ishansain/gotui/action"
 	"github.com/ishansain/gotui/inspect"
 )
 
@@ -29,7 +30,7 @@ const (
 	ActionLast = "last"
 	// ActionSelectPrefix prefixes stable tab-selection actions. For example,
 	// a tab with ID "logs" exposes the local action "select.logs".
-	ActionSelectPrefix = "select."
+	ActionSelectPrefix = action.SelectPrefix
 )
 
 // Tab is one navigable tab. ID should be stable across updates when the
@@ -273,11 +274,11 @@ func (m *Model) scrollIntoView() {
 }
 
 func (m Model) applyAction(msg tea.Msg) (Model, bool) {
-	action, ok := msg.(inspect.ActionMsg)
+	event, ok := msg.(inspect.ActionMsg)
 	if !ok {
 		return m, false
 	}
-	switch action.ID {
+	switch event.ID {
 	case ActionFocus:
 		m.Focus()
 	case ActionBlur:
@@ -291,10 +292,10 @@ func (m Model) applyAction(msg tea.Msg) (Model, bool) {
 	case ActionLast:
 		m.Select(len(m.tabs) - 1)
 	default:
-		if !strings.HasPrefix(action.ID, ActionSelectPrefix) {
+		id, ok := action.ParseSelectID(event.ID)
+		if !ok {
 			return m, false
 		}
-		id := strings.TrimPrefix(action.ID, ActionSelectPrefix)
 		for i, tab := range m.tabs {
 			if tab.ID == id {
 				m.Select(i)

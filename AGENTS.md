@@ -257,6 +257,9 @@ in more than one selectable surface. Keep IDs stable; `Disabled` is shared by
 menus, toolbars, and palettes, while each component retains its own renderer,
 focus behavior, and `SelectedMsg` type.
 
+Use `action.SelectID(id)` and `action.ParseSelectID(id)` when exposing or
+handling semantic `select.<id>` actions; tabs use the same protocol.
+
 ```go
 commands := []action.Item{
     {ID: "open", Label: "Open workspace"},

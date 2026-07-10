@@ -229,8 +229,10 @@ and useful in at least two unrelated application types.
 - [x] **Shared selectable-action contract (initial refinement)**:
       `gotui/action.Item` defines stable IDs, labels, descriptions, and
       disabled state once; menu, toolbar, and palette alias that definition
-      while retaining distinct renderers and message types. `examples/ops`
-      derives its menu and palette entries from one action set.
+      while retaining distinct renderers and message types. Its
+      `SelectID`/`ParseSelectID` helpers also centralize the semantic
+      `select.<id>` protocol used by tabs and the action surfaces.
+      `examples/ops` derives its menu and palette entries from one action set.
 - [ ] Common controls: selectable-action refinements beyond the shared
       definition contract; preserve distinct renderers and activation messages
       while looking for recurring behavior worth extracting.

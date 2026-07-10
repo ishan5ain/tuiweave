@@ -2,6 +2,11 @@
 // selectable components such as menu, toolbar, and palette.
 package action
 
+import "strings"
+
+// SelectPrefix prefixes semantic actions that select an item by stable ID.
+const SelectPrefix = "select."
+
 // Item is one selectable application action. ID should remain stable across
 // updates so semantic clients and application handlers can identify it.
 // Disabled items remain visible but cannot be selected or activated.
@@ -10,6 +15,19 @@ type Item struct {
 	Label       string
 	Description string
 	Disabled    bool
+}
+
+// SelectID returns the semantic action ID for selecting an item by stable ID.
+func SelectID(id string) string { return SelectPrefix + id }
+
+// ParseSelectID extracts a stable item ID from a semantic selection action.
+// It returns false for unrelated actions and for an empty item ID.
+func ParseSelectID(id string) (string, bool) {
+	if !strings.HasPrefix(id, SelectPrefix) {
+		return "", false
+	}
+	itemID := strings.TrimPrefix(id, SelectPrefix)
+	return itemID, itemID != ""
 }
 
 // Enabled reports whether the action can be selected or activated.

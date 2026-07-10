@@ -34,7 +34,7 @@ const (
 	// ActionActivate activates the selected action.
 	ActionActivate = "activate"
 	// ActionSelectPrefix prefixes stable action-selection IDs.
-	ActionSelectPrefix = "select."
+	ActionSelectPrefix = action.SelectPrefix
 )
 
 // Item is the shared action.Item definition rendered by the palette. The
@@ -460,11 +460,11 @@ func (m *Model) applyFilter(keepIndex int, keepID string) {
 }
 
 func (m Model) applyAction(msg tea.Msg) (Model, tea.Cmd, bool) {
-	action, ok := msg.(inspect.ActionMsg)
+	event, ok := msg.(inspect.ActionMsg)
 	if !ok {
 		return m, nil, false
 	}
-	switch action.ID {
+	switch event.ID {
 	case ActionFocus:
 		m.Focus()
 	case ActionBlur:
@@ -482,10 +482,10 @@ func (m Model) applyAction(msg tea.Msg) (Model, tea.Cmd, bool) {
 	case ActionActivate:
 		return m, m.Activate(), true
 	default:
-		if !strings.HasPrefix(action.ID, ActionSelectPrefix) {
+		id, ok := action.ParseSelectID(event.ID)
+		if !ok {
 			return m, nil, false
 		}
-		id := strings.TrimPrefix(action.ID, ActionSelectPrefix)
 		for _, item := range m.items {
 			if item.ID == id && !item.Disabled {
 				m.SelectID(id)

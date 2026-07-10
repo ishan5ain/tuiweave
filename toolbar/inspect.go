@@ -25,7 +25,7 @@ func (m Model) Actions() []inspect.Action {
 			continue
 		}
 		actions = append(actions, inspect.Action{
-			ID:          ActionSelectPrefix + item.ID,
+			ID:          action.SelectID(item.ID),
 			Label:       "Select " + item.Label,
 			Description: item.Description,
 			Enabled:     !item.Disabled,
