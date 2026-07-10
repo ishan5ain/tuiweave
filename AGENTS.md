@@ -124,6 +124,21 @@ Snapshot states, not just defaults: focused/blurred, empty/full, truncation
 at small sizes. The plain `.golden` file is the artifact to read when judging
 whether output is correct.
 
+For interaction behavior, use named scenario checkpoints alongside focused
+view goldens:
+
+```go
+result := snaptest.RunScenario(m,
+    snaptest.ScenarioStep{Name: "focus input", Msg: tea.KeyPressMsg{Code: tea.KeyTab}},
+    snaptest.ScenarioStep{Name: "submit", Msg: tea.KeyPressMsg{Code: tea.KeyEnter}},
+)
+snaptest.SnapScenario(t, result)
+```
+
+`RunScenario` delivers explicit messages and records whether each update emits
+a command; it does not execute commands. Execute timers or I/O explicitly in
+the test when their behavior is part of the scenario.
+
 Two gotchas in hand-written assertions:
 
 - Strip ANSI before `strings.Contains` — renderers style words as separate

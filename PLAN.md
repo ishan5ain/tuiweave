@@ -24,9 +24,10 @@ be completed before broadening the composition catalog too far.
 - [ ] **Clarify bounded versus intrinsic components** in the public contract;
       make dialog, permission, and spinner sizing behavior consistent and
       explicit.
-- [ ] **Interaction scenarios**: step a model through messages, collect emitted
-      commands and state transitions, and snapshot readable checkpoints beside
-      the rendered view.
+- [x] **Interaction scenarios (initial slice)**: step a model through explicit named messages,
+      capture initial and post-message views, record command emission, and
+      snapshot readable checkpoints. Do not execute opaque commands implicitly;
+      applications own deterministic command policies.
 - [ ] **Semantic inspection**: define an optional inspectable representation
       for stable IDs, bounds, focus, selection, scroll state, visible labels,
       lifecycle state, and children.

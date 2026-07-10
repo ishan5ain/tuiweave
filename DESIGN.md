@@ -271,6 +271,14 @@ component tree or application event loop. MCP, JSON-RPC, or a particular coding
 agent can adapt to them at the application boundary. Core gotui should expose
 the vocabulary without owning the transport or backend protocol.
 
+The first scenario implementation deliberately stays smaller than the full
+operability layer. `snaptest.RunScenario` accepts explicit, named messages,
+captures the initial and post-message `tea.View.Content`, and records whether
+each update emitted a command. It does not execute commands implicitly: timers,
+I/O, batching, and command-to-message policies belong in the application test
+where they can be made deterministic. This gives the library a useful replay
+boundary without pretending that an opaque `tea.Cmd` has a stable identity.
+
 ---
 
 ## 2. How the decisions interlock

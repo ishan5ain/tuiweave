@@ -10,6 +10,8 @@
 //     whether a change is correct.
 //   - <name>.styled.golden — the raw view, escape codes included (written by
 //     SnapStyled only). Guards styling regressions byte-for-byte.
+//   - <name>.scenario.golden — named interaction checkpoints with plain views
+//     and command-emission status (written by SnapScenario).
 //
 // Typical usage:
 //

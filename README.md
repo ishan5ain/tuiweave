@@ -32,7 +32,7 @@ backend protocols, and session lifecycle.
 |---|---|
 | `gotui` (root) | Semantic theme roles (`Theme`), `Dark()`/`Light()` defaults |
 | `gotui/layout` | Flexbox-like layout: constraints → rectangles → component sizes |
-| `gotui/snaptest` | Snapshot test harness: plain-text, raw-ANSI, and role-labeled cell-grid goldens |
+| `gotui/snaptest` | Snapshot test harness: plain-text, raw-ANSI, role-labeled cell-grid, and interaction-scenario goldens |
 | `gotui/statusbar` | One-line status bar with themed left/right segments |
 | `gotui/list` | Scrolling list with selection cursor and filtering (original-index selection) |
 | `gotui/viewport` | Scrollable window over pre-rendered content (keys + mouse wheel) |

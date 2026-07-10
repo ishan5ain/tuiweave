@@ -75,3 +75,37 @@ func TestDemoAddItemViaEnter(t *testing.T) {
 		t.Fatalf("input not cleared after enter: %q", got)
 	}
 }
+
+func TestDemoInteractionScenarioGolden(t *testing.T) {
+	result := snaptest.RunScenario(sized(t),
+		snaptest.ScenarioStep{
+			Name: "focus viewport",
+			Msg:  tea.KeyPressMsg{Code: tea.KeyTab},
+		},
+		snaptest.ScenarioStep{
+			Name: "focus input",
+			Msg:  tea.KeyPressMsg{Code: tea.KeyTab},
+		},
+		snaptest.ScenarioStep{
+			Name: "type x",
+			Msg:  tea.KeyPressMsg{Code: 'x', Text: "x"},
+		},
+		snaptest.ScenarioStep{
+			Name: "open quit dialog",
+			Msg:  tea.KeyPressMsg{Code: 'd', Mod: tea.ModCtrl},
+		},
+		snaptest.ScenarioStep{
+			Name: "request cancel",
+			Msg:  tea.KeyPressMsg{Code: tea.KeyEscape},
+		},
+	)
+
+	final, ok := result.Model.(model)
+	if !ok {
+		t.Fatalf("scenario returned %T, want model", result.Model)
+	}
+	if !final.showDialog {
+		t.Fatal("scenario did not leave the dialog open while its result command is pending")
+	}
+	snaptest.SnapScenario(t, result)
+}

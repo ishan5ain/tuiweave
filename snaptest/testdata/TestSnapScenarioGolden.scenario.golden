@@ -1,0 +1,11 @@
+## initial
+command: no
+ready
+
+## type x
+command: no
+x
+
+## submit
+command: yes
+enter
