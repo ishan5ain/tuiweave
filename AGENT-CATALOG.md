@@ -42,7 +42,7 @@ rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
 | `layout` | Converting window space to component boxes | `layout.Vertical(...).Apply(area, &components...)`; `SizeModeOf` for sizing exceptions |
 | `snaptest` | Verifying rendering or interactions | `Snap`, `SnapCells`, `RunScenario`, `SnapScenario` |
 | `inspect` | Describing UI semantics for tests/tools/agents | `Inspect()`, `Bind`, `BindAt`, `Group`, `Marshal` |
-| `focus` | Managing tab order across copied MVU models | `focus.NewManager(n)` + `Apply` after every focus change |
+| `focus` | Managing tab order and modal scopes across copied MVU models | `NewManager(n)` or `NewScope(n)`; apply fresh addresses after changes |
 | `overlay` | Compositing a modal or popover | `overlay.Center(base, over)` or `Place` |
 | `scrollbar` | Adding a standalone scroll indicator | `scrollbar.For(theme, component)` in a 1-cell layout segment |
 | `frame` | Composing reusable decoration around app-owned strings | `Panel(theme, content, width, PanelOptions{...})`; natural height, exact width |

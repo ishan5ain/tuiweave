@@ -54,6 +54,9 @@ func TestOpsCommandPaletteGolden(t *testing.T) {
 func TestOpsCommandPaletteActivation(t *testing.T) {
 	m := sized(t)
 	m, _ = update(t, m, tea.KeyPressMsg{Code: 'p', Mod: tea.ModCtrl})
+	if !m.paletteScope.Active() || !m.commands.Focused() || m.tabs.Focused() {
+		t.Fatalf("palette scope: active=%v palette=%v tabs=%v", m.paletteScope.Active(), m.commands.Focused(), m.tabs.Focused())
+	}
 	for _, r := range "restart" {
 		m, _ = update(t, m, tea.KeyPressMsg{Code: r, Text: string(r)})
 	}
@@ -74,6 +77,9 @@ func TestOpsCommandPaletteActivation(t *testing.T) {
 	m = next.(model)
 	if m.showPalette || m.notice != "ran Restart service" {
 		t.Fatalf("palette result: open=%v notice=%q", m.showPalette, m.notice)
+	}
+	if m.paletteScope.Active() || !m.tabs.Focused() || m.commands.Focused() {
+		t.Fatalf("restored focus: active=%v tabs=%v palette=%v", m.paletteScope.Active(), m.tabs.Focused(), m.commands.Focused())
 	}
 }
 

@@ -19,7 +19,7 @@
         "height": 1
       },
       "label": "Services",
-      "focused": true,
+      "focused": false,
       "selected": {
         "index": 0,
         "count": 3,
@@ -29,12 +29,12 @@
         {
           "id": "tabs.focus",
           "label": "Focus tabs",
-          "enabled": false
+          "enabled": true
         },
         {
           "id": "tabs.blur",
           "label": "Blur tabs",
-          "enabled": true
+          "enabled": false
         },
         {
           "id": "tabs.next",

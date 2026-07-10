@@ -72,3 +72,59 @@ func TestManagerEmpty(t *testing.T) {
 	fm.Set(3)
 	fm.Apply()
 }
+
+func TestScopeRestoresParentAndIsolatesBackground(t *testing.T) {
+	background := []*fake{{}, {}, {}}
+	modal := []*fake{{}, {}}
+	parent := NewManager(len(background))
+	parent.Set(1)
+	parent.Apply(toFocusables(background)...)
+	scope := NewScope(len(modal))
+
+	scope.Enter(parent)
+	scope.ApplyBackground(parent, toFocusables(background)...)
+	scope.Apply(toFocusables(modal)...)
+	if !scope.Active() || scope.Index() != 0 {
+		t.Fatalf("active scope=%v index=%d, want active index 0", scope.Active(), scope.Index())
+	}
+	for i, item := range background {
+		if item.focused {
+			t.Fatalf("background item %d retained focus while scope active", i)
+		}
+	}
+	exactlyOneFocused(t, modal, 0)
+
+	scope.Next()
+	scope.Apply(toFocusables(modal)...)
+	exactlyOneFocused(t, modal, 1)
+	scope.Exit(&parent)
+	scope.ApplyBackground(parent, toFocusables(background)...)
+	scope.Apply(toFocusables(modal)...)
+	if scope.Active() || parent.Index() != 1 {
+		t.Fatalf("after exit active=%v parent index=%d, want inactive index 1", scope.Active(), parent.Index())
+	}
+	exactlyOneFocused(t, background, 1)
+	for i, item := range modal {
+		if item.focused {
+			t.Fatalf("modal item %d retained focus after scope exit", i)
+		}
+	}
+}
+
+func TestScopeSurvivesValueCopies(t *testing.T) {
+	scope := NewScope(2)
+	scope.Enter(NewManager(1))
+	scope.Next()
+	copy := scope
+	a, b := &fake{}, &fake{}
+	copy.Apply(a, b)
+	exactlyOneFocused(t, []*fake{a, b}, 1)
+}
+
+func toFocusables(items []*fake) []Focusable {
+	result := make([]Focusable, len(items))
+	for i, item := range items {
+		result[i] = item
+	}
+	return result
+}

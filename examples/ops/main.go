@@ -46,25 +46,27 @@ type model struct {
 	commands    palette.Model
 	status      statusbar.Model
 
-	fm          focus.Manager
-	showPalette bool
-	notice      string
+	fm           focus.Manager
+	paletteScope focus.Scope
+	showPalette  bool
+	notice       string
 }
 
 func newModel() model {
 	theme := gotui.Dark()
 	m := model{
-		theme:       theme,
-		tabs:        tabs.New(theme),
-		actions:     menu.New(theme),
-		rows:        table.New(theme),
-		load:        progress.New(theme),
-		autoRefresh: toggle.New(theme),
-		openLogs:    button.New(theme),
-		commands:    palette.New(theme),
-		status:      statusbar.New(theme),
-		fm:          focus.NewManager(5),
-		notice:      "ready",
+		theme:        theme,
+		tabs:         tabs.New(theme),
+		actions:      menu.New(theme),
+		rows:         table.New(theme),
+		load:         progress.New(theme),
+		autoRefresh:  toggle.New(theme),
+		openLogs:     button.New(theme),
+		commands:     palette.New(theme),
+		status:       statusbar.New(theme),
+		fm:           focus.NewManager(5),
+		paletteScope: focus.NewScope(1),
+		notice:       "ready",
 	}
 	m.tabs.SetTabs(
 		tabs.Tab{ID: "services", Label: "Services"},
@@ -99,7 +101,8 @@ func newModel() model {
 }
 
 func (m *model) applyFocus() {
-	m.fm.Apply(&m.tabs, &m.actions, &m.rows, &m.autoRefresh, &m.openLogs)
+	m.paletteScope.ApplyBackground(m.fm, &m.tabs, &m.actions, &m.rows, &m.autoRefresh, &m.openLogs)
+	m.paletteScope.Apply(&m.commands)
 }
 
 func (m *model) syncRows() {
@@ -167,7 +170,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.layout()
 	case palette.SelectedMsg:
 		m.showPalette = false
-		m.commands.Blur()
+		m.paletteScope.Exit(&m.fm)
+		m.applyFocus()
 		m.notice = "ran " + msg.Label
 	case menu.SelectedMsg:
 		m.notice = "ran " + msg.Label
@@ -187,7 +191,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+p":
 			m.showPalette = true
 			m.commands.SetQuery("")
-			m.commands.Focus()
+			m.paletteScope.Enter(m.fm)
+			m.applyFocus()
 		default:
 			beforeTab := m.tabs.SelectedID()
 			switch msg.String() {

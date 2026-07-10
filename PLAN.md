@@ -215,9 +215,13 @@ and useful in at least two unrelated application types.
       width-aware natural-height sections, optional gaps/dividers, omission of
       empty sections, and deterministic header/body/footer composition;
       `examples/frame` uses it for both the header and root frame.
+- [x] **Scoped focus (initial refinement)**: `focus.Scope` saves and restores
+      the parent index, isolates background components while a conditional or
+      modal group is active, and remains pointer-free/copy-safe; `examples/ops`
+      uses it for the command palette.
 - [ ] Structural components: additional layout patterns driven by reference
-      applications. The ops pressure test exposes a need to evaluate dynamic
-      panel stacks and conditional focus scopes before adding another helper.
+      applications. The ops pressure test still exposes a need to evaluate
+      dynamic panel stacks before adding another helper.
 - [ ] Common controls: selectable actions. Menu, toolbar, and palette now share
       behavior informally; the next refinement should determine whether a
       common action definition/recipe reduces duplication without forcing their

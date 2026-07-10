@@ -588,6 +588,28 @@ case "tab":
     m.fm.Apply(&m.list, &m.view, &m.input) // fresh addresses, every time
 ```
 
+For a modal or conditionally visible group, use `focus.Scope` to save and
+restore the parent index while isolating background components:
+
+```go
+m.paletteScope = focus.NewScope(1)
+m.paletteScope.Enter(m.fm)
+m.paletteScope.ApplyBackground(m.fm, &m.tabs, &m.actions)
+m.paletteScope.Apply(&m.palette)
+// on palette.SelectedMsg:
+m.paletteScope.Exit(&m.fm)
+m.paletteScope.ApplyBackground(m.fm, &m.tabs, &m.actions)
+m.paletteScope.Apply(&m.palette)
+```
+
+- A scope stores only indices and state, never component pointers, so it is
+  safe inside copied MVU models.
+- `ApplyBackground` applies the parent manager while inactive and blurs the
+  background while active. `Apply` focuses scoped components while active and
+  blurs them while inactive.
+- Route all messages to the active scope's components while the scope is open;
+  visibility and modal results remain application-owned.
+
 ### dialog + overlay (modals)
 
 The app owns visibility; the dialog answers via a `ResultMsg` command:
