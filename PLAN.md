@@ -191,10 +191,9 @@ and useful in at least two unrelated application types.
       `frame.PanelContentRect` exposes the border/padding-adjusted inner
       rectangle for bounded children; the frame, ops, and palette examples use
       it instead of duplicating inset arithmetic.
-- [ ] Extend framing utilities where real reference apps need them; avoid
-      adding convenience variants before those composition patterns recur.
-      The ops pressure test currently points to a reusable inner-content
-      rectangle/inset contract before more panel variants are added.
+- [ ] **Deferred framing extensions (demand-driven):** add utilities only when
+      another reference app demonstrates a recurring framing pattern that the
+      existing panel, inset, divider, and layout contracts cannot express.
 - [x] **Structural navigation (initial slice)**: `gotui/tabs` provides
       focus-gated sibling-view navigation, stable IDs, narrow-width handling,
       semantic selection actions, inspection metadata, and scenario goldens;
@@ -223,9 +222,9 @@ and useful in at least two unrelated application types.
       `frame.PanelContentRect` plus `layout.Vertical(Fill/Len...)` to allocate
       a flexible table beside fixed control rows, without a new stack-specific
       sizing abstraction.
-- [ ] Structural components: additional layout patterns driven by reference
-      applications; add another helper only when a distinct recurring pattern
-      cannot be expressed by `layout`, `stack`, or `splitpane`.
+- [ ] **Deferred structural components (demand-driven):** add another helper
+      only when a distinct recurring pattern cannot be expressed by `layout`,
+      `stack`, or `splitpane`.
 - [x] **Shared selectable-action contract (initial refinement)**:
       `gotui/action.Item` defines stable IDs, labels, descriptions, and
       disabled state once; menu, toolbar, and palette alias that definition
@@ -233,9 +232,9 @@ and useful in at least two unrelated application types.
       `SelectID`/`ParseSelectID` helpers also centralize the semantic
       `select.<id>` protocol used by tabs and the action surfaces.
       `examples/ops` derives its menu and palette entries from one action set.
-- [ ] Common controls: selectable-action refinements beyond the shared
-      definition contract; preserve distinct renderers and activation messages
-      while looking for recurring behavior worth extracting.
+- [ ] **Deferred selectable-action refinements (demand-driven):** preserve
+      distinct renderers and activation messages while looking for recurring
+      behavior beyond the shared definition and semantic-ID contracts.
 - [x] **Progress indicator (initial slice)**: `gotui/progress` provides a
       passive exact-width task indicator with label truncation, clamped values,
       semantic status roles, inspection metadata, golden/width tests, and
@@ -266,21 +265,29 @@ and useful in at least two unrelated application types.
       framed panes, focus, scrollbars, inspection, and scenarios around a
       deterministic mock workspace. Its panel-scrollbar golden caught and
       resolved a one-cell composition hazard.
-- [ ] Additional reference example apps beyond ops and browser: a richer
-      dashboard or editor, driven by the concrete gaps found here.
+- [ ] **Deferred reference validation:** add another app only when a richer
+      dashboard or editor is needed to validate a concrete gap beyond ops and
+      browser.
 - [x] **Reference composition recipes (initial)**: `AGENTS.md` documents the
       ops-console and file-browser shapes, their focus/routing/layout contracts,
       scrollbar placement, and the verification checklist.
-- [ ] Recipes and golden coverage for every new composition pattern beyond the
-      initial reference apps
+- [ ] **Ongoing recipe coverage:** extend recipes and golden coverage for new
+      composition patterns beyond the initial reference apps.
 - [x] **Cross-component recipes (initial)**: the reference guidance shows how
       shared action data, framing, layout, focus, scrolling, inspection, and
       scenarios fit together without merging their responsibilities.
-- [ ] Cross-component recipes for additional patterns as new reference apps
-      expose them
+- [ ] **Ongoing cross-component recipes:** document additional patterns as new
+      reference apps expose them.
 - [x] Use the semantic inspection, action, and scenario conventions from the
       immediate-priority workstream in the reference composition examples;
       `examples/ops` exposes an assembled inspection tree and scenario golden.
+
+- [x] **Phase 4 exit gate (initial):** `examples/ops` and `examples/browser`
+      demonstrate two unrelated non-agentic compositions built from the
+      shared framing, layout, navigation, selection, focus, inspection, and
+      scenario contracts. An agent can assemble and exercise a multi-view UI
+      without parsing terminal escape sequences or inventing local copies of
+      those behaviors.
 
 **Exit criteria:** an agent can assemble a multi-view non-agentic application
 from gotui without introducing local copies of common framing, navigation, or
