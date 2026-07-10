@@ -638,6 +638,66 @@ if m.showDialog { base = overlay.Center(base, m.dlg.View()) }
 `overlay.Place/Center` composite in cell space — overlays cleanly replace
 what's beneath, styles included. Never splice overlay strings manually.
 
+### reference compositions
+
+The reference apps are deterministic composition recipes, not application
+frameworks. Use them to choose a shape and verify the contracts below before
+adding a new helper.
+
+#### operations console
+
+[examples/ops](examples/ops/main.go) is the action-heavy recipe: tabs across
+the top, a menu beside a fixed-control operations panel, a command-palette
+scope, and a statusbar. Its focus order is tabs → menu → table → toggle →
+button; the palette temporarily owns focus through `focus.Scope`.
+
+- Define one `[]action.Item` slice for actions shared by the menu and palette;
+  keep IDs and disabled state in the application-owned data.
+- Use `frame.PanelContentRect` before sizing bounded children. For a panel with
+  a flexible table and fixed controls, split the inner rect with
+  `layout.Vertical(layout.Fill(1), layout.Len(1), ...)`.
+- Route modal/palette keys first, global keys (`tab`, `shift+tab`, quit, and
+  app commands) second, then delegate to every background component and batch
+  every returned command.
+- Build an app-owned `inspect.Group` containing the tabs, actions, operation
+  table, controls, and conditional palette. Exercise focus, palette activation,
+  and narrow layout with `snaptest.RunScenario` and screen goldens.
+
+#### file browser
+
+[examples/browser](examples/browser/main.go) is the selection-and-preview
+recipe: tabs → filterable file list and scrollable preview → statusbar. It
+uses a deterministic mock workspace so tests cover UI behavior without file
+system or persistence concerns.
+
+- Keep the focus order explicit: tabs → filter input → list → viewport. `/`
+  is an app-level shortcut that moves focus to the filter; `tab` remains the
+  global focus key.
+- When the query changes, call `list.SetFilter(query)` and continue using
+  `list.Selected()` as the original-item index. Sync the preview only when the
+  selected entry changes, and reset its viewport to the top for a new entry.
+- Forward mouse-wheel messages to the viewport regardless of focus. Put a
+  scrollbar in a sibling one-column segment. If that segment sits beside a
+  padded panel, reserve the outer bar column before calling
+  `frame.PanelContentRect`; size the viewport from the panel's content rect and
+  align the bar to the panel's content rows.
+- Verify the normal and narrow screens, an inspection tree, filter/selection,
+  focus traversal, and preview scrolling with readable goldens and named
+  scenario checkpoints.
+
+#### cross-component completion checklist
+
+Before calling a composition complete, confirm that it has:
+
+- one `tea.WindowSizeMsg` layout path using `layout.Rect` and `SetSize`;
+- a documented focus order with fresh `focus.Manager.Apply` addresses;
+- global-key routing separated from component delegation, with no dropped
+  `tea.Cmd` values;
+- stable IDs and an app-owned inspection tree when the UI is agent-operated;
+- at least one narrow rendering golden and one interaction scenario;
+- explicit empty, loading, or unavailable states where the composed view can
+  lack content.
+
 ### chat transcript (agentic apps)
 
 The transcript is a stack of **cells** — pointers you keep and mutate as the

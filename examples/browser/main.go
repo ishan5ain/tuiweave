@@ -267,9 +267,7 @@ func (m *model) layout() {
 	var previewPanel, previewBar layout.Rect
 	layout.Horizontal(layout.Fill(1), layout.Len(1)).Split(right).Assign(&previewPanel, &previewBar)
 	rightContent := frame.PanelContentRect(previewPanel, rightOptions)
-	var previewArea layout.Rect
-	layout.Horizontal(layout.Fill(1), layout.Len(1)).Split(rightContent).Assign(&previewArea, &previewBar)
-	m.preview.SetSize(previewArea.Dx(), previewArea.Dy())
+	m.preview.SetSize(rightContent.Dx(), rightContent.Dy())
 	m.status.SetSize(footer.Dx(), footer.Dy())
 }
 

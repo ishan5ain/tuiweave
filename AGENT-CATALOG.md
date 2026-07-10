@@ -10,6 +10,7 @@ rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
 |---|---|
 | Build an app shell | `layout`, then `focus`, `statusbar`, `help` |
 | Build a file browser | `examples/browser`; compose `textinput`, `list`, `viewport`, `tabs`, and `focus` |
+| Compose a multi-pane reference app | `examples/ops` or `examples/browser`; follow the recipes in `AGENTS.md` |
 | Frame content or add semantic badges | `frame.Panel`, `frame.Divider`, `frame.Badge` |
 | Navigate sibling views | `tabs`; switch app-owned content from `SelectedID()` |
 | Define actions shared across surfaces | `action.Item`; keep IDs and disabled state stable |

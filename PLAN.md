@@ -268,9 +268,16 @@ and useful in at least two unrelated application types.
       resolved a one-cell composition hazard.
 - [ ] Additional reference example apps beyond ops and browser: a richer
       dashboard or editor, driven by the concrete gaps found here.
-- [ ] Recipes and golden coverage for every new composition pattern
-- [ ] Cross-component recipes showing how customization and consistency work
-      together
+- [x] **Reference composition recipes (initial)**: `AGENTS.md` documents the
+      ops-console and file-browser shapes, their focus/routing/layout contracts,
+      scrollbar placement, and the verification checklist.
+- [ ] Recipes and golden coverage for every new composition pattern beyond the
+      initial reference apps
+- [x] **Cross-component recipes (initial)**: the reference guidance shows how
+      shared action data, framing, layout, focus, scrolling, inspection, and
+      scenarios fit together without merging their responsibilities.
+- [ ] Cross-component recipes for additional patterns as new reference apps
+      expose them
 - [x] Use the semantic inspection, action, and scenario conventions from the
       immediate-priority workstream in the reference composition examples;
       `examples/ops` exposes an assembled inspection tree and scenario golden.
