@@ -35,8 +35,10 @@ when the existing vocabulary cannot express the intended behavior cleanly.
    comes from `gotui/layout` (`layout.Rect`); UV is a library-internal detail.
    (Inside the library, exactly three packages touch it: `layout`, `overlay`,
    `snaptest`.)
-3. **Every component sizes itself only via `SetSize(w, h)`** and must render
-   exactly within that box — no measuring the terminal, no guessing.
+3. **Every bounded component sizes itself only via `SetSize(w, h)`** and must
+   render exactly within that box — no measuring the terminal, no guessing.
+   Intrinsic components may render at natural size, but must document that
+   contract and still expose `SetSize` when they satisfy `layout.Sizable`.
 4. **MVU discipline:** always reassign the model returned by `Update` and
    always collect the returned `tea.Cmd`:
    ```go
@@ -91,7 +93,7 @@ type Model struct { /* value type; unexported fields */ }
 
 func New(theme gotui.Theme /*, config... */) Model   // derive styles from roles here
 func (m Model) Update(msg tea.Msg) (Model, tea.Cmd)  // concrete type, not tea.Model
-func (m Model) View() string                         // render within the set box
+func (m Model) View() string                         // bounded or documented intrinsic size
 func (m *Model) SetSize(width, height int)           // layout.Sizable
 func (m *Model) Focus() / Blur()                     // interactive components only
 ```

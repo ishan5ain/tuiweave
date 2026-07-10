@@ -5,12 +5,53 @@ built on bubbletea v2, lipgloss v2, and ultraviolet. The full rationale behind
 every decision below lives in [DESIGN.md](DESIGN.md). This file is the
 execution roadmap.
 
-**North star:** provide a consistent design grammar for terminal interfaces.
-Humans and coding agents should be able to build distinct custom TUIs from
-small, themeable, snapshot-testable components without re-inventing core
-interaction patterns or creating inconsistent local conventions. Agentic tools,
-including a custom Pi coding agent TUI, are demanding consumers and reference
-applications rather than the defining scope.
+**North star:** provide a small, composable Go vocabulary for terminal
+interfaces that makes layout, appearance, interaction, and verification
+predictable for humans and coding agents. Agentic tools, including a custom Pi
+coding agent TUI, are demanding consumers and reference applications rather than
+the defining scope.
+
+---
+
+## Immediate priority — agent-operable foundations
+
+The current library is agent-friendly to author: its contracts, examples, and
+goldens help an agent discover and compose components. The next highest-value
+step is making the resulting UI agent-friendly to inspect, test, and operate.
+This is a narrow capability layer, not a component-tree framework, and should
+be completed before broadening the composition catalog too far.
+
+- [ ] **Clarify bounded versus intrinsic components** in the public contract;
+      make dialog, permission, and spinner sizing behavior consistent and
+      explicit.
+- [ ] **Interaction scenarios**: step a model through messages, collect emitted
+      commands and state transitions, and snapshot readable checkpoints beside
+      the rendered view.
+- [ ] **Semantic inspection**: define an optional inspectable representation
+      for stable IDs, bounds, focus, selection, scroll state, visible labels,
+      lifecycle state, and children.
+- [ ] **Semantic actions**: define stable action IDs independent of key strings,
+      so tests and agents can invoke intent such as `dialog.confirm` or
+      `transcript.scroll_bottom`.
+- [ ] **Agentic session identity**: add stable IDs and update/retry/cancel
+      semantics for streamed chat cells and tool calls without coupling to a
+      backend protocol.
+- [ ] **Permission provenance**: evolve approval data beyond title/body to
+      describe the exact operation, scope, impact, reversibility, and policy
+      context while keeping MCP/JSON-RPC adapters outside the core.
+- [ ] **Agent catalog**: provide a compact, discoverable index of packages,
+      recipes, setup sequences, common mistakes, and canonical examples.
+- [ ] **Streaming invalidation correctness**: use an explicit source revision
+      for assistant cells so replacement content cannot reuse a same-length
+      cached render.
+
+**Exit criteria:** an application can expose a deterministic semantic snapshot
+and action list alongside its human-readable view; an interaction scenario can
+replay a focus, selection, scrolling, and modal flow; and a streamed session
+can update, cancel, and replay content by stable identity.
+
+This work should remain optional at the component boundary. Applications still
+own orchestration, persistence, transport, and policy enforcement.
 
 ---
 
@@ -41,7 +82,7 @@ component production.
       role-labeled style runs, e.g. `" gotui " [fg=TextInverted bg=Accent bold]`)
 - [x] AGENTS.md grows from skeleton to real recipes based on what the statusbar taught
 
-**Exit criteria (met in Phase 2):** an agent can clone the statusbar pattern to
+**Exit criteria (confirmed during Phase 2):** an agent can clone the statusbar pattern to
 produce a second primitive without human correction — the Phase 2 component set
 was produced this way.
 
@@ -91,8 +132,8 @@ in a pty.
 
 ## Phase 3.5 — Deferred primitives *(complete)*
 
-The Phase 2 deferrals, done library-side **before** the Pi app starts so
-Phase 4 begins against a complete component set.
+The Phase 2 deferrals, done library-side **before** the Pi app starts so the
+general-purpose composition work begins against a complete component set.
 
 - [x] **`gotui/scrollbar`**: standalone package —
       `Vertical(theme, height, total, visible, offset)` (track `BorderMuted`,
@@ -125,7 +166,7 @@ paste-with-newlines; every scrolling component wears a scrollbar via one
 interface; a filtered list reports original-index selection under test;
 every public component appears in at least one example app; suite green.
 
-## Phase 4 — General-purpose composition layer *(next)*
+## Phase 4 — General-purpose composition layer *(after agent-operable foundations)*
 
 Expand the library from a strong primitive set into a flexible toolkit for
 composing complete custom interfaces. These additions must remain domain-neutral
@@ -144,10 +185,13 @@ and useful in at least two unrelated application types.
 - [ ] Recipes and golden coverage for every new composition pattern
 - [ ] Cross-component recipes showing how customization and consistency work
       together
+- [ ] Use the semantic inspection, action, and scenario conventions from the
+      immediate-priority workstream in the reference composition examples
 
 **Exit criteria:** an agent can assemble a multi-view non-agentic application
 from gotui without introducing local copies of common framing, navigation, or
-selection behavior.
+selection behavior, then inspect and exercise that application without parsing
+terminal escape sequences.
 
 ## Phase 5 — Editing and interaction depth
 
@@ -160,7 +204,8 @@ daily use.
 - [ ] Autocomplete and command-palette primitives
 - [ ] More explicit mouse interaction conventions where bubbletea supports them
 - [ ] Focus scopes and nested modal/focus routing utilities
-- [ ] Interaction-sequence testing helpers alongside rendering snapshots
+- [ ] Extend interaction scenarios across mouse input, focus scopes, nested
+      modals, cancellation, and narrow-terminal behavior
 - [ ] Audit APIs and recipes for discoverability by a coding agent starting from
       the package list and AGENTS.md
 
@@ -213,6 +258,10 @@ public API is reviewed and documented, and gotui reaches a tagged v1.
   the state.
 - Preserve the design grammar: new components should reuse established sizing,
   focus, selection, scrolling, modal, and narrow-width conventions.
+- Optional inspection and action interfaces must remain framework-free; do not
+  move application routing, persistence, policy, or backend protocols into core.
+- Interactive components should document the semantic state and actions that
+  agents and scenario tests can observe or invoke.
 - Make customization explicit and local; applications should not need to fork
   or duplicate core interaction behavior to achieve a distinct visual design.
 - Colors only ever come from `gotui.Theme` roles — never literals in components

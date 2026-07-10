@@ -10,11 +10,11 @@ and the conventions that follow from them. [PLAN.md](PLAN.md) is the execution
 roadmap; [AGENTS.md](AGENTS.md) is the distilled rulebook agents load when
 writing code with the library.
 
-The north star is a general-purpose toolkit with a consistent terminal design
-grammar: build any interface from small, themeable, snapshot-testable
-components while preserving coherent visual and interaction conventions.
-Agentic UIs are a demanding reference application and an important domain
-layer, but they do not define the core API.
+The north star is a small, composable Go vocabulary for terminal interfaces:
+make layout, appearance, interaction, and verification predictable for humans
+and coding agents. Applications own orchestration and domain state; gotui owns
+reusable primitives and optional domain kits. Agentic UIs are a demanding
+proving ground, but they do not define the core API.
 
 ---
 
@@ -35,6 +35,7 @@ layer, but they do not define the core API.
 | D11 | Driving app | **Applications validate the library** — Pi is the first demanding consumer, not the core boundary |
 | D12 | Generality | **Domain-neutral core, layered domain packages** — reusable interaction patterns stay portable |
 | D13 | Composition quality | **A small design grammar** — consistency comes from shared contracts and patterns, not visual sameness |
+| D14 | Agent operability | **Optional semantic inspection and actions** — make composed UIs understandable and controllable without owning an app framework |
 
 ### D1 — Human- and agent-friendly by design
 
@@ -66,6 +67,12 @@ for agent-friendly code. Known MVU agent failure modes (forgetting to reassign
 the model after `Update`, dropping a `Cmd`, unwired focus) are addressed by
 opt-in glue utilities — a focus manager, layout helpers, delegation helpers —
 plus explicit rules in AGENTS.md, not by hiding the loop.
+
+"Pure MVU" applies to core components. Streaming transcript cells and
+tool-call blocks are a deliberate second contract: mutable content objects
+owned by the application, invalidated by the transcript when their rendered
+content changes. Keeping that distinction explicit avoids treating
+pointer-based streaming as a violation of the core component model.
 
 ### D5 — Role-based theme struct
 
@@ -110,14 +117,18 @@ Key facts that shaped the decision:
   `Flex` strategies. **The layout engine we planned to build already exists.**
 
 Therefore: `gotui/layout` wraps `uv/layout` as the flexbox-like container
-system — geometry only in the public API. UV cell buffers are reserved as a
+system — geometry only in the public API. The current wrapper is intentionally
+thin and uses public type aliases; this keeps call sites simple but means the
+Ultraviolet type identity is not a perfectly sealed compatibility boundary.
+UV cell buffers are reserved as a
 **library-internal** tool for overlay/modal/z-order compositing (Phase 2),
 where lipgloss string-splicing is genuinely bad. The "agents don't know novel
 APIs" argument does not apply internally — agents consuming gotui never see UV.
 
 Since ultraviolet is v0.x and bubbletea v2 is beta, the thinner our direct UV
 surface, the cheaper every upgrade. `layout.Rect` aliases `uv.Rectangle`
-(which is `image.Rectangle`), so consumers depend on our facade, not UV's path.
+(which is `image.Rectangle`). Consumers import `gotui/layout`, but the aliases
+mean Ultraviolet type identity can still affect compatibility during upgrades.
 
 ### D7 — Markdown: glamour now, custom later
 
@@ -127,12 +138,16 @@ app. Strategy: ship parity on **glamour**, but **behind our own interface**,
 so a purpose-built incremental renderer can replace it later without touching
 app code.
 
-*Implemented (Phase 3)* as `markdown.Renderer` in `agentic/markdown`:
+*Implemented in Phase 3* as `markdown.Renderer` in `agentic/markdown`:
 glamour v2 with all theme roles mapped into its stylesheet (including chroma
 syntax-highlighting colors), a renderer cached per wrap width, and streaming
 handled by re-rendering the in-progress message — the chat assistant cell
-caches by (source length, width) so only real changes re-render. `Sprint`
+caches by (source length, width) today; the roadmap replaces that with an
+explicit source revision so replacements cannot reuse a same-length render.
+`Sprint`
 degrades to raw source on error; transcripts must not fail on bad markdown.
+The revision must change for replacements as well as appends; append-only
+streaming is a useful optimization, not a hidden correctness requirement.
 
 ### D8 — Domain packages live above generic primitives
 
@@ -165,16 +180,16 @@ rendered **deterministically** — no pty, no event loop, no timing flake:
 Rejected as the core loop: `x/exp/teatest` — experimental dependency,
 whole-program granularity, ANSI-laden goldens agents can't usefully read.
 (Fine for occasional program-level smoke tests.) Live pty capture (vhs /
-`tmux capture-pane`) is deferred to Phase 4 as a ~50-line script once there is
-a real app to capture — a tool, not a platform. Snapshot limits are accepted
-and documented: it verifies `View`, not `Update` behavior; the harness can
-step a component through a message sequence before snapshotting to close part
-of that gap.
+`tmux capture-pane`) is deferred to a later application-validation phase as a
+small script once there is a real app to capture — a tool, not a platform.
+Snapshot limits are accepted and documented: the current harness verifies
+`View`, not the full `Update` loop. Deterministic interaction scenarios are the
+planned complement for message sequences, commands, and state transitions.
 
 ### D10 — Agent docs: AGENTS.md + CI-compiled examples
 
 For a library whose primary consumer is an agent, the conventions doc **is the
-product's user interface**. AGENTS.md stays thin (~200 lines): explicit rules
+product's user interface**. AGENTS.md stays compact: explicit rules
 ("colors come from theme roles, never literals", "size from layout rects",
 "reassign model, collect cmds") plus pointers into the runnable example apps
 (`examples/statusbar`, `examples/demo`, `examples/chat`). Drift is
@@ -228,6 +243,33 @@ This is how gotui balances customization and consistency:
 
 For a proposed abstraction, ask whether it adds a reusable word to this grammar
 or merely hides application-specific decisions behind a new name.
+
+Agent-friendliness has two sides. The authoring side is covered by package
+names, recipes, examples, and deterministic snapshots. The operating side is
+the next priority: an agent should be able to inspect semantic state, discover
+available actions, and replay an interaction without parsing ANSI output or
+pretending to be a human typing at coordinates.
+
+### D14 — Optional agent operability
+
+Coding agents increasingly do more than generate source: they run applications,
+inspect state, approve or deny operations, and iterate from test or runtime
+feedback. `View() string` is excellent for humans and visual goldens, but it is
+not a stable machine interface.
+
+The next layer should therefore provide optional, framework-free capabilities:
+
+- **Inspection**: stable component IDs, bounds, focus, selection, scroll state,
+  visible labels, lifecycle state, and child relationships.
+- **Actions**: stable action IDs such as `list.next`, `dialog.confirm`, or
+  `transcript.scroll_bottom`, independent of key bindings.
+- **Scenarios**: deterministic message sequences with rendered and semantic
+  checkpoints, emitted commands, and state transitions.
+
+These capabilities should be interfaces or small utility packages, not a
+component tree or application event loop. MCP, JSON-RPC, or a particular coding
+agent can adapt to them at the application boundary. Core gotui should expose
+the vocabulary without owning the transport or backend protocol.
 
 ---
 
@@ -343,6 +385,12 @@ theme API from growing per-component.
   (soft wrap, visual-row movement, line joins, paste). Still open for later:
   undo, kill ring, selections, IME, and wide-rune (CJK) column math — the
   wrap logic currently counts runes, not cells.
-- **Streaming markdown renderer design** (Phase 5): incremental block parser
-  vs full-document reparse with damage hints — decide when glamour's limits
-  are measured, not guessed.
+- **Streaming markdown renderer design:** incremental block parser vs
+  full-document reparse with damage hints — decide when glamour's limits are
+  measured, not guessed.
+- **Inspection and action schema:** choose a small stable representation for
+  semantic state and actions without turning gotui into a framework.
+- **Scenario format:** decide whether interaction goldens are Go-native,
+  JSON-based, or both; they should remain deterministic and readable in diffs.
+- **Agentic session identity:** decide how chat cells and tool calls receive
+  stable IDs and support updates, retries, cancellation, and replay.

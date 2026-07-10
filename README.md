@@ -12,13 +12,15 @@ It is built on [bubbletea v2](https://github.com/charmbracelet/bubbletea),
 loop make the component system easy for both humans and coding agents to
 understand, compose, and evolve.
 
-The north star is a **consistent design grammar for terminal interfaces**:
-build any custom TUI from small, themeable, snapshot-testable components while
-preserving coherent visual and interaction conventions.
+The north star is a **small, composable Go vocabulary for terminal interfaces**:
+make layout, appearance, interaction, and verification predictable for humans
+and coding agents. Applications own orchestration and domain state; gotui owns
+reusable primitives and optional domain kits. Agentic UIs are a demanding
+proving ground, not the boundary of the core library.
 
-**Status: pre-v1.** Phases 0–3.5 are complete: foundation, core primitives,
-composition utilities, and the first agentic domain layer. APIs still change
-freely while the general-purpose component and composition layers evolve.
+**Status: pre-v1.** Phases 0–3.5 are complete: foundation, core interaction
+primitives, and the first agentic domain layer. APIs still change freely while
+agent-operable foundations and the general-purpose composition layer evolve.
 
 ## What's here
 
@@ -77,6 +79,19 @@ Agent-friendliness is an architectural quality, not a product specialization.
 The library should be easy to discover, difficult to misuse, flexible enough for
 distinct visual designs, and explicit about the interaction conventions that
 make those designs feel coherent.
+
+In practice, a gotui UI should support a complete lifecycle:
+
+- **Discover** the right package, recipe, and example.
+- **Compose** it from explicit sizing, theme, focus, and state contracts.
+- **Verify** it through readable rendering snapshots today and deterministic
+  interaction scenarios as the roadmap expands.
+- **Operate** it through optional semantic inspection and stable actions.
+- **Recover** from loading, failure, cancellation, and narrow-terminal states.
+
+The discovery, composition, and rendering-snapshot parts exist today; the
+roadmap prioritizes deterministic interaction scenarios and semantic operation
+before expanding the composition vocabulary broadly.
 
 ## Scope boundaries
 
