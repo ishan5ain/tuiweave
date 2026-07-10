@@ -90,9 +90,10 @@ In practice, a gotui UI should support a complete lifecycle:
 - **Operate** it through optional semantic inspection and stable actions.
 - **Recover** from loading, failure, cancellation, and narrow-terminal states.
 
-The discovery, composition, and rendering-snapshot parts exist today; the
-roadmap prioritizes deterministic interaction scenarios and semantic operation
-before expanding the composition vocabulary broadly.
+Discovery, composition, rendering snapshots, deterministic scenarios, semantic
+inspection/actions, and structured approval provenance now have initial support;
+the roadmap focuses on hardening those contracts while expanding the
+composition vocabulary.
 
 ## Scope boundaries
 
@@ -107,6 +108,7 @@ depends on a domain model or service.
 - [DESIGN.md](DESIGN.md) — architecture, decision record, component contract
 - [PLAN.md](PLAN.md) — phased roadmap with exit criteria
 - [AGENTS.md](AGENTS.md) — conventions for coding agents building with gotui
+- [AGENT-CATALOG.md](AGENT-CATALOG.md) — compact package and task routing index
 
 ## Development
 

@@ -6,6 +6,9 @@ This file is deliberately short; recipes link into the runnable example apps
 rationale lives in [DESIGN.md](DESIGN.md) — read it before adding a
 component; you don't need it to build an app.
 
+Use [AGENT-CATALOG.md](AGENT-CATALOG.md) to route a task to the right package
+and example before reading the detailed recipes below.
+
 ## The stack
 
 - Runtime: `charm.land/bubbletea/v2` (MVU; root model's `View()` returns `tea.View`)

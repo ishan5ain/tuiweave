@@ -31,7 +31,7 @@ proving ground, but they do not define the core API.
 | D7 | Markdown | **Glamour now, behind a swappable interface; custom streaming renderer later** |
 | D8 | Domain layering | **Domain packages live above generic primitives**; agentic components are the first such layer |
 | D9 | Verification | **First-class snapshot harness early; pty capture as a thin script later** |
-| D10 | Agent docs | **Thin skill file (AGENTS.md) + CI-compiled examples** |
+| D10 | Agent docs | **AGENTS.md + compact catalog + CI-compiled examples** |
 | D11 | Driving app | **Applications validate the library** — Pi is the first demanding consumer, not the core boundary |
 | D12 | Generality | **Domain-neutral core, layered domain packages** — reusable interaction patterns stay portable |
 | D13 | Composition quality | **A small design grammar** — consistency comes from shared contracts and patterns, not visual sameness |
@@ -188,13 +188,15 @@ planned complement for message sequences, commands, and state transitions.
 
 ### D10 — Agent docs: AGENTS.md + CI-compiled examples
 
-For a library whose primary consumer is an agent, the conventions doc **is the
+For a library whose primary consumer is an agent, the conventions docs **are the
 product's user interface**. AGENTS.md stays compact: explicit rules
 ("colors come from theme roles, never literals", "size from layout rects",
 "reassign model, collect cmds") plus pointers into the runnable example apps
 (`examples/statusbar`, `examples/demo`, `examples/chat`). Drift is
 neutralized by making examples real packages that compile and snapshot-test
-in CI — API changes that stale the docs break the build.
+in CI — API changes that stale the examples break the build. The compact
+`AGENT-CATALOG.md` is the routing index; it points to the detailed recipes
+without forcing every task to load the entire conventions file.
 
 ### D11 — Applications validate the library
 

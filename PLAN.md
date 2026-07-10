@@ -44,8 +44,9 @@ be completed before broadening the composition catalog too far.
 - [x] **Permission provenance (initial slice)**: evolve approval data beyond
       title/body to describe the exact operation, scope, impact, reversibility,
       and policy context while keeping MCP/JSON-RPC adapters outside the core.
-- [ ] **Agent catalog**: provide a compact, discoverable index of packages,
-      recipes, setup sequences, common mistakes, and canonical examples.
+- [x] **Agent catalog (initial slice)**: provide a compact, discoverable index
+      of packages, recipes, setup sequences, common mistakes, and canonical
+      examples in `AGENT-CATALOG.md`.
 - [x] **Streaming invalidation correctness**: use an explicit source revision
       for assistant cells so replacement content cannot reuse a same-length
       cached render.
@@ -56,8 +57,8 @@ view; an interaction scenario can replay a focus, selection, scrolling, and
 modal flow; and a streamed session can update, cancel, and replace content by
 stable identity.
 
-Remaining work in this section extends the foundation with contract hardening,
-permission provenance, and an agent-facing catalog.
+Remaining work in this section extends the foundation with contract hardening
+and provenance/catalog refinement.
 
 This work should remain optional at the component boundary. Applications still
 own orchestration, persistence, transport, and policy enforcement.
