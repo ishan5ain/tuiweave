@@ -29,6 +29,40 @@
         "visible": 21,
         "offset": 0
       },
+      "actions": [
+        {
+          "id": "list.focus",
+          "label": "Focus list",
+          "enabled": false
+        },
+        {
+          "id": "list.blur",
+          "label": "Blur list",
+          "enabled": true
+        },
+        {
+          "id": "list.next",
+          "label": "Next item",
+          "description": "Select the next visible item",
+          "enabled": true
+        },
+        {
+          "id": "list.previous",
+          "label": "Previous item",
+          "description": "Select the previous visible item",
+          "enabled": false
+        },
+        {
+          "id": "list.first",
+          "label": "First item",
+          "enabled": false
+        },
+        {
+          "id": "list.last",
+          "label": "Last item",
+          "enabled": true
+        }
+      ],
       "attributes": {
         "filtered_count": "4",
         "item_count": "4"
@@ -48,7 +82,39 @@
         "total": 43,
         "visible": 21,
         "offset": 0
-      }
+      },
+      "actions": [
+        {
+          "id": "viewport.focus",
+          "label": "Focus viewport",
+          "enabled": true
+        },
+        {
+          "id": "viewport.blur",
+          "label": "Blur viewport",
+          "enabled": false
+        },
+        {
+          "id": "viewport.scroll_up",
+          "label": "Scroll up",
+          "enabled": false
+        },
+        {
+          "id": "viewport.scroll_down",
+          "label": "Scroll down",
+          "enabled": true
+        },
+        {
+          "id": "viewport.scroll_top",
+          "label": "Scroll to top",
+          "enabled": false
+        },
+        {
+          "id": "viewport.scroll_bottom",
+          "label": "Scroll to bottom",
+          "enabled": true
+        }
+      ]
     },
     {
       "id": "input",
@@ -61,6 +127,23 @@
       },
       "label": "> ",
       "focused": false,
+      "actions": [
+        {
+          "id": "input.focus",
+          "label": "Focus input",
+          "enabled": true
+        },
+        {
+          "id": "input.blur",
+          "label": "Blur input",
+          "enabled": false
+        },
+        {
+          "id": "input.clear",
+          "label": "Clear input",
+          "enabled": false
+        }
+      ],
       "attributes": {
         "cursor": "0",
         "empty": "true",
@@ -84,6 +167,30 @@
         "count": 2,
         "label": "OK"
       },
+      "actions": [
+        {
+          "id": "quit-dialog.confirm",
+          "label": "OK",
+          "description": "Accept the dialog",
+          "enabled": true
+        },
+        {
+          "id": "quit-dialog.cancel",
+          "label": "Cancel",
+          "description": "Dismiss the dialog",
+          "enabled": true
+        },
+        {
+          "id": "quit-dialog.next",
+          "label": "Next button",
+          "enabled": true
+        },
+        {
+          "id": "quit-dialog.previous",
+          "label": "Previous button",
+          "enabled": false
+        }
+      ],
       "attributes": {
         "body": "This closes the gotui Phase 2 demo."
       }

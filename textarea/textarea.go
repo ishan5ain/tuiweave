@@ -43,6 +43,12 @@ type Model struct {
 	cursorStyle      lipgloss.Style
 }
 
+const (
+	ActionFocus = "focus"
+	ActionBlur  = "blur"
+	ActionClear = "clear"
+)
+
 // New returns an empty textarea styled from the theme's roles.
 func New(theme gotui.Theme) Model {
 	return Model{
@@ -306,6 +312,9 @@ func (m *Model) deleteWordBack() {
 // Update handles editing keys while focused. Enter inserts a newline; the
 // app decides what sends.
 func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
+	if next, handled := m.applyAction(msg); handled {
+		return next, nil
+	}
 	if !m.focused {
 		return m, nil
 	}

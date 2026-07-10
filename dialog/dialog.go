@@ -49,6 +49,13 @@ type Model struct {
 	selectedStyle lipgloss.Style
 }
 
+const (
+	ActionConfirm  = "confirm"
+	ActionCancel   = "cancel"
+	ActionNext     = "next"
+	ActionPrevious = "previous"
+)
+
 // New returns a dialog styled from the theme's roles.
 func New(theme gotui.Theme) Model {
 	return Model{
@@ -86,6 +93,9 @@ func (m *Model) SetSize(width, height int) {
 // Update handles button navigation and confirmation:
 // left/right/tab switch buttons, enter answers, esc cancels.
 func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
+	if next, cmd, handled := m.applyAction(msg); handled {
+		return next, cmd
+	}
 	key, ok := msg.(tea.KeyPressMsg)
 	if !ok {
 		return m, nil

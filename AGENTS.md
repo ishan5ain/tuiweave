@@ -153,6 +153,12 @@ data, _ := inspect.Marshal(root)
 Inspection is data-only. The app owns visibility, layout positions, routing,
 privacy decisions, and any transport to an agent or debugging tool.
 
+Action IDs in a bound node are qualified (for example `list.next`). Components
+handle the local suffix through `inspect.Invoke("next")`; an application that
+receives a tree-level action owns the lookup and routing to the target model.
+Prefer semantic actions in tests and automation when available instead of
+simulating equivalent key presses.
+
 Two gotchas in hand-written assertions:
 
 - Strip ANSI before `strings.Contains` — renderers style words as separate

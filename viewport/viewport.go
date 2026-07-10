@@ -101,6 +101,9 @@ func (m *Model) clamp() {
 //	g / home         top
 //	G / end          bottom
 func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
+	if next, handled := m.applyAction(msg); handled {
+		return next, nil
+	}
 	switch msg := msg.(type) {
 	case tea.MouseWheelMsg:
 		switch msg.Button {

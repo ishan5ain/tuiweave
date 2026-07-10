@@ -38,6 +38,26 @@ type Scroll struct {
 	Offset  int `json:"offset"`
 }
 
+// Action describes an intent a node can expose independently of a key
+// binding. IDs are local to a component report; Bind prefixes them with the
+// application's node ID in the assembled inspection tree.
+type Action struct {
+	ID          string `json:"id"`
+	Label       string `json:"label"`
+	Description string `json:"description,omitempty"`
+	Enabled     bool   `json:"enabled"`
+}
+
+// ActionMsg asks a component to perform one of its local semantic actions.
+// Applications route tree-level IDs to the target component and use the local
+// suffix as the message ID.
+type ActionMsg struct {
+	ID string
+}
+
+// Invoke constructs a semantic action message for a component.
+func Invoke(id string) ActionMsg { return ActionMsg{ID: id} }
+
 // Node is one semantic UI element. Attributes are deliberately string-valued:
 // component packages can expose small, stable facts without making inspect a
 // second domain model or leaking backend-specific types into the core.
@@ -50,6 +70,7 @@ type Node struct {
 	Status     string            `json:"status,omitempty"`
 	Selected   *Selection        `json:"selected,omitempty"`
 	Scroll     *Scroll           `json:"scroll,omitempty"`
+	Actions    []Action          `json:"actions,omitempty"`
 	Attributes map[string]string `json:"attributes,omitempty"`
 	Children   []Node            `json:"children,omitempty"`
 }
@@ -65,6 +86,11 @@ type Inspectable interface {
 func Bind(id string, component Inspectable) Node {
 	node := component.Inspect()
 	node.ID = id
+	for i := range node.Actions {
+		if node.Actions[i].ID != "" {
+			node.Actions[i].ID = id + "." + node.Actions[i].ID
+		}
+	}
 	return node
 }
 

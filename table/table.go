@@ -34,6 +34,15 @@ type Model struct {
 	selectedStyle lipgloss.Style
 }
 
+const (
+	ActionFocus    = "focus"
+	ActionBlur     = "blur"
+	ActionNext     = "next"
+	ActionPrevious = "previous"
+	ActionFirst    = "first"
+	ActionLast     = "last"
+)
+
 // New returns an empty table styled from the theme's roles.
 func New(theme gotui.Theme) Model {
 	return Model{
@@ -129,6 +138,9 @@ func (m *Model) scrollIntoView() {
 // Update handles navigation while focused: up/k, down/j, pgup, pgdown,
 // g/home, G/end.
 func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
+	if next, handled := m.applyAction(msg); handled {
+		return next, nil
+	}
 	if !m.focused {
 		return m, nil
 	}

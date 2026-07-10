@@ -114,6 +114,9 @@ func (m *Model) GotoBottom() {
 // any scroll that leaves the bottom unsticks; returning to the bottom
 // re-sticks.
 func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
+	if next, handled := m.applyAction(msg); handled {
+		return next, nil
+	}
 	var cmd tea.Cmd
 	m.vp, cmd = m.vp.Update(msg)
 	m.follow = m.vp.AtBottom()

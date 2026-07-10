@@ -32,9 +32,11 @@ be completed before broadening the composition catalog too far.
       `gotui/inspect` representation for stable IDs, bounds, focus, selection,
       scroll state, labels, lifecycle state, attributes, and children; add
       reports for the core scrolling/input components and chat.
-- [ ] **Semantic actions**: define stable action IDs independent of key strings,
-      so tests and agents can invoke intent such as `dialog.confirm` or
-      `transcript.scroll_bottom`.
+- [x] **Semantic actions (initial slice)**: define stable action IDs independent
+      of key strings, expose them in inspection nodes, and let components handle
+      local `inspect.ActionMsg` intents such as `next`, `clear`, and `confirm`.
+      `inspect.Bind` qualifies IDs for tree consumers; application routing stays
+      outside the core.
 - [ ] **Agentic session identity**: add stable IDs and update/retry/cancel
       semantics for streamed chat cells and tool calls without coupling to a
       backend protocol.

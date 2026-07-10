@@ -286,6 +286,11 @@ and positions the tree. Inspection intentionally omits raw input values and
 rendered content by default so the application remains responsible for privacy
 and disclosure decisions.
 
+Action metadata follows the same ownership boundary. Components advertise local
+IDs and accept `inspect.ActionMsg`; `inspect.Bind` qualifies reported IDs with
+the application-owned node ID. Tree-level dispatch remains application-owned,
+so gotui does not invent a router or a global focus model.
+
 ---
 
 ## 2. How the decisions interlock

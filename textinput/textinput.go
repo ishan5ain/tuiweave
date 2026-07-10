@@ -29,6 +29,12 @@ type Model struct {
 	cursorStyle      lipgloss.Style
 }
 
+const (
+	ActionFocus = "focus"
+	ActionBlur  = "blur"
+	ActionClear = "clear"
+)
+
 // New returns an empty text input styled from the theme's roles.
 func New(theme gotui.Theme) Model {
 	return Model{
@@ -74,6 +80,9 @@ func (m *Model) Reset() {
 // move; ctrl+u clears before the cursor, ctrl+k after, ctrl+w deletes the
 // previous word.
 func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
+	if next, handled := m.applyAction(msg); handled {
+		return next, nil
+	}
 	if !m.focused {
 		return m, nil
 	}
