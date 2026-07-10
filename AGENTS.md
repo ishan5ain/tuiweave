@@ -21,6 +21,7 @@ and example before reading the detailed recipes below.
 - Split panes: `github.com/ishansain/gotui/splitpane` (width-aware view composition)
 - Stacked chrome: `github.com/ishansain/gotui/stack` (headers, sections, footers)
 - Progress: `github.com/ishansain/gotui/progress` (passive task indicators)
+- Toggles: `github.com/ishansain/gotui/toggle` (focusable boolean settings)
 - Testing: `github.com/ishansain/gotui/snaptest` (golden files)
 - Domain packages: `gotui/agentic/…` (markdown, chat, toolcall, diffview,
   permission, usagebar) — optional, backend-agnostic layers built on the
@@ -363,6 +364,32 @@ p.SetStatus(progress.StatusInfo)
   model/token/cost/context session metrics.
 - It renders one exact-width row and gives the label and percentage space back
   to the bar at narrow widths. Do not pre-truncate the label in the app.
+
+### toggle
+
+Use `toggle` for an application-owned boolean setting. It is a focusable
+control: space, `x`, and enter change the value and emit a `ChangedMsg`; the
+application owns persistence and side effects.
+
+```go
+t := toggle.New(theme)
+t.ID = "auto-refresh"
+t.SetLabel("Auto-refresh")
+t.SetChecked(true)
+t.SetSize(area.Dx(), 1)
+t.Focus()
+
+case toggle.ChangedMsg:
+    // Persist or apply msg.Checked for msg.ID in the application.
+```
+
+- Register it in the app's `focus.Manager` when it is part of tab order, and
+  apply fresh component addresses after every focus change.
+- `toggle` exposes `focus`, `blur`, `toggle`, `on`, and `off` semantic actions
+  through `Inspect()`. Disabled toggles remain renderable but reject focus and
+  state changes.
+- It renders one exact-width row and truncates its label at narrow widths; do
+  not pre-truncate the setting label in the app.
 
 ### statusbar
 

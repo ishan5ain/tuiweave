@@ -1,0 +1,11 @@
+## initial
+command: no
+[ ] Auto-refresh
+
+## turn on
+command: yes
+[x] Auto-refresh
+
+## turn off
+command: yes
+[ ] Auto-refresh

@@ -23,6 +23,7 @@ import (
 	"github.com/ishansain/gotui/splitpane"
 	"github.com/ishansain/gotui/stack"
 	"github.com/ishansain/gotui/tabs"
+	"github.com/ishansain/gotui/toggle"
 	"github.com/ishansain/gotui/toolbar"
 )
 
@@ -33,6 +34,7 @@ type model struct {
 	actions       menu.Model
 	tools         toolbar.Model
 	load          progress.Model
+	autoRefresh   toggle.Model
 	fm            focus.Manager
 }
 
@@ -61,8 +63,12 @@ func newModel() model {
 	load.SetLabel("Indexing")
 	load.SetPercent(0.72)
 	load.SetStatus(progress.StatusInfo)
-	m := model{theme: theme, nav: nav, actions: actions, tools: tools, load: load, fm: focus.NewManager(3)}
-	m.fm.Apply(&m.nav, &m.actions, &m.tools)
+	autoRefresh := toggle.New(theme)
+	autoRefresh.ID = "auto-refresh"
+	autoRefresh.SetLabel("Auto-refresh")
+	autoRefresh.SetChecked(true)
+	m := model{theme: theme, nav: nav, actions: actions, tools: tools, load: load, autoRefresh: autoRefresh, fm: focus.NewManager(4)}
+	m.fm.Apply(&m.nav, &m.actions, &m.tools, &m.autoRefresh)
 	return m
 }
 
@@ -81,18 +87,22 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		// This showcase has no backend action to perform; a real app handles
 		// msg.ID here.
 		return m, nil
+	case toggle.ChangedMsg:
+		// This showcase has no setting persistence; a real app handles msg.ID
+		// and msg.Checked here.
+		return m, nil
 	case tea.KeyPressMsg:
 		if msg.String() == "ctrl+c" || msg.String() == "q" {
 			return m, tea.Quit
 		}
 		if msg.String() == "tab" {
 			m.fm.Next()
-			m.fm.Apply(&m.nav, &m.actions, &m.tools)
+			m.fm.Apply(&m.nav, &m.actions, &m.tools, &m.autoRefresh)
 			return m, nil
 		}
 		if msg.String() == "shift+tab" {
 			m.fm.Prev()
-			m.fm.Apply(&m.nav, &m.actions, &m.tools)
+			m.fm.Apply(&m.nav, &m.actions, &m.tools, &m.autoRefresh)
 			return m, nil
 		}
 		var cmds []tea.Cmd
@@ -102,6 +112,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.actions, cmd = m.actions.Update(msg)
 		cmds = append(cmds, cmd)
 		m.tools, cmd = m.tools.Update(msg)
+		cmds = append(cmds, cmd)
+		m.autoRefresh, cmd = m.autoRefresh.Update(msg)
 		cmds = append(cmds, cmd)
 		return m, tea.Batch(cmds...)
 	}
@@ -122,6 +134,7 @@ func (m *model) layout() {
 	m.actions.SetSize(max(0, jobs.Dx()-4), max(0, jobs.Dy()-4))
 	m.tools.SetSize(max(0, services.Dx()-4), 1)
 	m.load.SetSize(max(0, services.Dx()-4), 1)
+	m.autoRefresh.SetSize(max(0, services.Dx()-4), 1)
 }
 
 func (m model) render() string {
@@ -161,9 +174,9 @@ func (m model) render() string {
 		frame.PanelOptions{Title: "Actions", Focused: m.actions.Focused(), Padding: 1},
 	)
 	servicesView := frame.Panel(m.theme,
-		"api        "+frame.Badge(m.theme, "healthy", frame.BadgeSuccess)+"\nworker     "+frame.Badge(m.theme, "busy", frame.BadgeInfo)+"\n"+m.tools.View()+"\n"+m.load.View(),
+		"api        "+frame.Badge(m.theme, "healthy", frame.BadgeSuccess)+"\nworker     "+frame.Badge(m.theme, "busy", frame.BadgeInfo)+"\n"+m.tools.View()+"\n"+m.load.View()+"\n"+m.autoRefresh.View(),
 		services.Dx(),
-		frame.PanelOptions{Title: "Services", Focused: m.tools.Focused(), Padding: 1},
+		frame.PanelOptions{Title: "Services", Focused: m.tools.Focused() || m.autoRefresh.Focused(), Padding: 1},
 	)
 
 	footerView := lipgloss.NewStyle().

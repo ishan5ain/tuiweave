@@ -16,6 +16,7 @@ rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
 | Compose two sibling panes | `splitpane.Horizontal`; callbacks receive pane widths |
 | Stack headers, sections, and footers | `stack.Vertical`; empty sections are omitted |
 | Show task completion | `progress`; passive, exact-width, status-aware indicator |
+| Add an on/off setting | `toggle`; focusable, semantic, and emits `ChangedMsg` |
 | Split panes or rows | `layout.Vertical` / `layout.Horizontal` + `SetSize` |
 | Show selectable records | `list` or `table`; add `scrollbar.For` |
 | Show long content | `viewport`; forward mouse wheels; add `scrollbar.For` |
@@ -62,6 +63,7 @@ rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
 | `splitpane` | Composing two width-aware views | `Horizontal(theme, width, Options, left, right)`; natural-height alignment |
 | `stack` | Composing vertical app chrome | `Vertical(theme, width, Options, views...)`; exact-width natural-height sections |
 | `progress` | Showing task or operation completion | `SetLabel`, `SetPercent`, `SetStatus`; passive and exact-width |
+| `toggle` | Editing a boolean setting | `SetLabel`, `SetChecked`, `Focus`; space/enter/x emit `ChangedMsg` |
 
 ### Agentic domain components
 

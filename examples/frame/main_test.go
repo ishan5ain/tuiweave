@@ -7,6 +7,7 @@ import (
 
 	"github.com/ishansain/gotui"
 	"github.com/ishansain/gotui/snaptest"
+	"github.com/ishansain/gotui/toggle"
 	"github.com/ishansain/gotui/toolbar"
 )
 
@@ -19,12 +20,12 @@ func TestFrameExampleGolden(t *testing.T) {
 func TestFrameFocusCyclesAllInteractiveComponents(t *testing.T) {
 	m := newModel()
 	m, _ = update(t, m, tea.WindowSizeMsg{Width: 68, Height: 13})
-	assertFocus(t, m, 0, true, false, false)
+	assertFocus(t, m, 0, true, false, false, false)
 
 	m, _ = update(t, m, tea.KeyPressMsg{Code: tea.KeyTab})
-	assertFocus(t, m, 1, false, true, false)
+	assertFocus(t, m, 1, false, true, false, false)
 	m, _ = update(t, m, tea.KeyPressMsg{Code: tea.KeyTab})
-	assertFocus(t, m, 2, false, false, true)
+	assertFocus(t, m, 2, false, false, true, false)
 
 	// The focused toolbar is a live component, not decorative output.
 	m, cmd := update(t, m, tea.KeyPressMsg{Code: 'l', Text: "l"})
@@ -43,13 +44,26 @@ func TestFrameFocusCyclesAllInteractiveComponents(t *testing.T) {
 		t.Fatal("showcase produced a command while handling toolbar activation")
 	}
 
-	// Reverse traversal reaches the toolbar as well.
+	m, _ = update(t, m, tea.KeyPressMsg{Code: tea.KeyTab})
+	assertFocus(t, m, 3, false, false, false, true)
+	m, cmd = update(t, m, tea.KeyPressMsg{Code: ' ', Text: " "})
+	if cmd == nil || m.autoRefresh.Checked() {
+		t.Fatalf("toggle space: checked=%v command=%v, want unchecked with command", m.autoRefresh.Checked(), cmd != nil)
+	}
+	toggleMsg, ok := cmd().(toggle.ChangedMsg)
+	if !ok || toggleMsg.ID != "auto-refresh" || toggleMsg.Checked {
+		t.Fatalf("toggle change = %#v, want auto-refresh unchecked", toggleMsg)
+	}
+
+	// Reverse traversal reaches every interactive control as well.
 	m, _ = update(t, m, tea.KeyPressMsg{Code: tea.KeyTab, Mod: tea.ModShift})
-	assertFocus(t, m, 1, false, true, false)
+	assertFocus(t, m, 2, false, false, true, false)
 	m, _ = update(t, m, tea.KeyPressMsg{Code: tea.KeyTab, Mod: tea.ModShift})
-	assertFocus(t, m, 0, true, false, false)
+	assertFocus(t, m, 1, false, true, false, false)
 	m, _ = update(t, m, tea.KeyPressMsg{Code: tea.KeyTab, Mod: tea.ModShift})
-	assertFocus(t, m, 2, false, false, true)
+	assertFocus(t, m, 0, true, false, false, false)
+	m, _ = update(t, m, tea.KeyPressMsg{Code: tea.KeyTab, Mod: tea.ModShift})
+	assertFocus(t, m, 3, false, false, false, true)
 }
 
 func TestFrameToolbarFocusedGolden(t *testing.T) {
@@ -67,9 +81,9 @@ func update(t *testing.T, m model, msg tea.Msg) (model, tea.Cmd) {
 	return next.(model), cmd
 }
 
-func assertFocus(t *testing.T, m model, index int, nav, actions, tools bool) {
+func assertFocus(t *testing.T, m model, index int, nav, actions, tools, autoRefresh bool) {
 	t.Helper()
-	if m.fm.Index() != index || m.nav.Focused() != nav || m.actions.Focused() != actions || m.tools.Focused() != tools {
-		t.Fatalf("focus index=%d nav=%v actions=%v tools=%v; want index=%d nav=%v actions=%v tools=%v", m.fm.Index(), m.nav.Focused(), m.actions.Focused(), m.tools.Focused(), index, nav, actions, tools)
+	if m.fm.Index() != index || m.nav.Focused() != nav || m.actions.Focused() != actions || m.tools.Focused() != tools || m.autoRefresh.Focused() != autoRefresh {
+		t.Fatalf("focus index=%d nav=%v actions=%v tools=%v auto-refresh=%v; want index=%d nav=%v actions=%v tools=%v auto-refresh=%v", m.fm.Index(), m.nav.Focused(), m.actions.Focused(), m.tools.Focused(), m.autoRefresh.Focused(), index, nav, actions, tools, autoRefresh)
 	}
 }

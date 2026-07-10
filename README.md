@@ -42,6 +42,7 @@ backend protocols, and session lifecycle.
 | `gotui/splitpane` | Width-aware horizontal pane composition with natural-height alignment and dividers |
 | `gotui/stack` | Width-aware vertical section composition for headers, bodies, separators, and footers |
 | `gotui/progress` | Passive, exact-width task progress indicator with semantic status roles |
+| `gotui/toggle` | Focusable on/off control with semantic actions and change messages |
 | `gotui/statusbar` | One-line status bar with themed left/right segments |
 | `gotui/list` | Scrolling list with selection cursor and filtering (original-index selection) |
 | `gotui/viewport` | Scrollable window over pre-rendered content (keys + mouse wheel) |
