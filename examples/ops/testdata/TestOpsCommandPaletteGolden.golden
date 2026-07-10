@@ -1,0 +1,22 @@
+ OPS  operations console                                         ctrl+p commands
+▸Services   Jobs   Audit
+╭ Actions ─────────────────────────────╮│╭ Operations ─────────────────────────╮
+│                                      │││                                     │
+│ ▸ Restart service                    │││ Service     State      Region       │
+│   Drain traffic                      │││ ─────────────────────────────────── │
+│   Acknowledge alert                  │││ api         healthy    us-west-2    │
+│   Delete s╭ Command palette ─────────────────────────────────────╮-west-2    │
+│           │                                                      │-east-1    │
+│           │ ›                                                    │           │
+│           │ ▸ Restart service  Restart the selected service      │           │
+│           │   Drain traffic  Remove a service from rotation      │           │
+│           │   Acknowledge alert  Mark the current alert handled  │           │
+│           │                                                      │           │
+│           ╰──────────────────────────────────────────────────────╯           │
+│                                      │││                                     │
+│                                      │││ Deploy ████████████████░░░░░░░  72% │
+│                                      │││ [x] Auto-refresh                    │
+│                                      │││ [ Open logs                       ] │
+│                                      │││                                     │
+╰──────────────────────────────────────╯│╰─────────────────────────────────────╯
+─────────────────────────────────────────── tab focus · ctrl+p commands · q quit

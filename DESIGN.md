@@ -349,6 +349,7 @@ github.com/ishansain/gotui
 │   ├── chat/        mock agentic session (Phase 3 exit criterion), golden-tested
 │   ├── frame/       framing/decorations/tabs/menu/toolbar/splitpane/stack/progress/toggle/button composition example, golden-tested
 │   ├── palette/     filtered command discovery and activation example, golden-tested
+│   ├── ops/         non-agentic operations-console pressure test, golden-tested
 │   └── table/       git-status mock: table + diffview + scrollbars, golden-tested
 ├── .github/workflows/ci.yml   build + vet + test + tidy check
 ├── AGENTS.md        the agent-facing rulebook

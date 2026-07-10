@@ -85,9 +85,9 @@ rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
 Canonical examples are under [`examples/`](examples/): `statusbar` is the
 smallest component wiring example, `frame` demonstrates pure composition,
 `demo` composes general primitives, `table` combines selection/diff/scrolling,
-and `chat` exercises streaming, permission, toolcall, diff, markdown, usage,
-and textarea behavior; `palette` demonstrates filtered command discovery and
-activation.
+`palette` demonstrates filtered command discovery and activation, `ops` is the
+non-agentic composition pressure test, and `chat` exercises streaming,
+permission, toolcall, diff, markdown, usage, and textarea behavior.
 
 ## Canonical wiring
 

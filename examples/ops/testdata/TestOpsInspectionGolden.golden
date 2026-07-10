@@ -1,0 +1,430 @@
+{
+  "id": "ops",
+  "kind": "application",
+  "bounds": {
+    "x": 0,
+    "y": 0,
+    "width": 80,
+    "height": 22
+  },
+  "focused": false,
+  "children": [
+    {
+      "id": "tabs",
+      "kind": "tabs",
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 80,
+        "height": 1
+      },
+      "label": "Services",
+      "focused": true,
+      "selected": {
+        "index": 0,
+        "count": 3,
+        "label": "Services"
+      },
+      "actions": [
+        {
+          "id": "tabs.focus",
+          "label": "Focus tabs",
+          "enabled": false
+        },
+        {
+          "id": "tabs.blur",
+          "label": "Blur tabs",
+          "enabled": true
+        },
+        {
+          "id": "tabs.next",
+          "label": "Next tab",
+          "description": "Select the next tab",
+          "enabled": true
+        },
+        {
+          "id": "tabs.previous",
+          "label": "Previous tab",
+          "description": "Select the previous tab",
+          "enabled": false
+        },
+        {
+          "id": "tabs.first",
+          "label": "First tab",
+          "enabled": false
+        },
+        {
+          "id": "tabs.last",
+          "label": "Last tab",
+          "enabled": true
+        },
+        {
+          "id": "tabs.select.services",
+          "label": "Select Services",
+          "description": "Select this tab",
+          "enabled": true
+        },
+        {
+          "id": "tabs.select.jobs",
+          "label": "Select Jobs",
+          "description": "Select this tab",
+          "enabled": true
+        },
+        {
+          "id": "tabs.select.audit",
+          "label": "Select Audit",
+          "description": "Select this tab",
+          "enabled": true
+        }
+      ],
+      "attributes": {
+        "selected_id": "services",
+        "tab_count": "3",
+        "visible_start": "0"
+      }
+    },
+    {
+      "id": "actions",
+      "kind": "menu",
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 36,
+        "height": 15
+      },
+      "label": "Restart service",
+      "focused": false,
+      "selected": {
+        "index": 0,
+        "count": 4,
+        "label": "Restart service"
+      },
+      "scroll": {
+        "total": 4,
+        "visible": 15,
+        "offset": 0
+      },
+      "actions": [
+        {
+          "id": "actions.focus",
+          "label": "Focus menu",
+          "enabled": true
+        },
+        {
+          "id": "actions.blur",
+          "label": "Blur menu",
+          "enabled": false
+        },
+        {
+          "id": "actions.next",
+          "label": "Next menu item",
+          "enabled": true
+        },
+        {
+          "id": "actions.previous",
+          "label": "Previous menu item",
+          "enabled": false
+        },
+        {
+          "id": "actions.first",
+          "label": "First menu item",
+          "enabled": true
+        },
+        {
+          "id": "actions.last",
+          "label": "Last menu item",
+          "enabled": true
+        },
+        {
+          "id": "actions.activate",
+          "label": "Activate menu item",
+          "enabled": true
+        },
+        {
+          "id": "actions.select.restart",
+          "label": "Select Restart service",
+          "description": "Restart the selected service",
+          "enabled": true
+        },
+        {
+          "id": "actions.select.drain",
+          "label": "Select Drain traffic",
+          "description": "Remove a service from rotation",
+          "enabled": true
+        },
+        {
+          "id": "actions.select.ack",
+          "label": "Select Acknowledge alert",
+          "description": "Mark the current alert handled",
+          "enabled": true
+        },
+        {
+          "id": "actions.select.delete",
+          "label": "Select Delete service",
+          "description": "Destructive action",
+          "enabled": false
+        }
+      ],
+      "attributes": {
+        "enabled_count": "3",
+        "item_count": "4",
+        "selected_id": "restart"
+      }
+    },
+    {
+      "id": "operations",
+      "kind": "table",
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 35,
+        "height": 12
+      },
+      "focused": false,
+      "selected": {
+        "index": 0,
+        "count": 3,
+        "label": "api | healthy | us-west-2"
+      },
+      "scroll": {
+        "total": 3,
+        "visible": 10,
+        "offset": 0
+      },
+      "actions": [
+        {
+          "id": "operations.focus",
+          "label": "Focus table",
+          "enabled": true
+        },
+        {
+          "id": "operations.blur",
+          "label": "Blur table",
+          "enabled": false
+        },
+        {
+          "id": "operations.next",
+          "label": "Next row",
+          "description": "Select the next row",
+          "enabled": true
+        },
+        {
+          "id": "operations.previous",
+          "label": "Previous row",
+          "description": "Select the previous row",
+          "enabled": false
+        },
+        {
+          "id": "operations.first",
+          "label": "First row",
+          "enabled": false
+        },
+        {
+          "id": "operations.last",
+          "label": "Last row",
+          "enabled": true
+        }
+      ],
+      "attributes": {
+        "column_count": "3",
+        "row_count": "3"
+      }
+    },
+    {
+      "id": "load",
+      "kind": "progress",
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 35,
+        "height": 1
+      },
+      "label": "Deploy",
+      "focused": false,
+      "status": "info",
+      "attributes": {
+        "percent": "0.72",
+        "show_percent": "true"
+      }
+    },
+    {
+      "id": "auto-refresh",
+      "kind": "toggle",
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 35,
+        "height": 1
+      },
+      "label": "Auto-refresh",
+      "focused": false,
+      "status": "on",
+      "actions": [
+        {
+          "id": "auto-refresh.focus",
+          "label": "Focus toggle",
+          "enabled": true
+        },
+        {
+          "id": "auto-refresh.blur",
+          "label": "Blur toggle",
+          "enabled": false
+        },
+        {
+          "id": "auto-refresh.toggle",
+          "label": "Toggle Auto-refresh",
+          "enabled": true
+        },
+        {
+          "id": "auto-refresh.on",
+          "label": "Turn on Auto-refresh",
+          "enabled": false
+        },
+        {
+          "id": "auto-refresh.off",
+          "label": "Turn off Auto-refresh",
+          "enabled": true
+        }
+      ],
+      "attributes": {
+        "checked": "true",
+        "disabled": "false",
+        "id": "auto-refresh"
+      }
+    },
+    {
+      "id": "open-logs",
+      "kind": "button",
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 35,
+        "height": 1
+      },
+      "label": "Open logs",
+      "focused": false,
+      "status": "ready",
+      "actions": [
+        {
+          "id": "open-logs.focus",
+          "label": "Focus button",
+          "enabled": true
+        },
+        {
+          "id": "open-logs.blur",
+          "label": "Blur button",
+          "enabled": false
+        },
+        {
+          "id": "open-logs.activate",
+          "label": "Activate Open logs",
+          "enabled": true
+        }
+      ],
+      "attributes": {
+        "disabled": "false",
+        "id": "open-logs"
+      }
+    },
+    {
+      "id": "commands",
+      "kind": "palette",
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 52,
+        "height": 4
+      },
+      "label": "Restart service",
+      "focused": true,
+      "selected": {
+        "index": 0,
+        "count": 5,
+        "label": "Restart service"
+      },
+      "scroll": {
+        "total": 5,
+        "visible": 3,
+        "offset": 0
+      },
+      "actions": [
+        {
+          "id": "commands.focus",
+          "label": "Focus command palette",
+          "enabled": false
+        },
+        {
+          "id": "commands.blur",
+          "label": "Blur command palette",
+          "enabled": true
+        },
+        {
+          "id": "commands.next",
+          "label": "Next command",
+          "enabled": true
+        },
+        {
+          "id": "commands.previous",
+          "label": "Previous command",
+          "enabled": false
+        },
+        {
+          "id": "commands.first",
+          "label": "First command",
+          "enabled": true
+        },
+        {
+          "id": "commands.last",
+          "label": "Last command",
+          "enabled": true
+        },
+        {
+          "id": "commands.clear",
+          "label": "Clear command query",
+          "enabled": false
+        },
+        {
+          "id": "commands.activate",
+          "label": "Activate selected command",
+          "enabled": true
+        },
+        {
+          "id": "commands.select.restart",
+          "label": "Select Restart service",
+          "description": "Restart the selected service",
+          "enabled": true
+        },
+        {
+          "id": "commands.select.drain",
+          "label": "Select Drain traffic",
+          "description": "Remove a service from rotation",
+          "enabled": true
+        },
+        {
+          "id": "commands.select.ack",
+          "label": "Select Acknowledge alert",
+          "description": "Mark the current alert handled",
+          "enabled": true
+        },
+        {
+          "id": "commands.select.refresh",
+          "label": "Select Refresh data",
+          "description": "Reload service state",
+          "enabled": true
+        },
+        {
+          "id": "commands.select.delete",
+          "label": "Select Delete service",
+          "description": "Destructive action",
+          "enabled": false
+        }
+      ],
+      "attributes": {
+        "filtered_count": "5",
+        "item_count": "5",
+        "query": "",
+        "selected_id": "restart"
+      }
+    }
+  ]
+}

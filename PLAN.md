@@ -189,6 +189,8 @@ and useful in at least two unrelated application types.
       focused, narrow, multiline, and role-labeled rendering.
 - [ ] Extend framing utilities where real reference apps need them; avoid
       adding convenience variants before those composition patterns recur.
+      The ops pressure test currently points to a reusable inner-content
+      rectangle/inset contract before more panel variants are added.
 - [x] **Structural navigation (initial slice)**: `gotui/tabs` provides
       focus-gated sibling-view navigation, stable IDs, narrow-width handling,
       semantic selection actions, inspection metadata, and scenario goldens;
@@ -210,8 +212,12 @@ and useful in at least two unrelated application types.
       empty sections, and deterministic header/body/footer composition;
       `examples/frame` uses it for both the header and root frame.
 - [ ] Structural components: additional layout patterns driven by reference
-      applications
-- [ ] Common controls: selectable actions
+      applications. The ops pressure test exposes a need to evaluate dynamic
+      panel stacks and conditional focus scopes before adding another helper.
+- [ ] Common controls: selectable actions. Menu, toolbar, and palette now share
+      behavior informally; the next refinement should determine whether a
+      common action definition/recipe reduces duplication without forcing their
+      distinct renderers together.
 - [x] **Progress indicator (initial slice)**: `gotui/progress` provides a
       passive exact-width task indicator with label truncation, clamped values,
       semantic status roles, inspection metadata, golden/width tests, and
@@ -232,13 +238,19 @@ and useful in at least two unrelated application types.
       ANSI-aware truncation, exact-width alignment, repeated fill patterns,
       left/right fill-zone composition, and explicit no-ellipsis handling for
       decorative rules; `examples/frame` uses it for the footer.
-- [ ] Reference example apps beyond agentic UIs: a file browser, dashboard, or
-      operations console
+- [x] **Reference operations console (initial pressure test)**:
+      `examples/ops` composes tabs, menu, table, progress, toggle, button,
+      palette, frame, stack, splitpane, line, focus, inspection, and scenarios
+      into a non-agentic service dashboard. It is deliberately a gap-finding
+      harness, not a product-specific app.
+- [ ] Additional reference example apps beyond the ops pressure test: a file
+      browser or richer dashboard, driven by the concrete gaps found here.
 - [ ] Recipes and golden coverage for every new composition pattern
 - [ ] Cross-component recipes showing how customization and consistency work
       together
-- [ ] Use the semantic inspection, action, and scenario conventions from the
-      immediate-priority workstream in the reference composition examples
+- [x] Use the semantic inspection, action, and scenario conventions from the
+      immediate-priority workstream in the reference composition examples;
+      `examples/ops` exposes an assembled inspection tree and scenario golden.
 
 **Exit criteria:** an agent can assemble a multi-view non-agentic application
 from gotui without introducing local copies of common framing, navigation, or
@@ -272,7 +284,7 @@ repo; gotui stays independent of Pi's protocol.
 
 - [ ] Pi TUI app repo scaffolded; JSON-RPC client for Pi
 - [ ] Pi TUI parity and Zentui-inspired editor/footer composition
-- [ ] At least one non-agentic reference application built on gotui
+- [x] At least one non-agentic reference application built on gotui
 - [ ] Review `agentic/` APIs and add only domain components that generalize
       across agentic applications
 - [ ] Live-capture script (vhs/tmux `capture-pane`, ~50 lines, not a platform)

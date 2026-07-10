@@ -2,7 +2,7 @@
 
 Rules for writing code **with** gotui (apps) and **in** gotui (components).
 This file is deliberately short; recipes link into the runnable example apps
-(`examples/statusbar`, `examples/demo`, `examples/chat`, `examples/frame`, `examples/palette`). Architecture
+(`examples/statusbar`, `examples/demo`, `examples/chat`, `examples/frame`, `examples/palette`, `examples/ops`). Architecture
 rationale lives in [DESIGN.md](DESIGN.md) — read it before adding a
 component; you don't need it to build an app.
 
