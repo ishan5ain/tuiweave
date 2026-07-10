@@ -261,8 +261,13 @@ and useful in at least two unrelated application types.
       palette, frame, stack, splitpane, line, focus, inspection, and scenarios
       into a non-agentic service dashboard. It is deliberately a gap-finding
       harness, not a product-specific app.
-- [ ] Additional reference example apps beyond the ops pressure test: a file
-      browser or richer dashboard, driven by the concrete gaps found here.
+- [x] **Reference file browser (initial pressure test)**: `examples/browser`
+      composes tabs, textinput filtering, list selection, viewport preview,
+      framed panes, focus, scrollbars, inspection, and scenarios around a
+      deterministic mock workspace. Its panel-scrollbar golden caught and
+      resolved a one-cell composition hazard.
+- [ ] Additional reference example apps beyond ops and browser: a richer
+      dashboard or editor, driven by the concrete gaps found here.
 - [ ] Recipes and golden coverage for every new composition pattern
 - [ ] Cross-component recipes showing how customization and consistency work
       together

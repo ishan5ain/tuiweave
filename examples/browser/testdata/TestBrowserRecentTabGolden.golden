@@ -1,0 +1,24 @@
+ BROWSER  mock workspace                                                        / filter
+ Workspace  ▸Recent   Pinned
+╭ Files ───────────────────────╮ ╭ Preview ───────────────────────────────────────────╮
+│                              │ │                                                    │
+│ > filter files               │ │ # gotui                                            ││
+│ ▎ README.md                  │ │                                                    ││
+│   AGENTS.md                  │ │ A small, agent-friendly TUI toolkit.               ││
+│   examples/ops/main.go       │ │                                                    ││
+│   action/action.go           │ │ Start with the layout and component contracts.     ││
+│                              │ │                                                    ││
+│                              │ │                                                    ││
+│                              │ │                                                    ││
+│                              │ │                                                    ││
+│                              │ │                                                    ││
+│                              │ │                                                    ││
+│                              │ │                                                    ││
+│                              │ │                                                    ││
+│                              │ │                                                    ││
+│                              │ │                                                    ││
+│                              │ │                                                    ││
+│                              │ │                                                    ││
+│                              │ │                                                    │
+╰──────────────────────────────╯ ╰────────────────────────────────────────────────────╯
+────────────────────────────────────────────────────────── tab focus · / filter · q quit

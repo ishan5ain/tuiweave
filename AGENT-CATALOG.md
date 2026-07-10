@@ -9,6 +9,7 @@ rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
 | Task | Start here |
 |---|---|
 | Build an app shell | `layout`, then `focus`, `statusbar`, `help` |
+| Build a file browser | `examples/browser`; compose `textinput`, `list`, `viewport`, `tabs`, and `focus` |
 | Frame content or add semantic badges | `frame.Panel`, `frame.Divider`, `frame.Badge` |
 | Navigate sibling views | `tabs`; switch app-owned content from `SelectedID()` |
 | Define actions shared across surfaces | `action.Item`; keep IDs and disabled state stable |
@@ -88,7 +89,8 @@ Canonical examples are under [`examples/`](examples/): `statusbar` is the
 smallest component wiring example, `frame` demonstrates pure composition,
 `demo` composes general primitives, `table` combines selection/diff/scrolling,
 `palette` demonstrates filtered command discovery and activation, `ops` is the
-non-agentic composition pressure test, and `chat` exercises streaming,
+non-agentic composition pressure test, `browser` is a filterable file-list and
+scrollable-preview reference, and `chat` exercises streaming,
 permission, toolcall, diff, markdown, usage, and textarea behavior.
 
 ## Canonical wiring

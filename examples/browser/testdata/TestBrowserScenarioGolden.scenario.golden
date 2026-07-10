@@ -1,0 +1,161 @@
+## initial
+command: no
+ BROWSER  mock workspace                                                        / filter
+▸Workspace   Recent   Pinned
+╭ Files ───────────────────────╮ ╭ Preview ───────────────────────────────────────────╮
+│                              │ │                                                    │
+│ > filter files               │ │ package main                                       │┃
+│ ▎ cmd/gotui/main.go          │ │                                                    │┃
+│   layout/layout.go           │ │ import (                                           │┃
+│   list/list.go               │ │     "fmt"                                          │┃
+│   examples/browser/main.go   │ │     "os"                                           │┃
+│   examples/frame/main.go     │ │ )                                                  │┃
+│   agentic/chat/chat.go       │ │                                                    │┃
+│   agentic/toolcall/toolcall… │ │ func main() {                                      │┃
+│                              │ │     config := loadConfig()                         │┃
+│                              │ │     if err := run(config); err != nil {            │┃
+│                              │ │         fmt.Fprintln(os.Stderr, err)               ││
+│                              │ │         os.Exit(1)                                 ││
+│                              │ │     }                                              ││
+│                              │ │ }                                                  ││
+│                              │ │                                                    ││
+│                              │ │ func loadConfig() Config {                         ││
+│                              │ │     return Config{Mode: "development"}             ││
+│                              │ │                                                    │
+╰──────────────────────────────╯ ╰────────────────────────────────────────────────────╯
+────────────────────────────────────────────────────────── tab focus · / filter · q quit
+
+## focus filter
+command: no
+ BROWSER  mock workspace                                                        / filter
+▸Workspace   Recent   Pinned
+╭ Files ───────────────────────╮ ╭ Preview ───────────────────────────────────────────╮
+│                              │ │                                                    │
+│ > filter files               │ │ package main                                       │┃
+│ ▎ cmd/gotui/main.go          │ │                                                    │┃
+│   layout/layout.go           │ │ import (                                           │┃
+│   list/list.go               │ │     "fmt"                                          │┃
+│   examples/browser/main.go   │ │     "os"                                           │┃
+│   examples/frame/main.go     │ │ )                                                  │┃
+│   agentic/chat/chat.go       │ │                                                    │┃
+│   agentic/toolcall/toolcall… │ │ func main() {                                      │┃
+│                              │ │     config := loadConfig()                         │┃
+│                              │ │     if err := run(config); err != nil {            │┃
+│                              │ │         fmt.Fprintln(os.Stderr, err)               ││
+│                              │ │         os.Exit(1)                                 ││
+│                              │ │     }                                              ││
+│                              │ │ }                                                  ││
+│                              │ │                                                    ││
+│                              │ │ func loadConfig() Config {                         ││
+│                              │ │     return Config{Mode: "development"}             ││
+│                              │ │                                                    │
+╰──────────────────────────────╯ ╰────────────────────────────────────────────────────╯
+────────────────────────────────────────────────────────── tab focus · / filter · q quit
+
+## filter main
+command: no
+ BROWSER  mock workspace                                                        / filter
+▸Workspace   Recent   Pinned
+╭ Files ───────────────────────╮ ╭ Preview ───────────────────────────────────────────╮
+│                              │ │                                                    │
+│ > m                          │ │ package main                                       │┃
+│ ▎ cmd/gotui/main.go          │ │                                                    │┃
+│   examples/browser/main.go   │ │ import (                                           │┃
+│   examples/frame/main.go     │ │     "fmt"                                          │┃
+│                              │ │     "os"                                           │┃
+│                              │ │ )                                                  │┃
+│                              │ │                                                    │┃
+│                              │ │ func main() {                                      │┃
+│                              │ │     config := loadConfig()                         │┃
+│                              │ │     if err := run(config); err != nil {            │┃
+│                              │ │         fmt.Fprintln(os.Stderr, err)               ││
+│                              │ │         os.Exit(1)                                 ││
+│                              │ │     }                                              ││
+│                              │ │ }                                                  ││
+│                              │ │                                                    ││
+│                              │ │ func loadConfig() Config {                         ││
+│                              │ │     return Config{Mode: "development"}             ││
+│                              │ │                                                    │
+╰──────────────────────────────╯ ╰────────────────────────────────────────────────────╯
+────────────────────────────────────────────────────────── tab focus · / filter · q quit
+
+## focus files
+command: no
+ BROWSER  mock workspace                                                        / filter
+▸Workspace   Recent   Pinned
+╭ Files ───────────────────────╮ ╭ Preview ───────────────────────────────────────────╮
+│                              │ │                                                    │
+│ > m                          │ │ package main                                       │┃
+│ ▌ cmd/gotui/main.go          │ │                                                    │┃
+│   examples/browser/main.go   │ │ import (                                           │┃
+│   examples/frame/main.go     │ │     "fmt"                                          │┃
+│                              │ │     "os"                                           │┃
+│                              │ │ )                                                  │┃
+│                              │ │                                                    │┃
+│                              │ │ func main() {                                      │┃
+│                              │ │     config := loadConfig()                         │┃
+│                              │ │     if err := run(config); err != nil {            │┃
+│                              │ │         fmt.Fprintln(os.Stderr, err)               ││
+│                              │ │         os.Exit(1)                                 ││
+│                              │ │     }                                              ││
+│                              │ │ }                                                  ││
+│                              │ │                                                    ││
+│                              │ │ func loadConfig() Config {                         ││
+│                              │ │     return Config{Mode: "development"}             ││
+│                              │ │                                                    │
+╰──────────────────────────────╯ ╰────────────────────────────────────────────────────╯
+────────────────────────────────────────────────────────── tab focus · / filter · q quit
+
+## focus preview
+command: no
+ BROWSER  mock workspace                                                        / filter
+▸Workspace   Recent   Pinned
+╭ Files ───────────────────────╮ ╭ Preview ───────────────────────────────────────────╮
+│                              │ │                                                    │
+│ > m                          │ │ package main                                       │┃
+│ ▎ cmd/gotui/main.go          │ │                                                    │┃
+│   examples/browser/main.go   │ │ import (                                           │┃
+│   examples/frame/main.go     │ │     "fmt"                                          │┃
+│                              │ │     "os"                                           │┃
+│                              │ │ )                                                  │┃
+│                              │ │                                                    │┃
+│                              │ │ func main() {                                      │┃
+│                              │ │     config := loadConfig()                         │┃
+│                              │ │     if err := run(config); err != nil {            │┃
+│                              │ │         fmt.Fprintln(os.Stderr, err)               ││
+│                              │ │         os.Exit(1)                                 ││
+│                              │ │     }                                              ││
+│                              │ │ }                                                  ││
+│                              │ │                                                    ││
+│                              │ │ func loadConfig() Config {                         ││
+│                              │ │     return Config{Mode: "development"}             ││
+│                              │ │                                                    │
+╰──────────────────────────────╯ ╰────────────────────────────────────────────────────╯
+────────────────────────────────────────────────────────── tab focus · / filter · q quit
+
+## scroll preview
+command: no
+ BROWSER  mock workspace                                                        / filter
+▸Workspace   Recent   Pinned
+╭ Files ───────────────────────╮ ╭ Preview ───────────────────────────────────────────╮
+│                              │ │                                                    │
+│ > m                          │ │         fmt.Fprintln(os.Stderr, err)               ││
+│ ▎ cmd/gotui/main.go          │ │         os.Exit(1)                                 ││
+│   examples/browser/main.go   │ │     }                                              ││
+│   examples/frame/main.go     │ │ }                                                  ││
+│                              │ │                                                    ││
+│                              │ │ func loadConfig() Config {                         ││
+│                              │ │     return Config{Mode: "development"}             ││
+│                              │ │ }                                                  │┃
+│                              │ │                                                    │┃
+│                              │ │ func run(config Config) error {                    │┃
+│                              │ │     fmt.Println(config.Mode)                       │┃
+│                              │ │     return nil                                     │┃
+│                              │ │ }                                                  │┃
+│                              │ │                                                    │┃
+│                              │ │ type Config struct {                               │┃
+│                              │ │     Mode string                                    │┃
+│                              │ │ }                                                  │┃
+│                              │ │                                                    │
+╰──────────────────────────────╯ ╰────────────────────────────────────────────────────╯
+────────────────────────────────────────────────────────── tab focus · / filter · q quit

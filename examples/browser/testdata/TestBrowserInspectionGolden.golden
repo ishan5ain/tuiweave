@@ -1,0 +1,228 @@
+{
+  "id": "browser",
+  "kind": "application",
+  "bounds": {
+    "x": 0,
+    "y": 0,
+    "width": 88,
+    "height": 24
+  },
+  "focused": false,
+  "children": [
+    {
+      "id": "tabs",
+      "kind": "tabs",
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 88,
+        "height": 1
+      },
+      "label": "Workspace",
+      "focused": true,
+      "selected": {
+        "index": 0,
+        "count": 3,
+        "label": "Workspace"
+      },
+      "actions": [
+        {
+          "id": "tabs.focus",
+          "label": "Focus tabs",
+          "enabled": false
+        },
+        {
+          "id": "tabs.blur",
+          "label": "Blur tabs",
+          "enabled": true
+        },
+        {
+          "id": "tabs.next",
+          "label": "Next tab",
+          "description": "Select the next tab",
+          "enabled": true
+        },
+        {
+          "id": "tabs.previous",
+          "label": "Previous tab",
+          "description": "Select the previous tab",
+          "enabled": false
+        },
+        {
+          "id": "tabs.first",
+          "label": "First tab",
+          "enabled": false
+        },
+        {
+          "id": "tabs.last",
+          "label": "Last tab",
+          "enabled": true
+        },
+        {
+          "id": "tabs.select.workspace",
+          "label": "Select Workspace",
+          "description": "Select this tab",
+          "enabled": true
+        },
+        {
+          "id": "tabs.select.recent",
+          "label": "Select Recent",
+          "description": "Select this tab",
+          "enabled": true
+        },
+        {
+          "id": "tabs.select.pinned",
+          "label": "Select Pinned",
+          "description": "Select this tab",
+          "enabled": true
+        }
+      ],
+      "attributes": {
+        "selected_id": "workspace",
+        "tab_count": "3",
+        "visible_start": "0"
+      }
+    },
+    {
+      "id": "filter",
+      "kind": "textinput",
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 28,
+        "height": 1
+      },
+      "label": "> ",
+      "focused": false,
+      "actions": [
+        {
+          "id": "filter.focus",
+          "label": "Focus input",
+          "enabled": true
+        },
+        {
+          "id": "filter.blur",
+          "label": "Blur input",
+          "enabled": false
+        },
+        {
+          "id": "filter.clear",
+          "label": "Clear input",
+          "enabled": false
+        }
+      ],
+      "attributes": {
+        "cursor": "0",
+        "empty": "true",
+        "placeholder": "filter files"
+      }
+    },
+    {
+      "id": "files",
+      "kind": "list",
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 28,
+        "height": 16
+      },
+      "focused": false,
+      "selected": {
+        "index": 0,
+        "count": 7,
+        "label": "cmd/gotui/main.go"
+      },
+      "scroll": {
+        "total": 7,
+        "visible": 16,
+        "offset": 0
+      },
+      "actions": [
+        {
+          "id": "files.focus",
+          "label": "Focus list",
+          "enabled": true
+        },
+        {
+          "id": "files.blur",
+          "label": "Blur list",
+          "enabled": false
+        },
+        {
+          "id": "files.next",
+          "label": "Next item",
+          "description": "Select the next visible item",
+          "enabled": true
+        },
+        {
+          "id": "files.previous",
+          "label": "Previous item",
+          "description": "Select the previous visible item",
+          "enabled": false
+        },
+        {
+          "id": "files.first",
+          "label": "First item",
+          "enabled": false
+        },
+        {
+          "id": "files.last",
+          "label": "Last item",
+          "enabled": true
+        }
+      ],
+      "attributes": {
+        "filtered_count": "7",
+        "item_count": "7"
+      }
+    },
+    {
+      "id": "preview",
+      "kind": "viewport",
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 49,
+        "height": 17
+      },
+      "focused": false,
+      "scroll": {
+        "total": 27,
+        "visible": 17,
+        "offset": 0
+      },
+      "actions": [
+        {
+          "id": "preview.focus",
+          "label": "Focus viewport",
+          "enabled": true
+        },
+        {
+          "id": "preview.blur",
+          "label": "Blur viewport",
+          "enabled": false
+        },
+        {
+          "id": "preview.scroll_up",
+          "label": "Scroll up",
+          "enabled": false
+        },
+        {
+          "id": "preview.scroll_down",
+          "label": "Scroll down",
+          "enabled": true
+        },
+        {
+          "id": "preview.scroll_top",
+          "label": "Scroll to top",
+          "enabled": false
+        },
+        {
+          "id": "preview.scroll_bottom",
+          "label": "Scroll to bottom",
+          "enabled": true
+        }
+      ]
+    }
+  ]
+}

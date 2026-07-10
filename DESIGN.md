@@ -351,6 +351,7 @@ github.com/ishansain/gotui
 │   ├── frame/       framing/decorations/tabs/menu/toolbar/splitpane/stack/progress/toggle/button composition example, golden-tested
 │   ├── palette/     filtered command discovery and activation example, golden-tested
 │   ├── ops/         non-agentic operations-console pressure test, golden-tested
+│   ├── browser/     filterable file list + scrollable preview, golden-tested
 │   └── table/       git-status mock: table + diffview + scrollbars, golden-tested
 ├── .github/workflows/ci.yml   build + vet + test + tidy check
 ├── AGENTS.md        the agent-facing rulebook

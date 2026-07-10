@@ -1,0 +1,24 @@
+ BROWSER  mock workspace                                                        / filter
+▸Workspace   Recent   Pinned
+╭ Files ───────────────────────╮ ╭ Preview ───────────────────────────────────────────╮
+│                              │ │                                                    │
+│ > filter files               │ │ package main                                       │┃
+│ ▎ cmd/gotui/main.go          │ │                                                    │┃
+│   layout/layout.go           │ │ import (                                           │┃
+│   list/list.go               │ │     "fmt"                                          │┃
+│   examples/browser/main.go   │ │     "os"                                           │┃
+│   examples/frame/main.go     │ │ )                                                  │┃
+│   agentic/chat/chat.go       │ │                                                    │┃
+│   agentic/toolcall/toolcall… │ │ func main() {                                      │┃
+│                              │ │     config := loadConfig()                         │┃
+│                              │ │     if err := run(config); err != nil {            │┃
+│                              │ │         fmt.Fprintln(os.Stderr, err)               ││
+│                              │ │         os.Exit(1)                                 ││
+│                              │ │     }                                              ││
+│                              │ │ }                                                  ││
+│                              │ │                                                    ││
+│                              │ │ func loadConfig() Config {                         ││
+│                              │ │     return Config{Mode: "development"}             ││
+│                              │ │                                                    │
+╰──────────────────────────────╯ ╰────────────────────────────────────────────────────╯
+────────────────────────────────────────────────────────── tab focus · / filter · q quit

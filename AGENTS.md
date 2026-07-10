@@ -2,7 +2,7 @@
 
 Rules for writing code **with** gotui (apps) and **in** gotui (components).
 This file is deliberately short; recipes link into the runnable example apps
-(`examples/statusbar`, `examples/demo`, `examples/chat`, `examples/frame`, `examples/palette`, `examples/ops`). Architecture
+(`examples/statusbar`, `examples/demo`, `examples/chat`, `examples/frame`, `examples/palette`, `examples/ops`, `examples/browser`). Architecture
 rationale lives in [DESIGN.md](DESIGN.md) — read it before adding a
 component; you don't need it to build an app.
 
@@ -510,6 +510,9 @@ sb.SetRight(statusbar.Segment{Text: "12:4", Kind: statusbar.KindMuted})
 
 All three follow the same shape — `SetSize`, `Focus`/`Blur`, vim-ish keys
 (`j/k`, `g/G`, `pgup/pgdown`) handled only while focused:
+
+For a complete filterable-list plus scrollable-preview composition, see
+[examples/browser](examples/browser/main.go).
 
 ```go
 vp := viewport.New(theme); vp.SetContent(text)        // pre-styled ok
