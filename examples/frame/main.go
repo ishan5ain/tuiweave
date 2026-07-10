@@ -19,6 +19,7 @@ import (
 	"github.com/ishansain/gotui/frame"
 	"github.com/ishansain/gotui/layout"
 	"github.com/ishansain/gotui/menu"
+	"github.com/ishansain/gotui/progress"
 	"github.com/ishansain/gotui/splitpane"
 	"github.com/ishansain/gotui/stack"
 	"github.com/ishansain/gotui/tabs"
@@ -31,6 +32,7 @@ type model struct {
 	nav           tabs.Model
 	actions       menu.Model
 	tools         toolbar.Model
+	load          progress.Model
 	fm            focus.Manager
 }
 
@@ -55,7 +57,11 @@ func newModel() model {
 		menu.Item{ID: "delete", Label: "Delete workspace", Description: "Destructive action", Disabled: true},
 		menu.Item{ID: "quit", Label: "Quit", Description: "Close the application"},
 	)
-	m := model{theme: theme, nav: nav, actions: actions, tools: tools, fm: focus.NewManager(3)}
+	load := progress.New(theme)
+	load.SetLabel("Indexing")
+	load.SetPercent(0.72)
+	load.SetStatus(progress.StatusInfo)
+	m := model{theme: theme, nav: nav, actions: actions, tools: tools, load: load, fm: focus.NewManager(3)}
 	m.fm.Apply(&m.nav, &m.actions, &m.tools)
 	return m
 }
@@ -115,6 +121,7 @@ func (m *model) layout() {
 	layout.Horizontal(layout.Fill(1), layout.Fill(1)).WithSpacing(1).Split(body).Assign(&jobs, &services)
 	m.actions.SetSize(max(0, jobs.Dx()-4), max(0, jobs.Dy()-4))
 	m.tools.SetSize(max(0, services.Dx()-4), 1)
+	m.load.SetSize(max(0, services.Dx()-4), 1)
 }
 
 func (m model) render() string {
@@ -154,7 +161,7 @@ func (m model) render() string {
 		frame.PanelOptions{Title: "Actions", Focused: m.actions.Focused(), Padding: 1},
 	)
 	servicesView := frame.Panel(m.theme,
-		"api        "+frame.Badge(m.theme, "healthy", frame.BadgeSuccess)+"\nworker     "+frame.Badge(m.theme, "busy", frame.BadgeInfo)+"\n"+m.tools.View(),
+		"api        "+frame.Badge(m.theme, "healthy", frame.BadgeSuccess)+"\nworker     "+frame.Badge(m.theme, "busy", frame.BadgeInfo)+"\n"+m.tools.View()+"\n"+m.load.View(),
 		services.Dx(),
 		frame.PanelOptions{Title: "Services", Focused: m.tools.Focused(), Padding: 1},
 	)

@@ -325,6 +325,7 @@ github.com/ishansain/gotui
 ├── toolbar/          focusable horizontal action choices
 ├── splitpane/        width-aware sibling-view composition
 ├── stack/             width-aware vertical chrome composition
+├── progress/          passive task progress indicator
 ├── statusbar/  list/  viewport/  textinput/  textarea/  table/  help/  spinner/
 │                    generic primitives, one package each
 ├── scrollbar/       one-column bar for anything implementing Scrollable
@@ -342,7 +343,7 @@ github.com/ishansain/gotui
 │   ├── statusbar/   canonical single-component wiring
 │   ├── demo/        multi-pane app (Phase 2 exit criterion), golden-tested
 │   ├── chat/        mock agentic session (Phase 3 exit criterion), golden-tested
-│   ├── frame/       framing/decorations/tabs/menu/toolbar/splitpane/stack composition example, golden-tested
+│   ├── frame/       framing/decorations/tabs/menu/toolbar/splitpane/stack/progress composition example, golden-tested
 │   └── table/       git-status mock: table + diffview + scrollbars, golden-tested
 ├── .github/workflows/ci.yml   build + vet + test + tidy check
 ├── AGENTS.md        the agent-facing rulebook

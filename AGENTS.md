@@ -20,6 +20,7 @@ and example before reading the detailed recipes below.
 - Toolbars: `github.com/ishansain/gotui/toolbar` (horizontal action strips)
 - Split panes: `github.com/ishansain/gotui/splitpane` (width-aware view composition)
 - Stacked chrome: `github.com/ishansain/gotui/stack` (headers, sections, footers)
+- Progress: `github.com/ishansain/gotui/progress` (passive task indicators)
 - Testing: `github.com/ishansain/gotui/snaptest` (golden files)
 - Domain packages: `gotui/agentic/…` (markdown, chat, toolcall, diffview,
   permission, usagebar) — optional, backend-agnostic layers built on the
@@ -340,6 +341,28 @@ view := stack.Vertical(theme, width, stack.Options{Gap: 0},
   decisions.
 - Prefer callbacks over manual newline concatenation when sections can be
   conditionally present or have pre-styled, width-aware content.
+
+### progress
+
+Use `progress` for a passive task or operation indicator. The application owns
+the work state and updates the value; the component owns themed status styling,
+label truncation, and exact-width rendering.
+
+```go
+p := progress.New(theme)
+p.SetSize(area.Dx(), 1)
+p.SetLabel("Indexing")
+p.SetPercent(0.72)
+p.SetStatus(progress.StatusInfo)
+```
+
+- `SetPercent` clamps values to `[0, 1]`; `SetStatus` selects semantic
+  `Normal`, `Success`, `Warning`, `Danger`, or `Info` styling.
+- The indicator is non-focusable and handles no messages. It is suitable for
+  file operations, dashboards, and service panels; use `agentic/usagebar` for
+  model/token/cost/context session metrics.
+- It renders one exact-width row and gives the label and percentage space back
+  to the bar at narrow widths. Do not pre-truncate the label in the app.
 
 ### statusbar
 

@@ -5,9 +5,9 @@
 │ ▸ Open workspace               │││ api         healthy           │
 │   Refresh data                 │││ worker      busy              │
 │   Delete workspace             │││ ▸Refresh   Export   Delete    │
-│   Quit                         │││                               │
+│   Quit                         │││ Indexing ██████████░░░░░  72% │
+│                                │││                               │
 │                                ││╰───────────────────────────────╯
-│                                ││
 │                                ││
 ╰────────────────────────────────╯│
 ───────────────────────────────────────────────────────────────────

@@ -211,8 +211,12 @@ and useful in at least two unrelated application types.
       `examples/frame` uses it for both the header and root frame.
 - [ ] Structural components: additional layout patterns driven by reference
       applications
-- [ ] Common controls: toggles, buttons, progress indicators, selectable
-      actions, and command-palette foundations
+- [ ] Common controls: toggles, buttons, selectable actions, and command-palette
+      foundations
+- [x] **Progress indicator (initial slice)**: `gotui/progress` provides a
+      passive exact-width task indicator with label truncation, clamped values,
+      semantic status roles, inspection metadata, golden/width tests, and
+      coverage in `examples/frame`.
 - [ ] Width-aware composition helpers for truncation, alignment, fill zones,
       and graceful narrow-terminal behavior
 - [ ] Reference example apps beyond agentic UIs: a file browser, dashboard, or

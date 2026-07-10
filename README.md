@@ -18,9 +18,10 @@ and coding agents. Applications own orchestration and domain state; gotui owns
 reusable primitives and optional domain kits. Agentic UIs are a demanding
 proving ground, not the boundary of the core library.
 
-**Status: pre-v1.** Phases 0–3.5 are complete, and Phase 4 has started with
-the first general-purpose framing slice. APIs still change freely while the
-agent-operable foundations and broader composition layer evolve.
+**Status: pre-v1.** Phases 0–3.5 are complete, and Phase 4 is underway with
+framing, navigation, action, pane/stack composition, and common-control
+slices. APIs still change freely while the agent-operable foundations and
+broader composition layer evolve.
 
 ## What's here
 
@@ -40,6 +41,7 @@ backend protocols, and session lifecycle.
 | `gotui/toolbar` | Focusable horizontal action strip with disabled entries and activation messages |
 | `gotui/splitpane` | Width-aware horizontal pane composition with natural-height alignment and dividers |
 | `gotui/stack` | Width-aware vertical section composition for headers, bodies, separators, and footers |
+| `gotui/progress` | Passive, exact-width task progress indicator with semantic status roles |
 | `gotui/statusbar` | One-line status bar with themed left/right segments |
 | `gotui/list` | Scrolling list with selection cursor and filtering (original-index selection) |
 | `gotui/viewport` | Scrollable window over pre-rendered content (keys + mouse wheel) |
