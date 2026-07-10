@@ -237,10 +237,17 @@ func (m *model) layout() {
 	actionContent := frame.PanelContentRect(actions, frame.PanelOptions{Padding: 1})
 	m.actions.SetSize(actionContent.Dx(), actionContent.Dy())
 	operationContent := frame.PanelContentRect(operations, frame.PanelOptions{Padding: 1})
-	m.rows.SetSize(operationContent.Dx(), max(3, operationContent.Dy()-3))
-	m.load.SetSize(operationContent.Dx(), 1)
-	m.autoRefresh.SetSize(operationContent.Dx(), 1)
-	m.openLogs.SetSize(operationContent.Dx(), 1)
+	var rowsArea, loadArea, refreshArea, openArea layout.Rect
+	layout.Vertical(
+		layout.Fill(1),
+		layout.Len(1),
+		layout.Len(1),
+		layout.Len(1),
+	).Split(operationContent).Assign(&rowsArea, &loadArea, &refreshArea, &openArea)
+	m.rows.SetSize(rowsArea.Dx(), rowsArea.Dy())
+	m.load.SetSize(loadArea.Dx(), loadArea.Dy())
+	m.autoRefresh.SetSize(refreshArea.Dx(), refreshArea.Dy())
+	m.openLogs.SetSize(openArea.Dx(), openArea.Dy())
 
 	m.status.SetSize(footer.Dx(), footer.Dy())
 	paletteWidth := min(56, max(16, m.width-4))

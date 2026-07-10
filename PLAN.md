@@ -219,9 +219,13 @@ and useful in at least two unrelated application types.
       the parent index, isolates background components while a conditional or
       modal group is active, and remains pointer-free/copy-safe; `examples/ops`
       uses it for the command palette.
+- [x] **Dynamic panel sections (reference resolution)**: `examples/ops` uses
+      `frame.PanelContentRect` plus `layout.Vertical(Fill/Len...)` to allocate
+      a flexible table beside fixed control rows, without a new stack-specific
+      sizing abstraction.
 - [ ] Structural components: additional layout patterns driven by reference
-      applications. The ops pressure test still exposes a need to evaluate
-      dynamic panel stacks before adding another helper.
+      applications; add another helper only when a distinct recurring pattern
+      cannot be expressed by `layout`, `stack`, or `splitpane`.
 - [ ] Common controls: selectable actions. Menu, toolbar, and palette now share
       behavior informally; the next refinement should determine whether a
       common action definition/recipe reduces duplication without forcing their
