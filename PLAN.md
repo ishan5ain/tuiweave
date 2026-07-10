@@ -193,7 +193,11 @@ and useful in at least two unrelated application types.
       focus-gated sibling-view navigation, stable IDs, narrow-width handling,
       semantic selection actions, inspection metadata, and scenario goldens;
       `examples/frame` demonstrates it in a dashboard shell.
-- [ ] Structural components: menus, toolbars, split panes, and stacked
+- [x] **Action menus (initial slice)**: `gotui/menu` provides focus-gated
+      vertical action choices, disabled-item skipping, activation commands,
+      stable IDs, inspection/actions, scrolling, and scenario goldens;
+      `examples/frame` demonstrates it beside tabs and framed panels.
+- [ ] Structural components: toolbars, split panes, and stacked
       headers/footers
 - [ ] Common controls: toggles, buttons, progress indicators, selectable
       actions, and command-palette foundations

@@ -1,11 +1,14 @@
  OPS  service overview
 ▸Overview   Activity   Settings
-╭ Jobs ──────────────────────────╮ ╭ Services ─────────────────────╮
+╭ Actions ───────────────────────╮ ╭ Services ─────────────────────╮
 │                                │ │                               │
-│ queue      3                   │ │ api         healthy           │
-│ completed  18                  │ │ worker      busy              │
-│ failed      0                  │ │                               │
-│                                │ ╰───────────────────────────────╯
+│ ▸ Open workspace               │ │ api         healthy           │
+│   Refresh data                 │ │ worker      busy              │
+│   Delete workspace             │ │                               │
+│   Quit                         │ ╰───────────────────────────────╯
+│                                │
+│                                │
+│                                │
 ╰────────────────────────────────╯
 ───────────────────────────────────────────────────────────────────
 q quit

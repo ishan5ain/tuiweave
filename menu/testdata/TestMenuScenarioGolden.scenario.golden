@@ -1,0 +1,20 @@
+## initial
+command: no
+▸ Open workspace
+  Refresh data
+  Delete workspace
+  Quit
+
+## next enabled action
+command: no
+  Open workspace
+▸ Refresh data
+  Delete workspace
+  Quit
+
+## activate
+command: yes
+  Open workspace
+▸ Refresh data
+  Delete workspace
+  Quit

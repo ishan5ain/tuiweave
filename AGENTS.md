@@ -16,6 +16,7 @@ and example before reading the detailed recipes below.
 - Layout: `github.com/ishansain/gotui/layout` (flexbox-like constraints → rects)
 - Composition: `github.com/ishansain/gotui/frame` (width-aware themed decoration)
 - Navigation: `github.com/ishansain/gotui/tabs` (focusable sibling-view tabs)
+- Actions: `github.com/ishansain/gotui/menu` (focusable action choices)
 - Testing: `github.com/ishansain/gotui/snaptest` (golden files)
 - Domain packages: `gotui/agentic/…` (markdown, chat, toolcall, diffview,
   permission, usagebar) — optional, backend-agnostic layers built on the
@@ -234,6 +235,36 @@ nav.Focus()
   and drops earlier tabs from the visible window as selection moves right.
 - The tab strip is navigation chrome, not a container for the tab bodies; use
   the app's layout and render the selected view separately.
+
+### menu
+
+Use `menu` for a vertical set of application-owned actions. Disabled items
+remain visible and are skipped by navigation. `enter` emits a typed
+`menu.SelectedMsg` command. Full composition coverage is in
+[examples/frame](examples/frame/main.go).
+
+```go
+actions := menu.New(theme)
+actions.SetItems(
+    menu.Item{ID: "open", Label: "Open workspace"},
+    menu.Item{ID: "refresh", Label: "Refresh data"},
+    menu.Item{ID: "delete", Label: "Delete workspace", Disabled: true},
+)
+actions.SetSize(area.Dx(), area.Dy())
+actions.Focus()
+
+case menu.SelectedMsg:
+    // The app owns the operation associated with msg.ID.
+```
+
+- `menu` handles up/down, `j`/`k`, page navigation, `home`/`g`, `end`/`G`,
+  and enter only while focused; global tab order remains app-owned.
+- Keep IDs stable so `SelectedID()`, `SelectedMsg`, and semantic
+  `select.<id>` actions remain useful to tests and agents.
+- Always reassign the returned model and collect the command from `Update`;
+  activation is intentionally a command-producing transition.
+- Use `Description` for inspection/action metadata. The menu renders one-line
+  labels; application-owned detail belongs beside or below it.
 
 ### statusbar
 

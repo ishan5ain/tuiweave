@@ -1,0 +1,4 @@
+1: "▸ Open workspace        " [fg=Text bg=SelectionBg]
+2: "  Refresh data          " [fg=Text]
+3: "  Delete workspace      " [fg=TextFaint]
+4: "  Quit                  " [fg=Text]
