@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	tea "charm.land/bubbletea/v2"
+	"github.com/charmbracelet/x/ansi"
 
 	"github.com/ishansain/gotui"
 	"github.com/ishansain/gotui/inspect"
@@ -79,6 +80,29 @@ func TestSoftWrapGolden(t *testing.T) {
 	ta = typeString(ta, "abcdefghij0123456789xyz")
 	if got := ta.ContentHeight(); got != 3 {
 		t.Fatalf("ContentHeight = %d, want 3 (23 runes at wrap 10)", got)
+	}
+	snaptest.Snap(t, ta.View())
+}
+
+func TestCellWidthWrapAndCursor(t *testing.T) {
+	ta := newFocused(8, 4) // cell wrap width 6 after the prompt
+	ta.SetValue("界abcd")
+	if got := ta.ContentHeight(); got != 2 {
+		t.Fatalf("wide ContentHeight = %d, want 2 for an exact cell-width row", got)
+	}
+	rows := ta.visualRows()
+	if len(rows) != 2 || rows[0].width != 6 || rows[1].width != 0 {
+		t.Fatalf("wide visual rows = %#v, want widths 6, 0", rows)
+	}
+
+	ta.SetValue("e\u0301abcd")
+	if got := ta.ContentHeight(); got != 1 {
+		t.Fatalf("combining ContentHeight = %d, want 1", got)
+	}
+	for _, line := range strings.Split(ta.View(), "\n") {
+		if got := ansi.StringWidth(line); got != 8 {
+			t.Fatalf("rendered cell width = %d, want 8 for %q", got, line)
+		}
 	}
 	snaptest.Snap(t, ta.View())
 }

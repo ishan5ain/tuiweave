@@ -438,9 +438,10 @@ theme API from growing per-component.
   before any external consumer.
 - **Text editing depth:** `textarea` now has an initial tier-2 slice for
   logical-rune selections, select-all/replacement, and bounded undo/redo on top
-  of tier-1 soft wrap, visual-row movement, line joins, and paste. Still open:
-  kill ring, word-wise movement, IME, and wide-rune (CJK) column math — the
-  wrap logic currently counts runes, not cells.
+  of tier-1 soft wrap, visual-row movement, line joins, and paste. Its display
+  geometry now uses grapheme clusters and terminal-cell widths for wide and
+  combining characters. Still open: kill ring, word-wise movement, IME, and a
+  broader cell-width audit across text-bearing components.
 - **Streaming markdown renderer design:** incremental block parser vs
   full-document reparse with damage hints — decide when glamour's limits are
   measured, not guessed.

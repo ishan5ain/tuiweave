@@ -19,6 +19,7 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 	lipgloss "charm.land/lipgloss/v2"
+	"github.com/charmbracelet/x/ansi"
 
 	"github.com/ishansain/gotui"
 )
@@ -148,7 +149,7 @@ func (m *Model) insertStringRaw(s string) {
 
 // wrapWidth is the usable text width after the prompt gutter.
 func (m Model) wrapWidth() int {
-	return m.width - len([]rune(m.Prompt))
+	return m.width - ansi.StringWidth(m.Prompt)
 }
 
 // vrow is one visual (soft-wrapped) display row.
@@ -156,12 +157,13 @@ type vrow struct {
 	line     int // logical line index
 	startCol int // rune offset of this chunk within the line
 	text     []rune
+	width    int // terminal-cell width of text
 }
 
-// visualRows wraps the logical lines at the current width. A logical line
-// whose length is an exact positive multiple of the wrap width gets a
-// trailing empty row when the cursor sits at its end, so the cursor always
-// has a cell to occupy.
+// visualRows wraps the logical lines at the current cell width. Grapheme
+// clusters stay together, so wide and combining characters are never split
+// across display rows. A logical line whose final row exactly fills the
+// width gets a trailing empty row when the cursor sits at its end.
 func (m Model) visualRows() []vrow {
 	w := m.wrapWidth()
 	if w <= 0 {
@@ -169,18 +171,36 @@ func (m Model) visualRows() []vrow {
 	}
 	var rows []vrow
 	for li, line := range m.lines {
-		n := len(line)
-		for start := 0; ; start += w {
-			end := min(start+w, n)
-			rows = append(rows, vrow{line: li, startCol: start, text: line[start:end]})
-			if end >= n {
-				// Cursor at the exact end of a width-multiple line lives on
-				// an extra empty row.
-				if n > 0 && n%w == 0 && m.row == li && m.col == n {
-					rows = append(rows, vrow{line: li, startCol: n, text: nil})
-				}
-				break
+		clusters := clustersOf(line)
+		if len(clusters) == 0 {
+			rows = append(rows, vrow{line: li})
+			continue
+		}
+		start, rowWidth := 0, 0
+		for _, cluster := range clusters {
+			clusterWidth := cluster.width
+			if clusterWidth > w {
+				clusterWidth = w
 			}
+			if rowWidth > 0 && rowWidth+clusterWidth > w {
+				rows = append(rows, vrow{
+					line:     li,
+					startCol: start,
+					text:     line[start:cluster.start],
+					width:    rowWidth,
+				})
+				start, rowWidth = cluster.start, 0
+			}
+			rowWidth += clusterWidth
+		}
+		rows = append(rows, vrow{
+			line:     li,
+			startCol: start,
+			text:     line[start:],
+			width:    rowWidth,
+		})
+		if rowWidth == w && m.row == li && m.col == len(line) {
+			rows = append(rows, vrow{line: li, startCol: len(line)})
 		}
 	}
 	return rows
@@ -198,7 +218,7 @@ func (m Model) cursorVisual(rows []vrow) (idx, vcol int) {
 			if m.col == r.startCol+len(r.text) && i+1 < len(rows) && rows[i+1].line == m.row && rows[i+1].startCol == m.col {
 				continue
 			}
-			return i, m.col - r.startCol
+			return i, min(r.width, cellWidth(r.text[:m.col-r.startCol]))
 		}
 	}
 	return max(0, len(rows)-1), 0
@@ -479,15 +499,15 @@ func (m Model) View() string {
 func (m Model) renderRow(r vrow, vi, cursorIdx, vcol int) string {
 	gutter := m.promptStyle.Render(m.Prompt)
 	if vi != 0 {
-		gutter = strings.Repeat(" ", len([]rune(m.Prompt)))
+		gutter = strings.Repeat(" ", ansi.StringWidth(m.Prompt))
 	}
 
 	var b strings.Builder
 	b.WriteString(gutter)
 	b.WriteString(m.renderText(r, vi, cursorIdx, vcol))
 
-	used := len([]rune(m.Prompt)) + len(r.text)
-	if m.focused && vi == cursorIdx && vcol >= len(r.text) {
+	used := ansi.StringWidth(m.Prompt) + r.width
+	if m.focused && vi == cursorIdx && m.col == r.startCol+len(r.text) {
 		used++
 	}
 	if pad := m.width - used; pad > 0 {
@@ -517,41 +537,54 @@ func (m Model) renderText(r vrow, vi, cursorIdx, vcol int) string {
 	runStart, runKind := 0, normalRun
 	flush := func(end int) {
 		if end > runStart {
-			b.WriteString(styleFor(runKind).Render(string(r.text[runStart:end])))
+			text := string(r.text[runStart:end])
+			if width := cellWidth(r.text[runStart:end]); width > m.wrapWidth() {
+				text = strings.Repeat(" ", m.wrapWidth())
+			}
+			b.WriteString(styleFor(runKind).Render(text))
 		}
 		runStart = end
 	}
-	for i := range r.text {
+	cursorOffset := -1
+	if m.focused && vi == cursorIdx {
+		cursorOffset = m.col - r.startCol
+	}
+	for _, cluster := range clustersOf(r.text) {
 		kind := normalRun
-		if m.selectionContains(r.line, r.startCol+i) {
-			kind = selectionRun
+		for i := cluster.start; i < cluster.end; i++ {
+			if m.selectionContains(r.line, r.startCol+i) {
+				kind = selectionRun
+				break
+			}
 		}
-		if m.focused && vi == cursorIdx && i == vcol {
+		if cursorOffset >= cluster.start && cursorOffset < cluster.end {
 			kind = cursorRun
 		}
-		if i > runStart && kind != runKind {
-			flush(i)
+		if cluster.start > runStart && kind != runKind {
+			flush(cluster.start)
 		}
 		runKind = kind
 	}
 	flush(len(r.text))
-	if m.focused && vi == cursorIdx && vcol >= len(r.text) {
+	if cursorOffset == len(r.text) {
 		b.WriteString(m.cursorStyle.Render(" "))
 	}
 	return b.String()
 }
 
 func (m Model) renderPlaceholder(w int) string {
-	ph := []rune(m.Placeholder)
-	if len(ph) > w {
-		ph = ph[:w]
-	}
+	ph := ansi.Truncate(m.Placeholder, w, "")
 	prompt := m.promptStyle.Render(m.Prompt)
 	if !m.focused {
-		return prompt + m.placeholderStyle.Render(string(ph))
+		return prompt + m.placeholderStyle.Render(ph)
 	}
-	if len(ph) == 0 {
+	if ph == "" {
 		return prompt + m.cursorStyle.Render(" ")
 	}
-	return prompt + m.cursorStyle.Render(string(ph[0])) + m.placeholderStyle.Render(string(ph[1:]))
+	cluster, width := ansi.FirstGraphemeCluster(ph, ansi.GraphemeWidth)
+	if width == 0 {
+		return prompt + m.cursorStyle.Render(" ") + m.placeholderStyle.Render(ph)
+	}
+	remaining := ansi.Truncate(ph[len(cluster):], max(0, w-width), "")
+	return prompt + m.cursorStyle.Render(cluster) + m.placeholderStyle.Render(remaining)
 }

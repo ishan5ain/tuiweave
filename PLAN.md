@@ -165,8 +165,9 @@ general-purpose composition work begins against a complete component set.
       `Key.Text`. Tier-1 keys: arrows/home/end/ctrl+e, backspace/delete
       (joining at boundaries), ctrl+u/k/w. Initial tier-2 slice: logical-rune
       selections, select-all/replacement, semantic editing actions, and
-      bounded undo/redo. Deferred follow-ups: kill ring, IME, and wide-rune
-      (CJK) column math.
+      bounded undo/redo, plus cell-aware display geometry for wide and
+      combining characters. Deferred follow-ups: kill ring, IME, and a
+      broader cell-width audit across text-bearing components.
 - [x] **Example coverage gaps closed**: `examples/table` (mock git-status:
       table + diffview.Model + scrollbars on both panes, golden-tested);
       `examples/chat` input swapped to textarea (enter sends, alt+enter
@@ -303,10 +304,15 @@ daily use.
 
 - [x] **Textarea tier 2 (initial slice):** logical-rune selections across
       wrapped lines, select-all/replacement, bounded undo/redo, semantic
-      editing actions, inspection attributes, and interaction goldens.
+      editing actions, inspection attributes, interaction goldens, and
+      cell-aware wrapping/cursor geometry for wide and combining characters.
 - [ ] **Textarea tier 2 follow-ups:** kill ring, word-wise movement, richer
       editing commands, and IME behavior.
-- [ ] Correct cell-width handling for wide runes and combining characters
+- [x] **Cell-width handling (initial textarea slice):** use grapheme clusters
+      and terminal-cell widths for textarea wrapping, cursor columns, padding,
+      placeholders, and exact-width rendering.
+- [ ] **Cell-width audit (remaining components):** review other text-bearing
+      components and shared helpers for wide/combining-rune behavior.
 - [ ] Autocomplete and command-palette primitives
 - [ ] More explicit mouse interaction conventions where bubbletea supports them
 - [ ] Focus scopes and nested modal/focus routing utilities

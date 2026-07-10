@@ -553,8 +553,10 @@ Grow a chat input with its content by re-splitting the layout after edits:
 - `ctrl+z`/`ctrl+y` (or `ctrl+shift+z`) undo and redo up to 100 edit states.
   Programmatic `SetValue` and `Reset` establish a fresh history baseline;
   selection changes themselves are not edits.
-- This tier counts runes, not terminal cells. Kill ring, word-wise movement,
-  IME behavior, and wide/combining-rune column math remain later work.
+- Textarea display geometry is grapheme- and cell-aware for wide and combining
+  characters, while logical selection positions remain rune-based. Kill ring,
+  word-wise movement, and IME behavior remain later work; other text-bearing
+  components still need a broader cell-width audit.
 
 ### scrollbar
 
