@@ -1,0 +1,4 @@
+1: " " [bg=Accent] | "edit" [fg=Surface bg=Accent bold] | " " [bg=Accent]
+2: " " [bg=Success] | "ready" [fg=Surface bg=Success bold] | " " [bg=Success]
+3: " " [bg=AccentMuted] | "3 files" [fg=Surface bg=AccentMuted bold] | " " [bg=AccentMuted]
+4: "────────────────────────" [fg=BorderMuted]

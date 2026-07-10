@@ -2,7 +2,7 @@
 
 Rules for writing code **with** gotui (apps) and **in** gotui (components).
 This file is deliberately short; recipes link into the runnable example apps
-(`examples/statusbar`, `examples/demo`, `examples/chat`). Architecture
+(`examples/statusbar`, `examples/demo`, `examples/chat`, `examples/frame`). Architecture
 rationale lives in [DESIGN.md](DESIGN.md) — read it before adding a
 component; you don't need it to build an app.
 
@@ -14,6 +14,7 @@ and example before reading the detailed recipes below.
 - Runtime: `charm.land/bubbletea/v2` (MVU; root model's `View()` returns `tea.View`)
 - Styling: `charm.land/lipgloss/v2` (components render styled **strings**)
 - Layout: `github.com/ishansain/gotui/layout` (flexbox-like constraints → rects)
+- Composition: `github.com/ishansain/gotui/frame` (width-aware themed decoration)
 - Testing: `github.com/ishansain/gotui/snaptest` (golden files)
 - Domain packages: `gotui/agentic/…` (markdown, chat, toolcall, diffview,
   permission, usagebar) — optional, backend-agnostic layers built on the
@@ -178,6 +179,33 @@ Two gotchas in hand-written assertions:
   the source of truth — `transcript.Cells()` — not the window.
 
 ## Recipes
+
+### frame
+
+Use `frame` for reusable decoration around app-owned content. It is a pure
+string utility, not an MVU component: the app passes widths from its layout
+rects and composes the returned strings at the root. Full wiring:
+[examples/frame](examples/frame/main.go).
+
+```go
+panel := frame.Panel(theme, content, area.Dx(), frame.PanelOptions{
+    Title: "Jobs",
+    Focused: focused,
+    Padding: 1,
+})
+divider := frame.Divider(theme, area.Dx())
+badge := frame.Badge(theme, "healthy", frame.BadgeSuccess)
+```
+
+- `Panel` uses `Border` or `BorderFocused`, `SurfaceRaised`, and text roles;
+  titles truncate to the available top-border width.
+- `Panel` returns a natural-height frame with exactly the requested width. It
+  handles multiline and narrow content, but the app still owns height layout.
+- `Badge` kinds describe meaning (`Accent`, `Muted`, `Success`, `Warning`,
+  `Danger`, `Info`); do not select a kind merely to obtain a preferred color.
+- Keep borders, titles, and badges in the composition layer. Do not make a
+  domain component reimplement them or splice side borders around multiline
+  content itself.
 
 ### statusbar
 

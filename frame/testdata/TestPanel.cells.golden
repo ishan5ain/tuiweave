@@ -1,0 +1,6 @@
+1: "╭" [fg=Border] | " Session " [fg=TextMuted] | "─────────────────╮" [fg=Border]
+2: "│" [fg=Border] | "                          " [bg=SurfaceRaised] | "│" [fg=Border]
+3: "│" [fg=Border] | " " [bg=SurfaceRaised] | "name: gotui" [fg=Text bg=SurfaceRaised] | "              " [bg=SurfaceRaised] | "│" [fg=Border]
+4: "│" [fg=Border] | " " [bg=SurfaceRaised] | "status: ready" [fg=Text bg=SurfaceRaised] | "            " [bg=SurfaceRaised] | "│" [fg=Border]
+5: "│" [fg=Border] | "                          " [bg=SurfaceRaised] | "│" [fg=Border]
+6: "╰──────────────────────────╯" [fg=Border]

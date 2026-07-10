@@ -225,6 +225,13 @@ behavior without introducing domain assumptions. Add a component to the core
 when it represents a recurring terminal interaction pattern, not merely because
 one application currently needs it.
 
+The initial Phase 4 framing slice is deliberately a pure composition utility,
+not a component-tree abstraction: `gotui/frame` accepts a theme, content, and
+available width, then returns strings for the application to compose. Panels
+have natural height and exact requested width; the app remains responsible for
+height allocation, state, and event routing. This keeps decoration reusable
+without hiding the root model's layout or MVU decisions.
+
 ### D13 — Composition quality: a small design grammar
 
 The library should provide a recognizable vocabulary for terminal UI design:
@@ -312,6 +319,7 @@ github.com/ishansain/gotui
 │                    Vertical/Horizontal, Sizable, Apply
 ├── snaptest/        snapshot test harness (Snap, SnapCells, SnapStyled, -update)
 ├── inspect/         optional semantic UI tree (IDs, bounds, focus, state)
+├── frame/            domain-neutral framing and decoration helpers
 ├── statusbar/  list/  viewport/  textinput/  textarea/  table/  help/  spinner/
 │                    generic primitives, one package each
 ├── scrollbar/       one-column bar for anything implementing Scrollable
@@ -329,6 +337,7 @@ github.com/ishansain/gotui
 │   ├── statusbar/   canonical single-component wiring
 │   ├── demo/        multi-pane app (Phase 2 exit criterion), golden-tested
 │   ├── chat/        mock agentic session (Phase 3 exit criterion), golden-tested
+│   ├── frame/       framing/decorations composition example, golden-tested
 │   └── table/       git-status mock: table + diffview + scrollbars, golden-tested
 ├── .github/workflows/ci.yml   build + vet + test + tidy check
 ├── AGENTS.md        the agent-facing rulebook
@@ -361,6 +370,11 @@ Every gotui component:
 The root app model composes components, splits its area with `gotui/layout`
 on `tea.WindowSizeMsg`, delegates messages, and wraps the final composed
 string in `tea.NewView` — standard bubbletea v2, nothing hidden.
+
+Pure composition helpers such as `frame` are not components and therefore do
+not implement `Update` or `SetSize`; they receive explicit dimensions from the
+app and are covered by focused rendering goldens plus a runnable composition
+example.
 
 The current exceptions are `spinner` (a single intrinsic-size glyph) and the
 modal panels (`dialog`, `permission`), which are width-bounded and render at

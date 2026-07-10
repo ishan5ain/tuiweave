@@ -18,9 +18,9 @@ and coding agents. Applications own orchestration and domain state; gotui owns
 reusable primitives and optional domain kits. Agentic UIs are a demanding
 proving ground, not the boundary of the core library.
 
-**Status: pre-v1.** Phases 0–3.5 are complete: foundation, core interaction
-primitives, and the first agentic domain layer. APIs still change freely while
-agent-operable foundations and the general-purpose composition layer evolve.
+**Status: pre-v1.** Phases 0–3.5 are complete, and Phase 4 has started with
+the first general-purpose framing slice. APIs still change freely while the
+agent-operable foundations and broader composition layer evolve.
 
 ## What's here
 
@@ -34,6 +34,7 @@ backend protocols, and session lifecycle.
 | `gotui/layout` | Flexbox-like layout: constraints → rectangles → component sizes |
 | `gotui/snaptest` | Snapshot test harness: plain-text, raw-ANSI, role-labeled cell-grid, and interaction-scenario goldens |
 | `gotui/inspect` | Optional semantic UI tree and action metadata: IDs, bounds, focus, selection, scrolling, actions, and children |
+| `gotui/frame` | Width-aware themed panels, titled borders, dividers, and semantic badges |
 | `gotui/statusbar` | One-line status bar with themed left/right segments |
 | `gotui/list` | Scrolling list with selection cursor and filtering (original-index selection) |
 | `gotui/viewport` | Scrollable window over pre-rendered content (keys + mouse wheel) |
@@ -52,7 +53,7 @@ backend protocols, and session lifecycle.
 | `agentic/diffview` | Styled unified diffs, inline or scrollable |
 | `agentic/permission` | Numbered permission prompt (esc = safe default) |
 | `agentic/usagebar` | Model / tokens / cost / context bar with thresholds |
-| `examples/…` | Runnable apps: `go run ./examples/chat` (mock agentic session), `./examples/table` (git-status mock), `./examples/demo`, `./examples/statusbar` |
+| `examples/…` | Runnable apps: `go run ./examples/chat` (mock agentic session), `./examples/table` (git-status mock), `./examples/frame` (composition helpers), `./examples/demo`, `./examples/statusbar` |
 
 Agentic packages are important reference implementations, not the boundary of
 the library. The same primitives should support editors, dashboards, file

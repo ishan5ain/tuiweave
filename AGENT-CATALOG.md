@@ -9,6 +9,7 @@ rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
 | Task | Start here |
 |---|---|
 | Build an app shell | `layout`, then `focus`, `statusbar`, `help` |
+| Frame content or add semantic badges | `frame.Panel`, `frame.Divider`, `frame.Badge` |
 | Split panes or rows | `layout.Vertical` / `layout.Horizontal` + `SetSize` |
 | Show selectable records | `list` or `table`; add `scrollbar.For` |
 | Show long content | `viewport`; forward mouse wheels; add `scrollbar.For` |
@@ -34,6 +35,7 @@ rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
 | `focus` | Managing tab order across copied MVU models | `focus.NewManager(n)` + `Apply` after every focus change |
 | `overlay` | Compositing a modal or popover | `overlay.Center(base, over)` or `Place` |
 | `scrollbar` | Adding a standalone scroll indicator | `scrollbar.For(theme, component)` in a 1-cell layout segment |
+| `frame` | Composing reusable decoration around app-owned strings | `Panel(theme, content, width, PanelOptions{...})`; natural height, exact width |
 
 ### General-purpose components
 
@@ -61,9 +63,10 @@ rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
 | `agentic/usagebar` | Showing model and usage | `SetStats`; context ≥80% warning, ≥95% danger |
 
 Canonical examples are under [`examples/`](examples/): `statusbar` is the
-smallest wiring example, `demo` composes general primitives, `table` combines
-selection/diff/scrolling, and `chat` exercises streaming, permission, toolcall,
-diff, markdown, usage, and textarea behavior.
+smallest component wiring example, `frame` demonstrates pure composition,
+`demo` composes general primitives, `table` combines selection/diff/scrolling,
+and `chat` exercises streaming, permission, toolcall, diff, markdown, usage,
+and textarea behavior.
 
 ## Canonical wiring
 
@@ -135,6 +138,8 @@ that behavior is part of the scenario.
 - Forgetting to apply focus after the value-type model has been copied.
 - Handling Enter inside `textinput`/`textarea` when the app owns submit policy.
 - Gating mouse-wheel delegation on focus for a `viewport`-backed component.
+- Splicing one pair of side borders around a multiline string; use
+  `frame.Panel`, which frames every rendered line.
 - Mutating a chat cell without calling `transcript.Invalidate()`.
 - Reusing a logical chat/tool ID for a different operation; keep IDs stable for
   retries, not for unrelated events.
@@ -158,6 +163,7 @@ Run the closest example while developing:
 ```sh
 go run ./examples/demo
 go run ./examples/chat
+go run ./examples/frame
 ```
 
 ## Where new code belongs

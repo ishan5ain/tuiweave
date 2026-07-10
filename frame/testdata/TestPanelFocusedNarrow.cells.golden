@@ -1,0 +1,5 @@
+1: "╭" [fg=Accent] | " Long title " [fg=Accent bold] | "╮" [fg=Accent]
+2: "│" [fg=Accent] | "            " [bg=SurfaceRaised] | "│" [fg=Accent]
+3: "│" [fg=Accent] | " " [bg=SurfaceRaised] | "running" [fg=Text bg=SurfaceRaised] | "    " [bg=SurfaceRaised] | "│" [fg=Accent]
+4: "│" [fg=Accent] | "            " [bg=SurfaceRaised] | "│" [fg=Accent]
+5: "╰────────────╯" [fg=Accent]

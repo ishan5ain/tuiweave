@@ -183,8 +183,12 @@ Expand the library from a strong primitive set into a flexible toolkit for
 composing complete custom interfaces. These additions must remain domain-neutral
 and useful in at least two unrelated application types.
 
-- [ ] Framing and decoration utilities: borders, padding, titles, separators,
-      badges, and reusable framed content
+- [x] **Framing and decoration (initial slice)**: `gotui/frame` provides
+      width-aware titled panels, padding, separators, and semantic badges;
+      `examples/frame` demonstrates composition and goldens cover normal,
+      focused, narrow, multiline, and role-labeled rendering.
+- [ ] Extend framing utilities where real reference apps need them; avoid
+      adding convenience variants before those composition patterns recur.
 - [ ] Structural components: tabs, menus, toolbars, split panes, and stacked
       headers/footers
 - [ ] Common controls: toggles, buttons, progress indicators, selectable
