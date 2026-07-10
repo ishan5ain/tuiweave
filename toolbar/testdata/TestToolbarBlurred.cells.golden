@@ -1,0 +1,1 @@
+1: " Refresh " [fg=Text bg=SurfaceRaised] | " " [fg=TextFaint bg=SurfaceRaised] | "▸Export " [fg=Accent bg=SurfaceRaised bold] | "  Delete " [fg=TextFaint bg=SurfaceRaised] | "         " [bg=SurfaceRaised]

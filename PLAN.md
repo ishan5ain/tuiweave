@@ -197,7 +197,11 @@ and useful in at least two unrelated application types.
       vertical action choices, disabled-item skipping, activation commands,
       stable IDs, inspection/actions, scrolling, and scenario goldens;
       `examples/frame` demonstrates it beside tabs and framed panels.
-- [ ] Structural components: toolbars, split panes, and stacked
+- [x] **Toolbars (initial slice)**: `gotui/toolbar` provides a focus-gated
+      horizontal action strip with disabled-item skipping, activation
+      commands, stable IDs, inspection/actions, narrow-width behavior, and
+      scenario goldens; `examples/frame` demonstrates it in a panel.
+- [ ] Structural components: split panes and stacked
       headers/footers
 - [ ] Common controls: toggles, buttons, progress indicators, selectable
       actions, and command-palette foundations

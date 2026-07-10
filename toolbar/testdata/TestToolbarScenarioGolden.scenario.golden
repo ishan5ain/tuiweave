@@ -1,0 +1,11 @@
+## initial
+command: no
+▸Refresh   Export   Delete
+
+## next action
+command: no
+ Refresh  ▸Export   Delete
+
+## activate
+command: yes
+ Refresh  ▸Export   Delete

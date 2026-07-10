@@ -17,6 +17,7 @@ and example before reading the detailed recipes below.
 - Composition: `github.com/ishansain/gotui/frame` (width-aware themed decoration)
 - Navigation: `github.com/ishansain/gotui/tabs` (focusable sibling-view tabs)
 - Actions: `github.com/ishansain/gotui/menu` (focusable action choices)
+- Toolbars: `github.com/ishansain/gotui/toolbar` (horizontal action strips)
 - Testing: `github.com/ishansain/gotui/snaptest` (golden files)
 - Domain packages: `gotui/agentic/…` (markdown, chat, toolcall, diffview,
   permission, usagebar) — optional, backend-agnostic layers built on the
@@ -265,6 +266,35 @@ case menu.SelectedMsg:
   activation is intentionally a command-producing transition.
 - Use `Description` for inspection/action metadata. The menu renders one-line
   labels; application-owned detail belongs beside or below it.
+
+### toolbar
+
+Use `toolbar` for a horizontal strip of application-owned actions. It follows
+the menu action contract while keeping the selected action visible when the
+available width is narrow. Full composition coverage is in
+[examples/frame](examples/frame/main.go).
+
+```go
+tools := toolbar.New(theme)
+tools.SetItems(
+    toolbar.Item{ID: "refresh", Label: "Refresh"},
+    toolbar.Item{ID: "export", Label: "Export"},
+    toolbar.Item{ID: "delete", Label: "Delete", Disabled: true},
+)
+tools.SetSize(area.Dx(), 1)
+tools.Focus()
+
+case toolbar.SelectedMsg:
+    // The app owns the operation associated with msg.ID.
+```
+
+- `toolbar` handles left/right, `h`/`l`, `home`/`g`, `end`/`G`, and enter only
+  while focused; leave `tab`/`shift+tab` to the app's focus manager.
+- Keep IDs stable for `SelectedID()` and semantic `select.<id>` actions.
+- Disabled actions remain visible, are skipped during navigation, and expose
+  disabled semantic actions for inspection.
+- The toolbar is one row of action chrome. It does not own a command's
+  side-effects or the content that the action changes.
 
 ### statusbar
 

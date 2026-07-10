@@ -322,6 +322,7 @@ github.com/ishansain/gotui
 ├── frame/            domain-neutral framing and decoration helpers
 ├── tabs/             focusable sibling-view navigation
 ├── menu/             focusable vertical action choices
+├── toolbar/          focusable horizontal action choices
 ├── statusbar/  list/  viewport/  textinput/  textarea/  table/  help/  spinner/
 │                    generic primitives, one package each
 ├── scrollbar/       one-column bar for anything implementing Scrollable
@@ -339,7 +340,7 @@ github.com/ishansain/gotui
 │   ├── statusbar/   canonical single-component wiring
 │   ├── demo/        multi-pane app (Phase 2 exit criterion), golden-tested
 │   ├── chat/        mock agentic session (Phase 3 exit criterion), golden-tested
-│   ├── frame/       framing/decorations/tabs/menu composition example, golden-tested
+│   ├── frame/       framing/decorations/tabs/menu/toolbar composition example, golden-tested
 │   └── table/       git-status mock: table + diffview + scrollbars, golden-tested
 ├── .github/workflows/ci.yml   build + vet + test + tidy check
 ├── AGENTS.md        the agent-facing rulebook

@@ -20,6 +20,7 @@ import (
 	"github.com/ishansain/gotui/layout"
 	"github.com/ishansain/gotui/menu"
 	"github.com/ishansain/gotui/tabs"
+	"github.com/ishansain/gotui/toolbar"
 )
 
 type model struct {
@@ -27,6 +28,7 @@ type model struct {
 	width, height int
 	nav           tabs.Model
 	actions       menu.Model
+	tools         toolbar.Model
 	fm            focus.Manager
 }
 
@@ -38,6 +40,12 @@ func newModel() model {
 		tabs.Tab{ID: "activity", Label: "Activity"},
 		tabs.Tab{ID: "settings", Label: "Settings"},
 	)
+	tools := toolbar.New(theme)
+	tools.SetItems(
+		toolbar.Item{ID: "refresh", Label: "Refresh", Description: "Reload data"},
+		toolbar.Item{ID: "export", Label: "Export", Description: "Export data"},
+		toolbar.Item{ID: "delete", Label: "Delete", Description: "Destructive action", Disabled: true},
+	)
 	actions := menu.New(theme)
 	actions.SetItems(
 		menu.Item{ID: "open", Label: "Open workspace", Description: "Open a workspace"},
@@ -45,8 +53,8 @@ func newModel() model {
 		menu.Item{ID: "delete", Label: "Delete workspace", Description: "Destructive action", Disabled: true},
 		menu.Item{ID: "quit", Label: "Quit", Description: "Close the application"},
 	)
-	m := model{theme: theme, nav: nav, actions: actions, fm: focus.NewManager(2)}
-	m.fm.Apply(&m.nav, &m.actions)
+	m := model{theme: theme, nav: nav, actions: actions, tools: tools, fm: focus.NewManager(3)}
+	m.fm.Apply(&m.nav, &m.actions, &m.tools)
 	return m
 }
 
@@ -57,18 +65,26 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.WindowSizeMsg:
 		m.width, m.height = msg.Width, msg.Height
 		m.layout()
+	case toolbar.SelectedMsg:
+		// This showcase has no backend action to perform; a real app handles
+		// msg.ID here.
+		return m, nil
+	case menu.SelectedMsg:
+		// This showcase has no backend action to perform; a real app handles
+		// msg.ID here.
+		return m, nil
 	case tea.KeyPressMsg:
 		if msg.String() == "ctrl+c" || msg.String() == "q" {
 			return m, tea.Quit
 		}
 		if msg.String() == "tab" {
 			m.fm.Next()
-			m.fm.Apply(&m.nav, &m.actions)
+			m.fm.Apply(&m.nav, &m.actions, &m.tools)
 			return m, nil
 		}
 		if msg.String() == "shift+tab" {
 			m.fm.Prev()
-			m.fm.Apply(&m.nav, &m.actions)
+			m.fm.Apply(&m.nav, &m.actions, &m.tools)
 			return m, nil
 		}
 		var cmds []tea.Cmd
@@ -76,6 +92,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.nav, cmd = m.nav.Update(msg)
 		cmds = append(cmds, cmd)
 		m.actions, cmd = m.actions.Update(msg)
+		cmds = append(cmds, cmd)
+		m.tools, cmd = m.tools.Update(msg)
 		cmds = append(cmds, cmd)
 		return m, tea.Batch(cmds...)
 	}
@@ -94,6 +112,7 @@ func (m *model) layout() {
 	var jobs, services layout.Rect
 	layout.Horizontal(layout.Fill(1), layout.Fill(1)).WithSpacing(1).Split(body).Assign(&jobs, &services)
 	m.actions.SetSize(max(0, jobs.Dx()-4), max(0, jobs.Dy()-4))
+	m.tools.SetSize(max(0, services.Dx()-4), 1)
 }
 
 func (m model) render() string {
@@ -130,9 +149,9 @@ func (m model) render() string {
 		frame.PanelOptions{Title: "Actions", Focused: m.actions.Focused(), Padding: 1},
 	)
 	servicesView := frame.Panel(m.theme,
-		"api        "+frame.Badge(m.theme, "healthy", frame.BadgeSuccess)+"\nworker     "+frame.Badge(m.theme, "busy", frame.BadgeInfo),
+		"api        "+frame.Badge(m.theme, "healthy", frame.BadgeSuccess)+"\nworker     "+frame.Badge(m.theme, "busy", frame.BadgeInfo)+"\n"+m.tools.View(),
 		services.Dx(),
-		frame.PanelOptions{Title: "Services", Padding: 1},
+		frame.PanelOptions{Title: "Services", Focused: m.tools.Focused(), Padding: 1},
 	)
 
 	footerView := lipgloss.NewStyle().
