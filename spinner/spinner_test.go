@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/ishansain/gotui"
+	"github.com/ishansain/gotui/layout"
 	"github.com/ishansain/gotui/snaptest"
 )
 
@@ -49,5 +50,11 @@ func TestSetFrames(t *testing.T) {
 	s2, _ := s.Update(TickMsg{id: s.id, tag: s.tag})
 	if s2.View() == s.View() {
 		t.Error("frame did not advance after SetFrames")
+	}
+}
+
+func TestSpinnerIsIntrinsic(t *testing.T) {
+	if got := New(gotui.Dark()).SizeMode(); got != layout.SizeIntrinsic {
+		t.Fatalf("spinner size mode = %d, want SizeIntrinsic", got)
 	}
 }

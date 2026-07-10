@@ -17,6 +17,7 @@ import (
 	lipgloss "charm.land/lipgloss/v2"
 
 	"github.com/ishansain/gotui"
+	"github.com/ishansain/gotui/layout"
 )
 
 // ResultMsg is emitted (as a command) when the user confirms or dismisses
@@ -89,6 +90,10 @@ func New(theme gotui.Theme) Model {
 func (m *Model) SetSize(width, height int) {
 	m.width, m.height = width, height
 }
+
+// SizeMode reports that dialog width is bounded while content height is
+// determined by the title, body, and buttons.
+func (m Model) SizeMode() layout.SizeMode { return layout.SizeWidthBounded }
 
 // Update handles button navigation and confirmation:
 // left/right/tab switch buttons, enter answers, esc cancels.

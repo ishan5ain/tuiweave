@@ -347,8 +347,11 @@ Every gotui component:
    (plus component-specific config).
 2. Implements MVU: `Update(tea.Msg) (Self, tea.Cmd)` returning its own
    concrete type (not `tea.Model`), and `View() string`.
-3. Implements `SetSize(width, height int)` (the `layout.Sizable` interface)
-   and renders exactly within that box.
+3. Implements `SetSize(width, height int)` (the `layout.Sizable` interface).
+   Components are bounded by default and render exactly within that box.
+   Documented exceptions implement the optional `layout.SizeModeAware`
+   contract: `SizeWidthBounded` for width-constrained natural-height panels,
+   or `SizeIntrinsic` for components that ignore the assigned box.
 4. Derives every style from theme roles at construction/update time — no
    color literals anywhere.
 5. Exposes focus as `Focus()`/`Blur()` where interactive.
@@ -359,10 +362,11 @@ The root app model composes components, splits its area with `gotui/layout`
 on `tea.WindowSizeMsg`, delegates messages, and wraps the final composed
 string in `tea.NewView` — standard bubbletea v2, nothing hidden.
 
-Documented exceptions to rule 3: `spinner` is intrinsic-size (a single
-glyph; `SetSize` exists for the interface and is ignored), and the modal
-panels (`dialog`, `permission`) treat their box as an outer bound, rendering
-at natural content height.
+The current exceptions are `spinner` (a single intrinsic-size glyph) and the
+modal panels (`dialog`, `permission`), which are width-bounded and render at
+natural content height. `layout.SizeModeOf` defaults ordinary components to
+`SizeBounded`, so applications can inspect the policy without special-casing
+package names.
 
 **Chat cells are a second, smaller contract** (`agentic/chat.Cell`):
 `Render(width int) string`. Cells are *pointers* the app keeps and mutates

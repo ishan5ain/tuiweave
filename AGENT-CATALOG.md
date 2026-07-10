@@ -28,7 +28,7 @@ rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
 | Package | Use when | First API / contract |
 |---|---|---|
 | `gotui` | Choosing semantic colors | `gotui.Dark()` or `gotui.Light()`; never raw colors |
-| `layout` | Converting window space to component boxes | `layout.Vertical(...).Apply(area, &components...)` |
+| `layout` | Converting window space to component boxes | `layout.Vertical(...).Apply(area, &components...)`; `SizeModeOf` for sizing exceptions |
 | `snaptest` | Verifying rendering or interactions | `Snap`, `SnapCells`, `RunScenario`, `SnapScenario` |
 | `inspect` | Describing UI semantics for tests/tools/agents | `Inspect()`, `Bind`, `BindAt`, `Group`, `Marshal` |
 | `focus` | Managing tab order across copied MVU models | `focus.NewManager(n)` + `Apply` after every focus change |

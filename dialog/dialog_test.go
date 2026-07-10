@@ -6,6 +6,7 @@ import (
 	tea "charm.land/bubbletea/v2"
 
 	"github.com/ishansain/gotui"
+	"github.com/ishansain/gotui/layout"
 	"github.com/ishansain/gotui/snaptest"
 )
 
@@ -87,5 +88,11 @@ func TestDialogTooSmallRendersNothing(t *testing.T) {
 	d.SetSize(4, 3)
 	if got := d.View(); got != "" {
 		t.Errorf("tiny dialog View() = %q, want empty", got)
+	}
+}
+
+func TestDialogIsWidthBounded(t *testing.T) {
+	if got := newTestDialog().SizeMode(); got != layout.SizeWidthBounded {
+		t.Fatalf("dialog size mode = %d, want SizeWidthBounded", got)
 	}
 }

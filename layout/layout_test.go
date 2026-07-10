@@ -41,6 +41,11 @@ type fakeComponent struct{ w, h int }
 
 func (f *fakeComponent) SetSize(w, h int) { f.w, f.h = w, h }
 
+type fakeIntrinsic struct{}
+
+func (fakeIntrinsic) SetSize(int, int)   {}
+func (fakeIntrinsic) SizeMode() SizeMode { return SizeIntrinsic }
+
 func TestApplySizesComponents(t *testing.T) {
 	var top, bottom fakeComponent
 	rects := Vertical(Len(5), Fill(1)).Apply(NewRect(0, 0, 40, 20), &top, &bottom)
@@ -61,5 +66,14 @@ func TestApplyExtraComponentsUntouched(t *testing.T) {
 	Vertical(Fill(1)).Apply(NewRect(0, 0, 10, 10), &a, &b)
 	if b.w != 0 || b.h != 0 {
 		t.Errorf("extra component was sized %dx%d, want untouched", b.w, b.h)
+	}
+}
+
+func TestSizeModeDefaultsToBounded(t *testing.T) {
+	if got := SizeModeOf(&fakeComponent{}); got != SizeBounded {
+		t.Fatalf("ordinary component mode = %d, want SizeBounded", got)
+	}
+	if got := SizeModeOf(fakeIntrinsic{}); got != SizeIntrinsic {
+		t.Fatalf("intrinsic component mode = %d, want SizeIntrinsic", got)
 	}
 }

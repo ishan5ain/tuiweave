@@ -75,9 +75,15 @@ case tea.WindowSizeMsg:
         layout.Len(3),  // header
         layout.Fill(1), // body
         layout.Len(1),  // statusbar
-    ).Apply(layout.NewRect(0, 0, msg.Width, msg.Height),
+).Apply(layout.NewRect(0, 0, msg.Width, msg.Height),
         &m.header, &m.body, &m.status)
 ```
+
+Components are bounded by default. Use `layout.SizeModeOf(component)` when a
+composition includes an exception: `spinner` is `SizeIntrinsic`, while
+`dialog` and `permission` are `SizeWidthBounded` (width-constrained with
+natural content height). Do not assume every `SetSize` height is rendered as
+rows for those documented modes.
 
 Compose the final frame with `lipgloss.JoinVertical` / `JoinHorizontal` and
 wrap it once, at the root: `return tea.NewView(view)`. Full-screen apps set

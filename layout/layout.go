@@ -99,10 +99,42 @@ func (s Splitted) Assign(areas ...*Rect) {
 	uvlayout.Splitted(s).Assign(areas...)
 }
 
-// Sizable is implemented by every gotui component: SetSize tells the
-// component the exact box it must render within.
+// Sizable is implemented by every gotui component: SetSize supplies the box
+// for bounded components and the available constraints for documented
+// intrinsic or width-bounded components.
 type Sizable interface {
 	SetSize(width, height int)
+}
+
+// SizeMode describes how a component interprets the box supplied by SetSize.
+// Components are bounded by default; only documented exceptions implement
+// SizeModeAware.
+type SizeMode uint8
+
+const (
+	// SizeBounded means the component renders exactly within its assigned box.
+	SizeBounded SizeMode = iota
+	// SizeWidthBounded means width is constrained but height is natural or
+	// otherwise component-defined.
+	SizeWidthBounded
+	// SizeIntrinsic means SetSize is accepted for interface compatibility but
+	// the component renders at its natural size.
+	SizeIntrinsic
+)
+
+// SizeModeAware is an optional contract for components that are not fully
+// bounded. Applications can use SizeModeOf when composing mixed components.
+type SizeModeAware interface {
+	SizeMode() SizeMode
+}
+
+// SizeModeOf returns a component's declared size mode, defaulting to
+// SizeBounded for ordinary components.
+func SizeModeOf(component any) SizeMode {
+	if aware, ok := component.(SizeModeAware); ok {
+		return aware.SizeMode()
+	}
+	return SizeBounded
 }
 
 // Apply splits area and sizes each component from its rectangle, in order.

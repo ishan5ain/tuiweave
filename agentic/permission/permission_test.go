@@ -7,6 +7,7 @@ import (
 
 	"github.com/ishansain/gotui"
 	"github.com/ishansain/gotui/inspect"
+	"github.com/ishansain/gotui/layout"
 	"github.com/ishansain/gotui/snaptest"
 )
 
@@ -121,5 +122,11 @@ func TestProvenanceAndSemanticChoice(t *testing.T) {
 	_, cmd := p.Update(inspect.Invoke("choose.2"))
 	if res := resultOf(t, cmd); res.Choice != 1 || res.Option != "Allow always" {
 		t.Fatalf("semantic choice result = %+v", res)
+	}
+}
+
+func TestPermissionIsWidthBounded(t *testing.T) {
+	if got := newTestPrompt().SizeMode(); got != layout.SizeWidthBounded {
+		t.Fatalf("permission size mode = %d, want SizeWidthBounded", got)
 	}
 }

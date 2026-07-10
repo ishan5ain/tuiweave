@@ -14,6 +14,7 @@ import (
 	lipgloss "charm.land/lipgloss/v2"
 
 	"github.com/ishansain/gotui"
+	"github.com/ishansain/gotui/layout"
 )
 
 var lastID atomic.Int64
@@ -58,6 +59,9 @@ func (m *Model) SetFrames(frames ...string) {
 // SetSize implements the component contract. The spinner renders at its
 // intrinsic size and ignores the box.
 func (m *Model) SetSize(width, height int) {}
+
+// SizeMode reports that the spinner renders at its natural glyph size.
+func (m Model) SizeMode() layout.SizeMode { return layout.SizeIntrinsic }
 
 // Tick starts (or continues) the animation. Return it from Init or when the
 // spinner becomes visible.

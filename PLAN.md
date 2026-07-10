@@ -21,9 +21,10 @@ step is making the resulting UI agent-friendly to inspect, test, and operate.
 This is a narrow capability layer, not a component-tree framework, and should
 be completed before broadening the composition catalog too far.
 
-- [ ] **Clarify bounded versus intrinsic components** in the public contract;
-      make dialog, permission, and spinner sizing behavior consistent and
-      explicit.
+- [x] **Size modes (initial slice)**: make bounded, width-bounded, and
+      intrinsic behavior explicit through `layout.SizeMode`; ordinary
+      components default to bounded, while spinner, dialog, and permission
+      declare their documented exceptions.
 - [x] **Interaction scenarios (initial slice)**: step a model through explicit named messages,
       capture initial and post-message views, record command emission, and
       snapshot readable checkpoints. Do not execute opaque commands implicitly;

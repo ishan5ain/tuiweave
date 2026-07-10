@@ -15,6 +15,7 @@ import (
 	lipgloss "charm.land/lipgloss/v2"
 
 	"github.com/ishansain/gotui"
+	"github.com/ishansain/gotui/layout"
 )
 
 // ResultMsg is emitted (as a command) when the user picks an option.
@@ -124,6 +125,10 @@ func (m *Model) SetOptions(options ...string) {
 func (m *Model) SetSize(width, height int) {
 	m.width, m.height = width, height
 }
+
+// SizeMode reports that prompt width is bounded while content height is
+// determined by the title, body, provenance, and options.
+func (m Model) SizeMode() layout.SizeMode { return layout.SizeWidthBounded }
 
 // Update handles navigation and answering: up/down/j/k move, number keys
 // answer directly, enter answers the selection, esc picks the last option
