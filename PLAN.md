@@ -1,14 +1,16 @@
 # gotui — Phased Plan
 
-gotui is an agent-authored-first, general-purpose TUI component library for Go,
+gotui is an agent-friendly-by-design, general-purpose TUI component library for Go,
 built on bubbletea v2, lipgloss v2, and ultraviolet. The full rationale behind
 every decision below lives in [DESIGN.md](DESIGN.md). This file is the
 execution roadmap.
 
-**North star:** build any terminal interface from small, themeable,
-snapshot-testable components. Agentic tools, including a custom Pi coding agent
-TUI, are demanding consumers and reference applications for the library rather
-than its defining scope.
+**North star:** provide a consistent design grammar for terminal interfaces.
+Humans and coding agents should be able to build distinct custom TUIs from
+small, themeable, snapshot-testable components without re-inventing core
+interaction patterns or creating inconsistent local conventions. Agentic tools,
+including a custom Pi coding agent TUI, are demanding consumers and reference
+applications rather than the defining scope.
 
 ---
 
@@ -140,6 +142,8 @@ and useful in at least two unrelated application types.
 - [ ] Reference example apps beyond agentic UIs: a file browser, dashboard, or
       operations console
 - [ ] Recipes and golden coverage for every new composition pattern
+- [ ] Cross-component recipes showing how customization and consistency work
+      together
 
 **Exit criteria:** an agent can assemble a multi-view non-agentic application
 from gotui without introducing local copies of common framing, navigation, or
@@ -157,6 +161,8 @@ daily use.
 - [ ] More explicit mouse interaction conventions where bubbletea supports them
 - [ ] Focus scopes and nested modal/focus routing utilities
 - [ ] Interaction-sequence testing helpers alongside rendering snapshots
+- [ ] Audit APIs and recipes for discoverability by a coding agent starting from
+      the package list and AGENTS.md
 
 **Exit criteria:** a small editor or command-driven console can be implemented
 with library primitives rather than application-specific editing machinery.
@@ -205,6 +211,10 @@ public API is reviewed and documented, and gotui reaches a tagged v1.
 - Prefer composition utilities over product-specific convenience components.
 - New theme roles require evidence that existing semantic roles cannot express
   the state.
+- Preserve the design grammar: new components should reuse established sizing,
+  focus, selection, scrolling, modal, and narrow-width conventions.
+- Make customization explicit and local; applications should not need to fork
+  or duplicate core interaction behavior to achieve a distinct visual design.
 - Colors only ever come from `gotui.Theme` roles — never literals in components
   or examples.
 - Public API stays string/lipgloss-based; ultraviolet types appear only in

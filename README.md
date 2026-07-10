@@ -8,11 +8,13 @@ for agentic and other specialized applications.
 It is built on [bubbletea v2](https://github.com/charmbracelet/bubbletea),
 [lipgloss v2](https://github.com/charmbracelet/lipgloss), and
 [ultraviolet](https://github.com/charmbracelet/ultraviolet). It is designed
-**agent-authored first**: the API, conventions, examples, and verification loop
-are optimized so coding agents can reliably build and evolve complete TUIs.
+**agent-friendly by design**: the API, conventions, examples, and verification
+loop make the component system easy for both humans and coding agents to
+understand, compose, and evolve.
 
-The goal is simple: **build any terminal interface from small, themeable,
-snapshot-testable Go components.**
+The north star is a **consistent design grammar for terminal interfaces**:
+build any custom TUI from small, themeable, snapshot-testable components while
+preserving coherent visual and interaction conventions.
 
 **Status: pre-v1.** Phases 0–3.5 are complete: foundation, core primitives,
 composition utilities, and the first agentic domain layer. APIs still change
@@ -67,6 +69,14 @@ for the next phases of general-purpose evolution.
   plain-text goldens an agent can read in a git diff.
 - **Composable layers** — primitives and composition utilities remain
   domain-neutral; agentic and application-specific packages build on them.
+- **Agent-friendly composition** — the package structure, contracts, recipes,
+  and examples provide a small vocabulary that coding agents can use without
+  inventing inconsistent local patterns.
+
+Agent-friendliness is an architectural quality, not a product specialization.
+The library should be easy to discover, difficult to misuse, flexible enough for
+distinct visual designs, and explicit about the interaction conventions that
+make those designs feel coherent.
 
 ## Scope boundaries
 

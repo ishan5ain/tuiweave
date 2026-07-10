@@ -1,6 +1,6 @@
 // Package gotui is a composable component library for building custom terminal
-// UIs on bubbletea v2 and lipgloss v2, designed so that coding agents can
-// reliably author and evolve complete frontends with it.
+// UIs on bubbletea v2 and lipgloss v2, designed so that humans and coding
+// agents can reliably compose and evolve complete frontends with it.
 //
 // The root package defines the semantic theme roles every component consumes.
 // Layout lives in gotui/layout, the snapshot test harness in gotui/snaptest,

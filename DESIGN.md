@@ -2,17 +2,19 @@
 
 A modular, customizable TUI component library for Go, built on **bubbletea v2**,
 **lipgloss v2**, and **ultraviolet**, for building beautiful, consistent
-terminal frontends — designed so that coding agents are its primary authors.
+terminal frontends — designed so that humans and coding agents can compose
+them reliably.
 
 This document records the architectural decisions, the rationale behind each,
 and the conventions that follow from them. [PLAN.md](PLAN.md) is the execution
 roadmap; [AGENTS.md](AGENTS.md) is the distilled rulebook agents load when
 writing code with the library.
 
-The north star is a general-purpose toolkit: build any terminal interface from
-small, themeable, snapshot-testable components. Agentic UIs are a demanding
-reference application and an important domain layer, but they do not define the
-core API.
+The north star is a general-purpose toolkit with a consistent terminal design
+grammar: build any interface from small, themeable, snapshot-testable
+components while preserving coherent visual and interaction conventions.
+Agentic UIs are a demanding reference application and an important domain
+layer, but they do not define the core API.
 
 ---
 
@@ -20,7 +22,7 @@ core API.
 
 | # | Decision | Choice |
 |---|---|---|
-| D1 | Audience | **Agent-authored first** — coding agents (Claude Code, Pi) write the apps; humans review |
+| D1 | Audience | **Human- and agent-friendly by design** — both can understand and compose the system |
 | D2 | Scope | **Component library**, not a framework |
 | D3 | Relationship to bubbles v2 | **From scratch** — uniform conventions from day one |
 | D4 | API paradigm | **Pure MVU + opt-in glue utilities** |
@@ -32,16 +34,18 @@ core API.
 | D10 | Agent docs | **Thin skill file (AGENTS.md) + CI-compiled examples** |
 | D11 | Driving app | **Applications validate the library** — Pi is the first demanding consumer, not the core boundary |
 | D12 | Generality | **Domain-neutral core, layered domain packages** — reusable interaction patterns stay portable |
+| D13 | Composition quality | **A small design grammar** — consistency comes from shared contracts and patterns, not visual sameness |
 
-### D1 — Agent-authored first
+### D1 — Human- and agent-friendly by design
 
-The library is optimized so coding agents can reliably generate correct,
-beautiful TUIs: constrained API surface, strong explicit conventions,
-hard-to-misuse components. Humans mostly review. The meta-goal is that the Pi
-coding agent iterates on **its own TUI** using this library, which raises the
-bar on two things treated as afterthoughts elsewhere: the verification loop
-(D9) and agent-facing docs (D10) — if an agent can't *see* what it rendered,
-it can't iterate.
+The library is optimized so humans and coding agents can reliably generate
+correct, coherent TUIs: a constrained but expressive API surface, explicit
+conventions, hard-to-misuse components, runnable examples, and deterministic
+verification. Agents are a demanding consumer of this design, not the sole
+audience or the reason the library is domain-specific. The verification loop
+(D9) and agent-facing docs (D10) make the design grammar observable and usable
+by an agent: if an agent cannot understand or inspect what it composed, it
+cannot iterate effectively.
 
 ### D2/D3 — Component library, from scratch
 
@@ -58,7 +62,7 @@ Components are plain bubbletea v2 models. A declarative component-tree DSL was
 rejected for two reasons: (a) owning message routing/focus/layout *is* a
 framework, contradicting D2; (b) agents have deep training priors on bubbletea
 idioms and zero priors on a novel DSL — **familiar-verbose beats novel-terse**
-for agent-authored code. Known MVU agent failure modes (forgetting to reassign
+for agent-friendly code. Known MVU agent failure modes (forgetting to reassign
 the model after `Update`, dropping a `Cmd`, unwired focus) are addressed by
 opt-in glue utilities — a focus manager, layout helpers, delegation helpers —
 plus explicit rules in AGENTS.md, not by hiding the loop.
@@ -142,25 +146,6 @@ agent-backend clients. The same layering can support future domains such as
 database consoles, file browsers, monitoring dashboards, and developer tools.
 Backend clients, persistence, and application workflows live in app repos.
 
-### D12 — Generality through layered scope
-
-The library has five conceptual layers:
-
-1. **Foundations:** theme roles, layout, sizing, rendering, and snapshot testing.
-2. **Interaction primitives:** inputs, lists, tables, viewports, focus, dialogs,
-   scrolling, and other reusable terminal behaviors.
-3. **Composition utilities:** frames, panes, toolbars, menus, tabs, and other
-   structural helpers that combine primitives without owning a product domain.
-4. **Domain packages:** agentic or other specialized components built on the
-   lower layers.
-5. **Applications:** event routing, backend protocols, persistence, and
-   product-specific workflows.
-
-When deciding where code belongs, prefer the lowest layer that can express the
-behavior without introducing domain assumptions. Add a component to the core
-when it represents a recurring terminal interaction pattern, not merely because
-one application currently needs it.
-
 ### D9 — Verification: snapshot harness first, capture later
 
 `gotui/snaptest` is a first-class deliverable built in Phase 0, because
@@ -203,6 +188,46 @@ Pi's JSON-RPC interface. It should drive real API improvements, but the app and
 its protocol remain outside gotui. Other applications, including non-agentic
 tools, are equally important validation targets; gaps found while building any
 of them flow back as gotui issues.
+
+### D12 — Generality through layered scope
+
+The library has five conceptual layers:
+
+1. **Foundations:** theme roles, layout, sizing, rendering, and snapshot testing.
+2. **Interaction primitives:** inputs, lists, tables, viewports, focus, dialogs,
+   scrolling, and other reusable terminal behaviors.
+3. **Composition utilities:** frames, panes, toolbars, menus, tabs, and other
+   structural helpers that combine primitives without owning a product domain.
+4. **Domain packages:** agentic or other specialized components built on the
+   lower layers.
+5. **Applications:** event routing, backend protocols, persistence, and
+   product-specific workflows.
+
+When deciding where code belongs, prefer the lowest layer that can express the
+behavior without introducing domain assumptions. Add a component to the core
+when it represents a recurring terminal interaction pattern, not merely because
+one application currently needs it.
+
+### D13 — Composition quality: a small design grammar
+
+The library should provide a recognizable vocabulary for terminal UI design:
+theme roles, layout constraints, sizing contracts, focus behavior, selection
+semantics, scrolling statistics, modal routing, and common empty/loading/error
+states. Components may be visually distinct, but they should behave predictably
+when composed with one another.
+
+This is how gotui balances customization and consistency:
+
+- **Consistency comes from contracts and shared semantics**, not from forcing
+  every application into one visual arrangement.
+- **Customization comes from composition and explicit extension points**, not
+  from every application reimplementing focus, sizing, truncation, or state
+  handling locally.
+- **Agent-friendliness comes from legibility**: package names, APIs, recipes,
+  examples, and snapshots should make the right composition discoverable.
+
+For a proposed abstraction, ask whether it adds a reusable word to this grammar
+or merely hides application-specific decisions behind a new name.
 
 ---
 

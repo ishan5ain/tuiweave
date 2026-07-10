@@ -21,6 +21,11 @@ editors, dashboards, file browsers, forms, operational tools, and agentic UIs.
 Keep product-specific orchestration, backend clients, persistence, and session
 lifecycle in application repositories.
 
+gotui is agent-friendly by design. Treat its primitives, theme roles, layout
+rules, interaction conventions, examples, and snapshots as a small design
+grammar: compose from that vocabulary first, then add a new abstraction only
+when the existing vocabulary cannot express the intended behavior cleanly.
+
 ## Hard rules
 
 1. **Colors come from `gotui.Theme` roles — never literals.** No hex strings,
@@ -49,6 +54,10 @@ lifecycle in application repositories.
    belong in a top-level package, reusable composition helpers belong in a
    top-level utility package, and domain-specific behavior belongs under a
    domain package or in the application.
+8. **Prefer established interaction patterns:** focus, selection, scrolling,
+   modal routing, keyboard handling, empty states, and narrow-width behavior
+   should follow existing component conventions unless the component documents
+   a deliberate difference.
 
 ## Wiring an app (the only layout pattern)
 
