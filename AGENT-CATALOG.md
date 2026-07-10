@@ -14,6 +14,7 @@ rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
 | Choose or activate an action | `menu`; handle `menu.SelectedMsg` in the app |
 | Add a horizontal action strip | `toolbar`; handle `toolbar.SelectedMsg` in the app |
 | Compose two sibling panes | `splitpane.Horizontal`; callbacks receive pane widths |
+| Stack headers, sections, and footers | `stack.Vertical`; empty sections are omitted |
 | Split panes or rows | `layout.Vertical` / `layout.Horizontal` + `SetSize` |
 | Show selectable records | `list` or `table`; add `scrollbar.For` |
 | Show long content | `viewport`; forward mouse wheels; add `scrollbar.For` |
@@ -58,6 +59,7 @@ rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
 | `menu` | Choosing application-owned actions | `SetItems`, `Focus`, `SelectedMsg`; disabled entries are skipped |
 | `toolbar` | Rendering horizontal actions | `SetItems`, `Focus`, `SelectedMsg`; selected action stays visible when narrow |
 | `splitpane` | Composing two width-aware views | `Horizontal(theme, width, Options, left, right)`; natural-height alignment |
+| `stack` | Composing vertical app chrome | `Vertical(theme, width, Options, views...)`; exact-width natural-height sections |
 
 ### Agentic domain components
 
@@ -154,6 +156,8 @@ that behavior is part of the scenario.
   only an app-owned activation signal.
 - Reimplementing pane width arithmetic and height padding at every call site;
   use `splitpane.Horizontal` for the shared composition pattern.
+- Concatenating optional headers and footers with manual newlines; use
+  `stack.Vertical` so empty sections and width-filled gaps stay deterministic.
 - Splicing one pair of side borders around a multiline string; use
   `frame.Panel`, which frames every rendered line.
 - Mutating a chat cell without calling `transcript.Invalidate()`.

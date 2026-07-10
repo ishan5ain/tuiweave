@@ -1,0 +1,8 @@
+1: "header"
+2: 
+3: "────────────────────────────" [fg=BorderMuted]
+4: "body"
+5: "second line"
+6: 
+7: "────────────────────────────" [fg=BorderMuted]
+8: "footer"

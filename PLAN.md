@@ -205,8 +205,12 @@ and useful in at least two unrelated application types.
       width-aware callback composition, configurable left/right ratio,
       natural-height alignment, themed dividers, and narrow-width handling;
       `examples/frame` uses it for the dashboard body.
-- [ ] Structural components: stacked
-      headers/footers
+- [x] **Stacked chrome (initial slice)**: `gotui/stack.Vertical` provides
+      width-aware natural-height sections, optional gaps/dividers, omission of
+      empty sections, and deterministic header/body/footer composition;
+      `examples/frame` uses it for both the header and root frame.
+- [ ] Structural components: additional layout patterns driven by reference
+      applications
 - [ ] Common controls: toggles, buttons, progress indicators, selectable
       actions, and command-palette foundations
 - [ ] Width-aware composition helpers for truncation, alignment, fill zones,

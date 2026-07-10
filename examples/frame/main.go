@@ -20,6 +20,7 @@ import (
 	"github.com/ishansain/gotui/layout"
 	"github.com/ishansain/gotui/menu"
 	"github.com/ishansain/gotui/splitpane"
+	"github.com/ishansain/gotui/stack"
 	"github.com/ishansain/gotui/tabs"
 	"github.com/ishansain/gotui/toolbar"
 )
@@ -139,7 +140,10 @@ func (m model) render() string {
 			lipgloss.NewStyle().Foreground(m.theme.TextMuted).Render("service overview"),
 		),
 	)
-	headerView := lipgloss.JoinVertical(lipgloss.Left, headerLine, m.nav.View())
+	headerView := stack.Vertical(m.theme, header.Dx(), stack.Options{},
+		func(int) string { return headerLine },
+		func(int) string { return m.nav.View() },
+	)
 
 	var jobs, services layout.Rect
 	layout.Horizontal(layout.Fill(1), layout.Fill(1)).WithSpacing(1).Split(body).Assign(&jobs, &services)
@@ -164,7 +168,11 @@ func (m model) render() string {
 		func(int) string { return jobsView },
 		func(int) string { return servicesView },
 	)
-	return lipgloss.JoinVertical(lipgloss.Left, headerView, bodyView, footerView)
+	return stack.Vertical(m.theme, m.width, stack.Options{},
+		func(int) string { return headerView },
+		func(int) string { return bodyView },
+		func(int) string { return footerView },
+	)
 }
 
 func (m model) View() tea.View {

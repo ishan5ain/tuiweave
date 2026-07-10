@@ -19,6 +19,7 @@ and example before reading the detailed recipes below.
 - Actions: `github.com/ishansain/gotui/menu` (focusable action choices)
 - Toolbars: `github.com/ishansain/gotui/toolbar` (horizontal action strips)
 - Split panes: `github.com/ishansain/gotui/splitpane` (width-aware view composition)
+- Stacked chrome: `github.com/ishansain/gotui/stack` (headers, sections, footers)
 - Testing: `github.com/ishansain/gotui/snaptest` (golden files)
 - Domain packages: `gotui/agentic/…` (markdown, chat, toolcall, diffview,
   permission, usagebar) — optional, backend-agnostic layers built on the
@@ -317,6 +318,28 @@ view := splitpane.Horizontal(theme, area.Dx(), splitpane.Options{Gap: 1},
   exact-width composition. Widths too narrow for both panes render empty.
 - Use the callbacks to render width-aware content; do not measure the terminal
   inside a component or hide application routing inside the helper.
+
+### stack
+
+Use `stack.Vertical` for width-aware headers, body sections, separators, and
+footers. Empty sections are omitted, and gap rows are width-filled. Full
+composition coverage is in [examples/frame](examples/frame/main.go).
+
+```go
+view := stack.Vertical(theme, width, stack.Options{Gap: 0},
+    func(width int) string { return headerView(width) },
+    func(width int) string { return bodyView(width) },
+    func(width int) string { return footerView(width) },
+)
+```
+
+- Set `Divider: true` to insert themed `BorderMuted` rules between sections;
+  use `Gap` for blank rows.
+- The helper returns natural height and exact requested width. It does not
+  allocate component rectangles or route messages; the app still owns those
+  decisions.
+- Prefer callbacks over manual newline concatenation when sections can be
+  conditionally present or have pre-styled, width-aware content.
 
 ### statusbar
 
