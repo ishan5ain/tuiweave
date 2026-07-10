@@ -9,6 +9,11 @@ and the conventions that follow from them. [PLAN.md](PLAN.md) is the execution
 roadmap; [AGENTS.md](AGENTS.md) is the distilled rulebook agents load when
 writing code with the library.
 
+The north star is a general-purpose toolkit: build any terminal interface from
+small, themeable, snapshot-testable components. Agentic UIs are a demanding
+reference application and an important domain layer, but they do not define the
+core API.
+
 ---
 
 ## 1. Decision record
@@ -22,10 +27,11 @@ writing code with the library.
 | D5 | Theming | **Role-based theme struct** (~18 semantic roles) |
 | D6 | Ultraviolet usage | **`uv/layout` wrapped for containers; cell buffers library-internal only** |
 | D7 | Markdown | **Glamour now, behind a swappable interface; custom streaming renderer later** |
-| D8 | Domain layering | **Agentic components live in the library**, as a subpackage over generic primitives |
+| D8 | Domain layering | **Domain packages live above generic primitives**; agentic components are the first such layer |
 | D9 | Verification | **First-class snapshot harness early; pty capture as a thin script later** |
 | D10 | Agent docs | **Thin skill file (AGENTS.md) + CI-compiled examples** |
-| D11 | Driving app | **Pi coding agent TUI over JSON-RPC** — parity first, then specialization |
+| D11 | Driving app | **Applications validate the library** — Pi is the first demanding consumer, not the core boundary |
+| D12 | Generality | **Domain-neutral core, layered domain packages** — reusable interaction patterns stay portable |
 
 ### D1 — Agent-authored first
 
@@ -124,15 +130,36 @@ handled by re-rendering the in-progress message — the chat assistant cell
 caches by (source length, width) so only real changes re-render. `Sprint`
 degrades to raw source on error; transcripts must not fail on bad markdown.
 
-### D8 — Agentic components live in the library
+### D8 — Domain packages live above generic primitives
 
-Generic primitives (`list`, `textinput`, `viewport`, `dialog`, …) in top-level
-packages; agentic domain components (chat message list, tool-call blocks, diff
-viewer, permission prompts) in `gotui/agentic/...`, built on the primitives.
-The family-of-tools goal makes chat UIs the actual reuse target — keeping them
-app-side would defer the library's whole point. Domain components consume
-plain Go types (messages, tool calls); **agent-backend clients (e.g. Pi's
-JSON-RPC) live in app repos**, keeping gotui agent-tool-agnostic.
+Generic primitives (`list`, `textinput`, `viewport`, `dialog`, …) live in
+top-level packages. Domain components such as chat transcripts, tool-call
+blocks, diff viewers, and permission prompts live in `gotui/agentic/...` and
+are built on those primitives.
+
+Agentic components are reusable because they consume plain Go types, not
+agent-backend clients. The same layering can support future domains such as
+database consoles, file browsers, monitoring dashboards, and developer tools.
+Backend clients, persistence, and application workflows live in app repos.
+
+### D12 — Generality through layered scope
+
+The library has five conceptual layers:
+
+1. **Foundations:** theme roles, layout, sizing, rendering, and snapshot testing.
+2. **Interaction primitives:** inputs, lists, tables, viewports, focus, dialogs,
+   scrolling, and other reusable terminal behaviors.
+3. **Composition utilities:** frames, panes, toolbars, menus, tabs, and other
+   structural helpers that combine primitives without owning a product domain.
+4. **Domain packages:** agentic or other specialized components built on the
+   lower layers.
+5. **Applications:** event routing, backend protocols, persistence, and
+   product-specific workflows.
+
+When deciding where code belongs, prefer the lowest layer that can express the
+behavior without introducing domain assumptions. Add a component to the core
+when it represents a recurring terminal interaction pattern, not merely because
+one application currently needs it.
 
 ### D9 — Verification: snapshot harness first, capture later
 
@@ -169,12 +196,13 @@ product's user interface**. AGENTS.md stays thin (~200 lines): explicit rules
 neutralized by making examples real packages that compile and snapshot-test
 in CI — API changes that stale the docs break the build.
 
-### D11 — Driving app: Pi TUI
+### D11 — Applications validate the library
 
-A custom Go TUI for the Pi coding agent using its JSON-RPC interface: first
-full parity with the stock Pi TUI, then specialized components. Real needs
-drive the API; gaps found while building it flow back as gotui issues. The
-long-term target is a family of agentic tools sharing one visual language.
+A custom Go TUI for the Pi coding agent is the first demanding consumer using
+Pi's JSON-RPC interface. It should drive real API improvements, but the app and
+its protocol remain outside gotui. Other applications, including non-agentic
+tools, are equally important validation targets; gaps found while building any
+of them flow back as gotui issues.
 
 ---
 
@@ -200,7 +228,7 @@ github.com/ishansain/gotui
 ├── dialog/          modal confirm box (ResultMsg pattern)
 ├── overlay/         cell-space compositing — Place/Center (UV internal)
 ├── focus/           copy-safe (index-only) tab-order manager
-├── agentic/
+├── agentic/          optional domain layer built on the primitives
 │   ├── markdown/    Renderer interface + glamour v2 implementation
 │   ├── chat/        cell-based streaming transcript (User/Assistant/Text cells)
 │   ├── toolcall/    status-aware collapsible tool-call block (chat cell)

@@ -1,18 +1,28 @@
 # gotui
 
-A modular, customizable TUI component library for Go — built on
-[bubbletea v2](https://github.com/charmbracelet/bubbletea),
-[lipgloss v2](https://github.com/charmbracelet/lipgloss), and
-[ultraviolet](https://github.com/charmbracelet/ultraviolet) — for building
-beautiful, consistent terminal frontends. Designed **agent-authored first**:
-the API, conventions, and verification loop are optimized so coding agents can
-reliably write TUIs with it.
+`gotui` is a composable Go toolkit for building custom terminal user
+interfaces. It provides reliable primitives for layout, styling, interaction,
+scrolling, text editing, overlays, and rendering, with optional domain packages
+for agentic and other specialized applications.
 
-**Status: pre-v1.** Phases 0–3 are complete — foundation, proven conventions,
-the core primitive set, and the agentic domain layer. APIs still change freely
-until v1 (Phase 5).
+It is built on [bubbletea v2](https://github.com/charmbracelet/bubbletea),
+[lipgloss v2](https://github.com/charmbracelet/lipgloss), and
+[ultraviolet](https://github.com/charmbracelet/ultraviolet). It is designed
+**agent-authored first**: the API, conventions, examples, and verification loop
+are optimized so coding agents can reliably build and evolve complete TUIs.
+
+The goal is simple: **build any terminal interface from small, themeable,
+snapshot-testable Go components.**
+
+**Status: pre-v1.** Phases 0–3.5 are complete: foundation, core primitives,
+composition utilities, and the first agentic domain layer. APIs still change
+freely while the general-purpose component and composition layers evolve.
 
 ## What's here
+
+The library is organized in layers. The core stays domain-neutral; domain
+packages are built on top of it and applications own their event routing,
+backend protocols, and session lifecycle.
 
 | Package | Purpose |
 |---|---|
@@ -39,9 +49,10 @@ until v1 (Phase 5).
 | `agentic/usagebar` | Model / tokens / cost / context bar with thresholds |
 | `examples/…` | Runnable apps: `go run ./examples/chat` (mock agentic session), `./examples/table` (git-status mock), `./examples/demo`, `./examples/statusbar` |
 
-Phases 0–3.5 are complete — see [PLAN.md](PLAN.md). Next: the Pi coding
-agent TUI built on this library (Phase 4, separate app repo), then the custom
-streaming markdown renderer (Phase 5).
+Agentic packages are important reference implementations, not the boundary of
+the library. The same primitives should support editors, dashboards, file
+browsers, operational tools, forms, and other custom TUIs. See [PLAN.md](PLAN.md)
+for the next phases of general-purpose evolution.
 
 ## Design pillars
 
@@ -54,6 +65,16 @@ streaming markdown renderer (Phase 5).
   components straight from the split.
 - **Agent-verifiable rendering** — every component snapshot-tests to
   plain-text goldens an agent can read in a git diff.
+- **Composable layers** — primitives and composition utilities remain
+  domain-neutral; agentic and application-specific packages build on them.
+
+## Scope boundaries
+
+`gotui` owns reusable rendering and interaction components. It does not own an
+application event loop, backend protocol, persistence layer, or product-specific
+workflow. A package belongs in the core when it expresses a reusable terminal
+interaction pattern; it belongs under `agentic/` or in an application when it
+depends on a domain model or service.
 
 ## Documentation
 

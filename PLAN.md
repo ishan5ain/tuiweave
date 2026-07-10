@@ -1,13 +1,14 @@
 # gotui — Phased Plan
 
-gotui is an agent-authored-first TUI component library for Go, built on
-bubbletea v2, lipgloss v2, and ultraviolet. The full rationale behind every
-decision below lives in [DESIGN.md](DESIGN.md). This file is the execution
-roadmap.
+gotui is an agent-authored-first, general-purpose TUI component library for Go,
+built on bubbletea v2, lipgloss v2, and ultraviolet. The full rationale behind
+every decision below lives in [DESIGN.md](DESIGN.md). This file is the
+execution roadmap.
 
-**North star:** a family of agentic tools sharing one visual language, with a
-custom Pi coding agent TUI (JSON-RPC) as the driving app — and, ultimately,
-Pi iterating on its own TUI using this library.
+**North star:** build any terminal interface from small, themeable,
+snapshot-testable components. Agentic tools, including a custom Pi coding agent
+TUI, are demanding consumers and reference applications for the library rather
+than its defining scope.
 
 ---
 
@@ -122,31 +123,76 @@ paste-with-newlines; every scrolling component wears a scrollbar via one
 interface; a filtered list reports original-index selection under test;
 every public component appears in at least one example app; suite green.
 
-## Phase 4 — Pi TUI parity *(next — separate app repo)*
+## Phase 4 — General-purpose composition layer *(next)*
 
-The driving app. The JSON-RPC client lives in the **app repo**, not gotui —
-the library stays agent-tool-agnostic; agentic components consume plain Go types.
+Expand the library from a strong primitive set into a flexible toolkit for
+composing complete custom interfaces. These additions must remain domain-neutral
+and useful in at least two unrelated application types.
+
+- [ ] Framing and decoration utilities: borders, padding, titles, separators,
+      badges, and reusable framed content
+- [ ] Structural components: tabs, menus, toolbars, split panes, and stacked
+      headers/footers
+- [ ] Common controls: toggles, buttons, progress indicators, selectable
+      actions, and command-palette foundations
+- [ ] Width-aware composition helpers for truncation, alignment, fill zones,
+      and graceful narrow-terminal behavior
+- [ ] Reference example apps beyond agentic UIs: a file browser, dashboard, or
+      operations console
+- [ ] Recipes and golden coverage for every new composition pattern
+
+**Exit criteria:** an agent can assemble a multi-view non-agentic application
+from gotui without introducing local copies of common framing, navigation, or
+selection behavior.
+
+## Phase 5 — Editing and interaction depth
+
+Make the interaction primitives robust enough for serious editors and repeated
+daily use.
+
+- [ ] Textarea tier 2: undo/redo, kill ring, selections, and richer editing
+      commands
+- [ ] Correct cell-width handling for wide runes and combining characters
+- [ ] Autocomplete and command-palette primitives
+- [ ] More explicit mouse interaction conventions where bubbletea supports them
+- [ ] Focus scopes and nested modal/focus routing utilities
+- [ ] Interaction-sequence testing helpers alongside rendering snapshots
+
+**Exit criteria:** a small editor or command-driven console can be implemented
+with library primitives rather than application-specific editing machinery.
+
+## Phase 6 — Domain kits and Pi validation
+
+Use the expanded composition layer to validate both the original agentic goal
+and the broader library boundary. The Pi frontend remains in a separate app
+repo; gotui stays independent of Pi's protocol.
 
 - [ ] Pi TUI app repo scaffolded; JSON-RPC client for Pi
-- [ ] Full parity with the stock Pi TUI, built on gotui
+- [ ] Pi TUI parity and Zentui-inspired editor/footer composition
+- [ ] At least one non-agentic reference application built on gotui
+- [ ] Review `agentic/` APIs and add only domain components that generalize
+      across agentic applications
 - [ ] Live-capture script (vhs/tmux `capture-pane`, ~50 lines, not a platform)
       so agents can see the running TUI
 - [ ] Dogfood loop: Pi modifies its own TUI, verifies via snaptest goldens +
       capture script; gaps found here flow back as gotui issues
 
-**Exit criteria:** daily-drivable Pi TUI; Pi lands a self-authored UI change
-verified without a human looking at the screen.
+**Exit criteria:** a daily-drivable Pi TUI and at least one unrelated custom TUI
+prove that the core is not coupled to the agentic domain.
 
-## Phase 5 — Maturity
+## Phase 7 — Maturity and v1
 
 - [ ] Custom streaming markdown renderer replaces glamour behind the existing
       `markdown.Renderer` interface (no app-code changes)
 - [ ] Theme gallery + palette-derivation helper (base palette → roles)
-- [ ] Second tool built on gotui (validates the family-of-tools goal)
+- [ ] Examples and theme gallery cover multiple application categories
+- [ ] Accessibility and narrow-terminal review across the component set
+- [ ] Performance review for large transcripts, tables, and repeated renders
 - [ ] API review and freeze toward a tagged v1; track bubbletea v2 / lipgloss v2
       out of beta, ultraviolet API settling
 
-**Exit criteria:** two shipping tools on one visual language; v1 tag.
+**Exit criteria:** multiple unrelated TUIs share the same foundations, the
+public API is reviewed and documented, and gotui reaches a tagged v1.
 
 ---
 
@@ -154,6 +200,11 @@ verified without a human looking at the screen.
 
 - Every component ships with: golden tests, coverage in a runnable example
   app, and an AGENTS.md recipe.
+- New core components must be domain-neutral; domain-specific components live
+  in a clearly named subpackage.
+- Prefer composition utilities over product-specific convenience components.
+- New theme roles require evidence that existing semantic roles cannot express
+  the state.
 - Colors only ever come from `gotui.Theme` roles — never literals in components
   or examples.
 - Public API stays string/lipgloss-based; ultraviolet types appear only in

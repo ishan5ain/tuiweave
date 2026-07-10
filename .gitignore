@@ -7,3 +7,6 @@
 .DS_Store
 .idea/
 .vscode/
+
+# Subagent artifacts
+.pi-subagents/

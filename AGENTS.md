@@ -12,8 +12,14 @@ component; you don't need it to build an app.
 - Styling: `charm.land/lipgloss/v2` (components render styled **strings**)
 - Layout: `github.com/ishansain/gotui/layout` (flexbox-like constraints → rects)
 - Testing: `github.com/ishansain/gotui/snaptest` (golden files)
-- Agentic UIs: `gotui/agentic/…` (markdown, chat, toolcall, diffview,
-  permission, usagebar) — built on the primitives, backend-agnostic
+- Domain packages: `gotui/agentic/…` (markdown, chat, toolcall, diffview,
+  permission, usagebar) — optional, backend-agnostic layers built on the
+  primitives
+
+The core library is domain-neutral. Its primitives should be suitable for
+editors, dashboards, file browsers, forms, operational tools, and agentic UIs.
+Keep product-specific orchestration, backend clients, persistence, and session
+lifecycle in application repositories.
 
 ## Hard rules
 
@@ -39,6 +45,10 @@ component; you don't need it to build an app.
    done. Never regenerate goldens to silence a failure you don't understand.
 6. **Every new component ships with:** golden tests, coverage in a runnable
    example app under `examples/`, and a recipe entry in this file.
+7. **Classify additions before implementing them:** domain-neutral primitives
+   belong in a top-level package, reusable composition helpers belong in a
+   top-level utility package, and domain-specific behavior belongs under a
+   domain package or in the application.
 
 ## Wiring an app (the only layout pattern)
 
