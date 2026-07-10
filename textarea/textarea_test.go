@@ -7,6 +7,7 @@ import (
 	tea "charm.land/bubbletea/v2"
 
 	"github.com/ishansain/gotui"
+	"github.com/ishansain/gotui/inspect"
 	"github.com/ishansain/gotui/snaptest"
 )
 
@@ -42,6 +43,16 @@ func key(name string) tea.KeyPressMsg {
 		return tea.KeyPressMsg{Code: tea.KeyDown}
 	case "home":
 		return tea.KeyPressMsg{Code: tea.KeyHome}
+	case "shift+left":
+		return tea.KeyPressMsg{Code: tea.KeyLeft, Mod: tea.ModShift}
+	case "shift+up":
+		return tea.KeyPressMsg{Code: tea.KeyUp, Mod: tea.ModShift}
+	case "ctrl+a":
+		return tea.KeyPressMsg{Code: 'a', Mod: tea.ModCtrl}
+	case "ctrl+z":
+		return tea.KeyPressMsg{Code: 'z', Mod: tea.ModCtrl}
+	case "ctrl+y":
+		return tea.KeyPressMsg{Code: 'y', Mod: tea.ModCtrl}
 	case "end":
 		return tea.KeyPressMsg{Code: tea.KeyEnd}
 	case "ctrl+k":
@@ -178,6 +189,117 @@ func TestCtrlWAcrossBoundary(t *testing.T) {
 	}
 }
 
+func TestSelectionAcrossLinesAndReplacement(t *testing.T) {
+	ta := newFocused(20, 4)
+	ta.SetValue("hello\nworld")
+	ta, _ = ta.Update(key("shift+left"))
+	ta, _ = ta.Update(key("shift+up"))
+	if !ta.HasSelection() || ta.SelectedText() != "o\nworld" {
+		t.Fatalf("selection = %q, has=%v; want o\\nworld", ta.SelectedText(), ta.HasSelection())
+	}
+	snaptest.Snap(t, ta.View())
+	snaptest.SnapCells(t, ta.View(), snaptest.WithRoles(gotui.Dark()))
+
+	ta, _ = ta.Update(tea.KeyPressMsg{Text: "there"})
+	if got := ta.Value(); got != "hellthere" {
+		t.Fatalf("replacement = %q, want hellthere", got)
+	}
+	if ta.HasSelection() {
+		t.Fatal("replacement left a selection active")
+	}
+}
+
+func TestSelectAllUndoRedo(t *testing.T) {
+	ta := newFocused(20, 4)
+	ta.SetValue("hello world")
+	ta, _ = ta.Update(key("ctrl+a"))
+	if ta.SelectedText() != "hello world" {
+		t.Fatalf("select all = %q", ta.SelectedText())
+	}
+	ta, _ = ta.Update(tea.KeyPressMsg{Text: "replaced"})
+	if got := ta.Value(); got != "replaced" || !ta.CanUndo() || ta.CanRedo() {
+		t.Fatalf("after replacement: value=%q undo=%v redo=%v", got, ta.CanUndo(), ta.CanRedo())
+	}
+	ta, _ = ta.Update(key("ctrl+z"))
+	if got := ta.Value(); got != "hello world" || !ta.CanRedo() {
+		t.Fatalf("after undo: value=%q redo=%v", got, ta.CanRedo())
+	}
+	ta, _ = ta.Update(key("ctrl+y"))
+	if got := ta.Value(); got != "replaced" || !ta.CanUndo() || ta.CanRedo() {
+		t.Fatalf("after redo: value=%q undo=%v redo=%v", got, ta.CanUndo(), ta.CanRedo())
+	}
+	ta.InsertString("!")
+	if ta.CanRedo() {
+		t.Fatal("new edit did not clear redo history")
+	}
+}
+
+func TestSelectionCollapsesBeforeTyping(t *testing.T) {
+	ta := newFocused(20, 3)
+	ta.SetValue("abc")
+	ta, _ = ta.Update(key("ctrl+a"))
+	ta, _ = ta.Update(key("left"))
+	ta.InsertString("X")
+	if got := ta.Value(); got != "Xabc" {
+		t.Fatalf("left collapsed selection to %q, want Xabc", got)
+	}
+
+	ta.SetValue("abc")
+	ta, _ = ta.Update(key("ctrl+a"))
+	ta, _ = ta.Update(key("right"))
+	ta.InsertString("X")
+	if got := ta.Value(); got != "abcX" {
+		t.Fatalf("right collapsed selection to %q, want abcX", got)
+	}
+}
+
+func TestTextareaSemanticEditingActions(t *testing.T) {
+	ta := newFocused(20, 3)
+	ta.SetValue("abc")
+	next, handled := ta.applyAction(inspect.Invoke(ActionSelectAll))
+	if !handled || !next.HasSelection() {
+		t.Fatalf("select-all action: handled=%v selection=%v", handled, next.HasSelection())
+	}
+	next, handled = next.applyAction(inspect.Invoke(ActionClearSelection))
+	if !handled || next.HasSelection() {
+		t.Fatalf("clear-selection action: handled=%v selection=%v", handled, next.HasSelection())
+	}
+	next.InsertString("d")
+	next, handled = next.applyAction(inspect.Invoke(ActionUndo))
+	if !handled || next.Value() != "abc" {
+		t.Fatalf("undo action: handled=%v value=%q", handled, next.Value())
+	}
+	next, handled = next.applyAction(inspect.Invoke(ActionRedo))
+	if !handled || next.Value() != "abcd" {
+		t.Fatalf("redo action: handled=%v value=%q", handled, next.Value())
+	}
+	if got := next.Inspect().Attributes["selected_runes"]; got != "0" {
+		t.Fatalf("selected_runes = %q, want 0", got)
+	}
+}
+
+func TestTextareaInspectionGolden(t *testing.T) {
+	ta := newFocused(20, 3)
+	ta.SetValue("abc")
+	ta.SelectAll()
+	data, err := inspect.Marshal(ta.Inspect())
+	if err != nil {
+		t.Fatal(err)
+	}
+	snaptest.Snap(t, string(data))
+}
+
+func TestTextareaSelectionScenarioGolden(t *testing.T) {
+	m := scenarioModel{textarea: newFocused(20, 4)}
+	m.textarea.SetValue("hello world")
+	result := snaptest.RunScenario(m,
+		snaptest.ScenarioStep{Name: "select all", Msg: key("ctrl+a")},
+		snaptest.ScenarioStep{Name: "replace selection", Msg: tea.KeyPressMsg{Text: "hi"}},
+		snaptest.ScenarioStep{Name: "undo", Msg: key("ctrl+z")},
+	)
+	snaptest.SnapScenario(t, result)
+}
+
 func TestGrowthAndScrollKeepsCursorVisible(t *testing.T) {
 	ta := newFocused(20, 2)
 	for i := range 5 {
@@ -224,3 +346,17 @@ func TestResetAndInsertString(t *testing.T) {
 		t.Errorf("Reset left content: %q", ta.Value())
 	}
 }
+
+type scenarioModel struct {
+	textarea Model
+}
+
+func (m scenarioModel) Init() tea.Cmd { return nil }
+
+func (m scenarioModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	var cmd tea.Cmd
+	m.textarea, cmd = m.textarea.Update(msg)
+	return m, cmd
+}
+
+func (m scenarioModel) View() tea.View { return tea.NewView(m.textarea.View()) }

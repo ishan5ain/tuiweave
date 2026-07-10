@@ -60,7 +60,7 @@ rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
 | `table` | Selecting rows with columns | Header and rule consume two rows |
 | `viewport` | Scrolling pre-rendered content | Mouse wheel works even when blurred |
 | `textinput` | Editing one line | Enter is not handled; read `Value()` in the app |
-| `textarea` | Editing wrapped/multiline text | Enter inserts a newline; grow with `ContentHeight()` |
+| `textarea` | Editing wrapped/multiline text | Logical-rune selection, bounded undo/redo, Enter inserts a newline; grow with `ContentHeight()` |
 | `help` | Showing key hints | Drops whole hints from the right when narrow |
 | `spinner` | Showing activity | Intrinsic-size; start with `Tick`, forward `TickMsg` |
 | `dialog` | Confirming or cancelling | App owns visibility; result arrives as `ResultMsg` |

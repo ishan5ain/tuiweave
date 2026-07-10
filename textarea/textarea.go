@@ -9,9 +9,9 @@
 //	h := min(4, m.input.ContentHeight())
 //	layout.Vertical(layout.Fill(1), layout.Len(h)).Apply(...)
 //
-// Tier-1 editing only: arrows (up/down move by visual row), home/end,
-// ctrl+a/e, backspace/delete (joining lines at boundaries), ctrl+u/k/w.
-// Undo, kill ring, selections, and IME are future work.
+// Tier-2 editing adds logical-rune selections, select-all/replacement, and a
+// bounded undo/redo history. Kill ring, IME, and cell-width-aware movement are
+// still separate follow-up work.
 package textarea
 
 import (
@@ -30,6 +30,10 @@ type Model struct {
 	row, col      int // cursor in logical coordinates (col in runes)
 	yoff          int // first visible visual row
 	focused       bool
+	anchor        position
+	hasAnchor     bool
+	undo          []editState
+	redo          []editState
 
 	// Prompt is rendered before the first visual row; continuation rows are
 	// indented to match. Default "> ".
@@ -39,14 +43,19 @@ type Model struct {
 
 	promptStyle      lipgloss.Style
 	textStyle        lipgloss.Style
+	selectionStyle   lipgloss.Style
 	placeholderStyle lipgloss.Style
 	cursorStyle      lipgloss.Style
 }
 
 const (
-	ActionFocus = "focus"
-	ActionBlur  = "blur"
-	ActionClear = "clear"
+	ActionFocus          = "focus"
+	ActionBlur           = "blur"
+	ActionClear          = "clear"
+	ActionUndo           = "undo"
+	ActionRedo           = "redo"
+	ActionSelectAll      = "select_all"
+	ActionClearSelection = "clear_selection"
 )
 
 // New returns an empty textarea styled from the theme's roles.
@@ -56,6 +65,7 @@ func New(theme gotui.Theme) Model {
 		Prompt:           "> ",
 		promptStyle:      lipgloss.NewStyle().Foreground(theme.Accent),
 		textStyle:        lipgloss.NewStyle().Foreground(theme.Text),
+		selectionStyle:   lipgloss.NewStyle().Foreground(theme.SelectionFg).Background(theme.SelectionBg),
 		placeholderStyle: lipgloss.NewStyle().Foreground(theme.TextFaint),
 		cursorStyle:      lipgloss.NewStyle().Foreground(theme.Text).Reverse(true),
 	}
@@ -87,6 +97,13 @@ func (m Model) Value() string {
 
 // SetValue replaces the text and moves the cursor to its end.
 func (m *Model) SetValue(s string) {
+	m.setValue(s)
+	m.hasAnchor = false
+	m.resetHistory()
+	m.ensureCursorVisible()
+}
+
+func (m *Model) setValue(s string) {
 	raw := strings.Split(s, "\n")
 	m.lines = make([][]rune, len(raw))
 	for i, l := range raw {
@@ -94,13 +111,14 @@ func (m *Model) SetValue(s string) {
 	}
 	m.row = len(m.lines) - 1
 	m.col = len(m.lines[m.row])
-	m.ensureCursorVisible()
 }
 
 // Reset clears the textarea.
 func (m *Model) Reset() {
 	m.lines = [][]rune{{}}
 	m.row, m.col, m.yoff = 0, 0, 0
+	m.hasAnchor = false
+	m.resetHistory()
 }
 
 // Empty reports whether the textarea holds no text.
@@ -111,6 +129,13 @@ func (m Model) Empty() bool {
 // InsertString inserts text at the cursor; \n starts new lines. This is also
 // how apps insert a newline on a custom key (e.g. alt+enter).
 func (m *Model) InsertString(s string) {
+	if s == "" {
+		return
+	}
+	m.applyEdit(func() { m.replaceSelection(s) })
+}
+
+func (m *Model) insertStringRaw(s string) {
 	first := true
 	for line := range strings.SplitSeq(s, "\n") {
 		if !first {
@@ -119,7 +144,6 @@ func (m *Model) InsertString(s string) {
 		m.insertRunes([]rune(line))
 		first = false
 	}
-	m.ensureCursorVisible()
 }
 
 // wrapWidth is the usable text width after the prompt gutter.
@@ -283,6 +307,28 @@ func (m *Model) moveVertical(delta int) {
 	m.col = r.startCol + min(vcol, len(r.text))
 }
 
+func (m *Model) moveWithSelection(extend bool, collapse int, move func()) {
+	if !extend {
+		if start, end, ok := m.selectionRange(); ok {
+			if collapse < 0 {
+				m.row, m.col = start.row, start.col
+			} else if collapse > 0 {
+				m.row, m.col = end.row, end.col
+			}
+			m.ClearSelection()
+			if collapse != 0 {
+				return
+			}
+		}
+	}
+	if extend {
+		m.beginSelection()
+	} else {
+		m.ClearSelection()
+	}
+	move()
+}
+
 func (m *Model) killToLineEnd() {
 	line := m.lines[m.row]
 	if m.col < len(line) {
@@ -328,32 +374,71 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 		return m, nil
 	}
 
+	extend := key.Mod&tea.ModShift != 0
 	switch key.String() {
 	case "enter":
-		m.splitLine()
+		m.applyEdit(func() { m.replaceSelection("\n") })
 	case "backspace":
-		m.backspace()
+		m.applyEdit(func() {
+			if m.HasSelection() {
+				m.deleteSelection()
+				return
+			}
+			m.backspace()
+		})
 	case "delete":
-		m.deleteForward()
-	case "left":
-		m.moveLeft()
-	case "right":
-		m.moveRight()
-	case "up":
-		m.moveVertical(-1)
-	case "down":
-		m.moveVertical(1)
-	case "home", "ctrl+a":
-		m.col = 0
-	case "end", "ctrl+e":
-		m.col = len(m.lines[m.row])
+		m.applyEdit(func() {
+			if m.HasSelection() {
+				m.deleteSelection()
+				return
+			}
+			m.deleteForward()
+		})
+	case "left", "shift+left":
+		m.moveWithSelection(extend, -1, m.moveLeft)
+	case "right", "shift+right":
+		m.moveWithSelection(extend, 1, m.moveRight)
+	case "up", "shift+up":
+		m.moveWithSelection(extend, -1, func() { m.moveVertical(-1) })
+	case "down", "shift+down":
+		m.moveWithSelection(extend, 1, func() { m.moveVertical(1) })
+	case "home", "shift+home":
+		m.moveWithSelection(extend, -1, func() { m.col = 0 })
+	case "end", "shift+end":
+		m.moveWithSelection(extend, 1, func() { m.col = len(m.lines[m.row]) })
+	case "ctrl+a", "ctrl+shift+a":
+		m.SelectAll()
+	case "ctrl+e", "ctrl+shift+e":
+		m.moveWithSelection(extend, 1, func() { m.col = len(m.lines[m.row]) })
+	case "ctrl+z":
+		m.Undo()
+	case "ctrl+y", "ctrl+shift+z":
+		m.Redo()
 	case "ctrl+u":
-		m.lines[m.row] = append([]rune{}, m.lines[m.row][m.col:]...)
-		m.col = 0
+		m.applyEdit(func() {
+			if m.HasSelection() {
+				m.deleteSelection()
+				return
+			}
+			m.lines[m.row] = append([]rune{}, m.lines[m.row][m.col:]...)
+			m.col = 0
+		})
 	case "ctrl+k":
-		m.killToLineEnd()
+		m.applyEdit(func() {
+			if m.HasSelection() {
+				m.deleteSelection()
+				return
+			}
+			m.killToLineEnd()
+		})
 	case "ctrl+w":
-		m.deleteWordBack()
+		m.applyEdit(func() {
+			if m.HasSelection() {
+				m.deleteSelection()
+				return
+			}
+			m.deleteWordBack()
+		})
 	default:
 		return m, nil
 	}
@@ -397,27 +482,61 @@ func (m Model) renderRow(r vrow, vi, cursorIdx, vcol int) string {
 		gutter = strings.Repeat(" ", len([]rune(m.Prompt)))
 	}
 
-	text := r.text
 	var b strings.Builder
 	b.WriteString(gutter)
-	if m.focused && vi == cursorIdx {
-		b.WriteString(m.textStyle.Render(string(text[:vcol])))
-		if vcol < len(text) {
-			b.WriteString(m.cursorStyle.Render(string(text[vcol])))
-			b.WriteString(m.textStyle.Render(string(text[vcol+1:])))
-		} else {
-			b.WriteString(m.cursorStyle.Render(" "))
-		}
-	} else {
-		b.WriteString(m.textStyle.Render(string(text)))
-	}
+	b.WriteString(m.renderText(r, vi, cursorIdx, vcol))
 
-	used := len([]rune(m.Prompt)) + len(text)
-	if m.focused && vi == cursorIdx && vcol >= len(text) {
+	used := len([]rune(m.Prompt)) + len(r.text)
+	if m.focused && vi == cursorIdx && vcol >= len(r.text) {
 		used++
 	}
 	if pad := m.width - used; pad > 0 {
 		b.WriteString(strings.Repeat(" ", pad))
+	}
+	return b.String()
+}
+
+func (m Model) renderText(r vrow, vi, cursorIdx, vcol int) string {
+	const (
+		normalRun = iota
+		selectionRun
+		cursorRun
+	)
+	styleFor := func(kind int) lipgloss.Style {
+		switch kind {
+		case selectionRun:
+			return m.selectionStyle
+		case cursorRun:
+			return m.cursorStyle
+		default:
+			return m.textStyle
+		}
+	}
+
+	var b strings.Builder
+	runStart, runKind := 0, normalRun
+	flush := func(end int) {
+		if end > runStart {
+			b.WriteString(styleFor(runKind).Render(string(r.text[runStart:end])))
+		}
+		runStart = end
+	}
+	for i := range r.text {
+		kind := normalRun
+		if m.selectionContains(r.line, r.startCol+i) {
+			kind = selectionRun
+		}
+		if m.focused && vi == cursorIdx && i == vcol {
+			kind = cursorRun
+		}
+		if i > runStart && kind != runKind {
+			flush(i)
+		}
+		runKind = kind
+	}
+	flush(len(r.text))
+	if m.focused && vi == cursorIdx && vcol >= len(r.text) {
+		b.WriteString(m.cursorStyle.Render(" "))
 	}
 	return b.String()
 }

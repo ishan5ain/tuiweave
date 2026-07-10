@@ -1,0 +1,4 @@
+1: "> " [fg=Accent] | "hell" [fg=Text] | "o" [fg=Text reverse]
+2: "  " | "world" [fg=Text bg=SelectionBg]
+3: 
+4: 

@@ -536,6 +536,8 @@ ti.Focus()                       // cursor renders; keys accepted
 // enter is NOT handled: check it in the app and read ti.Value(), then ti.Reset()
 
 ta := textarea.New(theme)        // multi-line, soft-wrapped
+ta.SelectAll()                   // logical-rune selection; inspect with SelectedText()
+ta.Undo() / ta.Redo()             // bounded edit history; CanUndo/CanRedo report state
 // enter inserts a newline INSIDE the textarea — for chat-style "enter sends",
 // intercept enter at the app level and offer alt+enter for newlines:
 case "enter":     /* read ta.Value(), send, ta.Reset() */
@@ -544,6 +546,15 @@ case "alt+enter": ta.InsertString("\n")
 
 Grow a chat input with its content by re-splitting the layout after edits:
 `layout.Len(min(4, ta.ContentHeight()))` — see [examples/chat](examples/chat/main.go).
+
+- `shift+arrow`, `shift+home/end`, and `ctrl+a` select logical runes across
+  lines; typing or Enter replaces the selection. `SelectedText()` includes
+  logical newlines, while wrapping remains a display concern.
+- `ctrl+z`/`ctrl+y` (or `ctrl+shift+z`) undo and redo up to 100 edit states.
+  Programmatic `SetValue` and `Reset` establish a fresh history baseline;
+  selection changes themselves are not edits.
+- This tier counts runes, not terminal cells. Kill ring, word-wise movement,
+  IME behavior, and wide/combining-rune column math remain later work.
 
 ### scrollbar
 

@@ -1,0 +1,60 @@
+{
+  "id": "",
+  "kind": "textarea",
+  "bounds": {
+    "x": 0,
+    "y": 0,
+    "width": 20,
+    "height": 3
+  },
+  "label": "> ",
+  "focused": true,
+  "actions": [
+    {
+      "id": "focus",
+      "label": "Focus textarea",
+      "enabled": false
+    },
+    {
+      "id": "blur",
+      "label": "Blur textarea",
+      "enabled": true
+    },
+    {
+      "id": "clear",
+      "label": "Clear textarea",
+      "enabled": true
+    },
+    {
+      "id": "undo",
+      "label": "Undo edit",
+      "enabled": false
+    },
+    {
+      "id": "redo",
+      "label": "Redo edit",
+      "enabled": false
+    },
+    {
+      "id": "select_all",
+      "label": "Select all text",
+      "enabled": true
+    },
+    {
+      "id": "clear_selection",
+      "label": "Clear selection",
+      "enabled": true
+    }
+  ],
+  "attributes": {
+    "can_redo": "false",
+    "can_undo": "false",
+    "content_height": "1",
+    "cursor_column": "3",
+    "cursor_row": "0",
+    "empty": "false",
+    "has_selection": "true",
+    "logical_lines": "1",
+    "selected_runes": "3"
+  }
+}

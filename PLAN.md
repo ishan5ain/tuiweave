@@ -162,9 +162,11 @@ general-purpose composition work begins against a complete component set.
       including the exact-multiple wrap-boundary case, visual-row up/down,
       `ContentHeight()` for content-driven growth, `InsertString` (also the
       app's newline hook, e.g. alt+enter), paste with embedded newlines via
-      `Key.Text`. Tier-1 keys: arrows/home/end/ctrl+a/e, backspace/delete
-      (joining at boundaries), ctrl+u/k/w. Deferred tier 2: undo, kill ring,
-      selections, IME, wide-rune (CJK) column math.
+      `Key.Text`. Tier-1 keys: arrows/home/end/ctrl+e, backspace/delete
+      (joining at boundaries), ctrl+u/k/w. Initial tier-2 slice: logical-rune
+      selections, select-all/replacement, semantic editing actions, and
+      bounded undo/redo. Deferred follow-ups: kill ring, IME, and wide-rune
+      (CJK) column math.
 - [x] **Example coverage gaps closed**: `examples/table` (mock git-status:
       table + diffview.Model + scrollbars on both panes, golden-tested);
       `examples/chat` input swapped to textarea (enter sends, alt+enter
@@ -299,8 +301,11 @@ terminal escape sequences.
 Make the interaction primitives robust enough for serious editors and repeated
 daily use.
 
-- [ ] Textarea tier 2: undo/redo, kill ring, selections, and richer editing
-      commands
+- [x] **Textarea tier 2 (initial slice):** logical-rune selections across
+      wrapped lines, select-all/replacement, bounded undo/redo, semantic
+      editing actions, inspection attributes, and interaction goldens.
+- [ ] **Textarea tier 2 follow-ups:** kill ring, word-wise movement, richer
+      editing commands, and IME behavior.
 - [ ] Correct cell-width handling for wide runes and combining characters
 - [ ] Autocomplete and command-palette primitives
 - [ ] More explicit mouse interaction conventions where bubbletea supports them

@@ -436,9 +436,10 @@ theme API from growing per-component.
 - **Module path / publication:** currently `github.com/ishansain/gotui`,
   private-by-circumstance. License (MIT recommended) and publication decision
   before any external consumer.
-- **Text editing depth:** `textarea` shipped in Phase 3.5 with tier-1 editing
-  (soft wrap, visual-row movement, line joins, paste). Still open for later:
-  undo, kill ring, selections, IME, and wide-rune (CJK) column math — the
+- **Text editing depth:** `textarea` now has an initial tier-2 slice for
+  logical-rune selections, select-all/replacement, and bounded undo/redo on top
+  of tier-1 soft wrap, visual-row movement, line joins, and paste. Still open:
+  kill ring, word-wise movement, IME, and wide-rune (CJK) column math — the
   wrap logic currently counts runes, not cells.
 - **Streaming markdown renderer design:** incremental block parser vs
   full-document reparse with damage hints — decide when glamour's limits are

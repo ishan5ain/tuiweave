@@ -1,0 +1,23 @@
+## initial
+command: no
+> hello world
+
+
+
+## select all
+command: no
+> hello world
+
+
+
+## replace selection
+command: no
+> hi
+
+
+
+## undo
+command: no
+> hello world
+
+

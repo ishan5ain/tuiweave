@@ -8,12 +8,17 @@ import (
 	"github.com/ishansain/gotui/inspect"
 )
 
-// Actions reports stable local intents for textarea focus and clearing.
+// Actions reports stable local intents for textarea focus, selection, and
+// history.
 func (m Model) Actions() []inspect.Action {
 	return []inspect.Action{
 		{ID: ActionFocus, Label: "Focus textarea", Enabled: !m.focused},
 		{ID: ActionBlur, Label: "Blur textarea", Enabled: m.focused},
 		{ID: ActionClear, Label: "Clear textarea", Enabled: !m.Empty()},
+		{ID: ActionUndo, Label: "Undo edit", Enabled: m.CanUndo()},
+		{ID: ActionRedo, Label: "Redo edit", Enabled: m.CanRedo()},
+		{ID: ActionSelectAll, Label: "Select all text", Enabled: !m.Empty()},
+		{ID: ActionClearSelection, Label: "Clear selection", Enabled: m.HasSelection()},
 	}
 }
 
@@ -29,6 +34,14 @@ func (m Model) applyAction(msg tea.Msg) (Model, bool) {
 		m.Blur()
 	case ActionClear:
 		m.Reset()
+	case ActionUndo:
+		m.Undo()
+	case ActionRedo:
+		m.Redo()
+	case ActionSelectAll:
+		m.SelectAll()
+	case ActionClearSelection:
+		m.ClearSelection()
 	default:
 		return m, false
 	}
@@ -50,6 +63,10 @@ func (m Model) Inspect() inspect.Node {
 			"content_height": strconv.Itoa(m.ContentHeight()),
 			"cursor_row":     strconv.Itoa(m.row),
 			"cursor_column":  strconv.Itoa(m.col),
+			"has_selection":  strconv.FormatBool(m.HasSelection()),
+			"selected_runes": strconv.Itoa(len([]rune(m.SelectedText()))),
+			"can_undo":       strconv.FormatBool(m.CanUndo()),
+			"can_redo":       strconv.FormatBool(m.CanRedo()),
 		},
 	}
 }
