@@ -139,6 +139,20 @@ snaptest.SnapScenario(t, result)
 a command; it does not execute commands. Execute timers or I/O explicitly in
 the test when their behavior is part of the scenario.
 
+For semantic inspection, components report local state and the app assembles
+the tree with stable IDs:
+
+```go
+root := inspect.Group("app", "application", inspect.Bounds{Width: w, Height: h},
+    inspect.Bind("list", m.list),
+    inspect.Bind("input", m.input),
+)
+data, _ := inspect.Marshal(root)
+```
+
+Inspection is data-only. The app owns visibility, layout positions, routing,
+privacy decisions, and any transport to an agent or debugging tool.
+
 Two gotchas in hand-written assertions:
 
 - Strip ANSI before `strings.Contains` — renderers style words as separate

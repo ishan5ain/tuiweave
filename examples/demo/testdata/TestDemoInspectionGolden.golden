@@ -1,0 +1,92 @@
+{
+  "id": "demo",
+  "kind": "application",
+  "bounds": {
+    "x": 0,
+    "y": 0,
+    "width": 80,
+    "height": 24
+  },
+  "focused": false,
+  "children": [
+    {
+      "id": "list",
+      "kind": "list",
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 24,
+        "height": 21
+      },
+      "focused": true,
+      "selected": {
+        "index": 0,
+        "count": 4,
+        "label": "welcome"
+      },
+      "scroll": {
+        "total": 4,
+        "visible": 21,
+        "offset": 0
+      },
+      "attributes": {
+        "filtered_count": "4",
+        "item_count": "4"
+      }
+    },
+    {
+      "id": "viewport",
+      "kind": "viewport",
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 55,
+        "height": 21
+      },
+      "focused": false,
+      "scroll": {
+        "total": 43,
+        "visible": 21,
+        "offset": 0
+      }
+    },
+    {
+      "id": "input",
+      "kind": "textinput",
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 80,
+        "height": 1
+      },
+      "label": "> ",
+      "focused": false,
+      "attributes": {
+        "cursor": "0",
+        "empty": "true",
+        "placeholder": "add an item, then press enter"
+      }
+    },
+    {
+      "id": "quit-dialog",
+      "kind": "dialog",
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 40,
+        "height": 10
+      },
+      "label": "Quit demo?",
+      "focused": false,
+      "status": "awaiting_input",
+      "selected": {
+        "index": 0,
+        "count": 2,
+        "label": "OK"
+      },
+      "attributes": {
+        "body": "This closes the gotui Phase 2 demo."
+      }
+    }
+  ]
+}

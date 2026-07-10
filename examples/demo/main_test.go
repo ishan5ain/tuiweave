@@ -6,6 +6,7 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 
+	"github.com/ishansain/gotui/inspect"
 	"github.com/ishansain/gotui/snaptest"
 )
 
@@ -108,4 +109,23 @@ func TestDemoInteractionScenarioGolden(t *testing.T) {
 		t.Fatal("scenario did not leave the dialog open while its result command is pending")
 	}
 	snaptest.SnapScenario(t, result)
+}
+
+func TestDemoInspectionGolden(t *testing.T) {
+	m := sized(t)
+	next, _ := m.Update(tea.KeyPressMsg{Code: 'd', Mod: tea.ModCtrl})
+	m = next.(model)
+
+	root := inspect.Group("demo", "application",
+		inspect.Bounds{Width: m.width, Height: m.height},
+		inspect.Bind("list", m.list),
+		inspect.Bind("viewport", m.view),
+		inspect.Bind("input", m.input),
+		inspect.Bind("quit-dialog", m.quitDlg),
+	)
+	data, err := inspect.Marshal(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	snaptest.Snap(t, string(data))
 }

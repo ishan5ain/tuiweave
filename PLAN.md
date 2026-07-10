@@ -28,9 +28,10 @@ be completed before broadening the composition catalog too far.
       capture initial and post-message views, record command emission, and
       snapshot readable checkpoints. Do not execute opaque commands implicitly;
       applications own deterministic command policies.
-- [ ] **Semantic inspection**: define an optional inspectable representation
-      for stable IDs, bounds, focus, selection, scroll state, visible labels,
-      lifecycle state, and children.
+- [x] **Semantic inspection (initial slice)**: define the data-only
+      `gotui/inspect` representation for stable IDs, bounds, focus, selection,
+      scroll state, labels, lifecycle state, attributes, and children; add
+      reports for the core scrolling/input components and chat.
 - [ ] **Semantic actions**: define stable action IDs independent of key strings,
       so tests and agents can invoke intent such as `dialog.confirm` or
       `transcript.scroll_bottom`.

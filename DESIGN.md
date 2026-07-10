@@ -279,6 +279,13 @@ I/O, batching, and command-to-message policies belong in the application test
 where they can be made deterministic. This gives the library a useful replay
 boundary without pretending that an opaque `tea.Cmd` has a stable identity.
 
+The initial inspection slice is similarly data-only: `gotui/inspect.Node`
+represents IDs, bounds, focus, status, selection, scrolling, attributes, and
+children; component reports provide local state while the application assembles
+and positions the tree. Inspection intentionally omits raw input values and
+rendered content by default so the application remains responsible for privacy
+and disclosure decisions.
+
 ---
 
 ## 2. How the decisions interlock
@@ -297,6 +304,7 @@ github.com/ishansain/gotui
 ├── layout/          facade over ultraviolet/layout: Rect, constraints,
 │                    Vertical/Horizontal, Sizable, Apply
 ├── snaptest/        snapshot test harness (Snap, SnapCells, SnapStyled, -update)
+├── inspect/         optional semantic UI tree (IDs, bounds, focus, state)
 ├── statusbar/  list/  viewport/  textinput/  textarea/  table/  help/  spinner/
 │                    generic primitives, one package each
 ├── scrollbar/       one-column bar for anything implementing Scrollable
