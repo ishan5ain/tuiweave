@@ -143,11 +143,13 @@ func (m *model) layout() {
 
 	var jobs, services layout.Rect
 	layout.Horizontal(layout.Fill(1), layout.Fill(1)).WithSpacing(1).Split(body).Assign(&jobs, &services)
-	m.actions.SetSize(max(0, jobs.Dx()-4), max(0, jobs.Dy()-4))
-	m.tools.SetSize(max(0, services.Dx()-4), 1)
-	m.load.SetSize(max(0, services.Dx()-4), 1)
-	m.autoRefresh.SetSize(max(0, services.Dx()-4), 1)
-	m.open.SetSize(max(0, services.Dx()-4), 1)
+	actionsContent := frame.PanelContentRect(jobs, frame.PanelOptions{Padding: 1})
+	m.actions.SetSize(actionsContent.Dx(), actionsContent.Dy())
+	servicesContent := frame.PanelContentRect(services, frame.PanelOptions{Padding: 1})
+	m.tools.SetSize(servicesContent.Dx(), 1)
+	m.load.SetSize(servicesContent.Dx(), 1)
+	m.autoRefresh.SetSize(servicesContent.Dx(), 1)
+	m.open.SetSize(servicesContent.Dx(), 1)
 }
 
 func (m model) render() string {

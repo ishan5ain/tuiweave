@@ -77,7 +77,8 @@ func (m *model) layout() {
 		layout.Fill(1),
 		layout.Len(1),
 	).Split(layout.NewRect(0, 0, m.width, m.height)).Assign(&main, &footer)
-	m.commands.SetSize(max(0, main.Dx()-4), max(0, main.Dy()-4))
+	content := frame.PanelContentRect(main, frame.PanelOptions{Title: "Commands", Focused: m.commands.Focused(), Padding: 1})
+	m.commands.SetSize(content.Dx(), content.Dy())
 	m.status.SetSize(footer.Dx(), footer.Dy())
 }
 

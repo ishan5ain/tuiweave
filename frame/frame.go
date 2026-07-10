@@ -10,6 +10,7 @@ import (
 	"github.com/charmbracelet/x/ansi"
 
 	"github.com/ishansain/gotui"
+	"github.com/ishansain/gotui/layout"
 )
 
 // BadgeKind selects the semantic roles used by Badge.
@@ -39,6 +40,21 @@ type PanelOptions struct {
 	Padding int
 }
 
+// PanelContentRect returns the rectangle available to content inside a panel
+// occupying area. It accounts for the rounded border and symmetric padding,
+// using the same inset contract as Panel. The returned rectangle keeps the
+// original origin so callers can also use it for overlay or inspection
+// coordinates.
+func PanelContentRect(area layout.Rect, opts PanelOptions) layout.Rect {
+	padding := panelPadding(area.Dx(), opts)
+	return layout.NewRect(
+		area.Min.X+1+padding,
+		area.Min.Y+1+padding,
+		max(0, area.Dx()-2-2*padding),
+		max(0, area.Dy()-2-2*padding),
+	)
+}
+
 // Panel returns content enclosed in a rounded, theme-styled frame with the
 // requested total width. The returned string is empty for widths below two;
 // otherwise every rendered line is exactly width cells wide.
@@ -57,10 +73,7 @@ func Panel(theme gotui.Theme, content string, width int, opts PanelOptions) stri
 
 	border := lipgloss.NewStyle().Foreground(borderColor)
 	innerWidth := width - 2
-	padding := max(0, opts.Padding)
-	// Keep padding from consuming the entire inner width. This makes narrow
-	// panels degrade to a usable frame instead of relying on negative widths.
-	padding = min(padding, innerWidth/2)
+	padding := panelPadding(width, opts)
 	contentWidth := innerWidth - 2*padding
 	if contentWidth <= 0 {
 		content = ""
@@ -84,6 +97,11 @@ func Panel(theme gotui.Theme, content string, width int, opts PanelOptions) stri
 		strings.Join(bodyLines, "\n"),
 		border.Render(string(lipgloss.RoundedBorder().BottomLeft)) + border.Render(strings.Repeat(lipgloss.RoundedBorder().Bottom, innerWidth)) + border.Render(string(lipgloss.RoundedBorder().BottomRight)),
 	}, "\n")
+}
+
+func panelPadding(width int, opts PanelOptions) int {
+	innerWidth := max(0, width-2)
+	return min(max(0, opts.Padding), innerWidth/2)
 }
 
 func renderTop(theme gotui.Theme, border lipgloss.Style, opts PanelOptions, innerWidth int) string {

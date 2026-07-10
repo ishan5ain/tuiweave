@@ -7,6 +7,7 @@ import (
 	lipgloss "charm.land/lipgloss/v2"
 
 	"github.com/ishansain/gotui"
+	"github.com/ishansain/gotui/layout"
 	"github.com/ishansain/gotui/snaptest"
 )
 
@@ -60,6 +61,20 @@ func TestPanelNarrowAndEmpty(t *testing.T) {
 			})
 			assertWidth(t, view, width)
 		}
+	}
+}
+
+func TestPanelContentRect(t *testing.T) {
+	area := layout.NewRect(10, 20, 40, 12)
+	got := PanelContentRect(area, PanelOptions{Padding: 1})
+	want := layout.NewRect(12, 22, 36, 8)
+	if got != want {
+		t.Fatalf("content rect = %#v, want %#v", got, want)
+	}
+
+	narrow := PanelContentRect(layout.NewRect(0, 0, 3, 3), PanelOptions{Padding: 4})
+	if narrow.Dx() != 1 || narrow.Dy() != 1 || narrow.Min.X != 1 || narrow.Min.Y != 1 {
+		t.Fatalf("narrow content rect = %#v, want one-cell inset", narrow)
 	}
 }
 

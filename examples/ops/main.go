@@ -229,12 +229,13 @@ func (m *model) layout() {
 
 	var actions, operations layout.Rect
 	layout.Horizontal(layout.Fill(1), layout.Fill(1)).WithSpacing(1).Split(body).Assign(&actions, &operations)
-	m.actions.SetSize(max(0, actions.Dx()-4), max(0, actions.Dy()-4))
-	innerWidth := max(0, operations.Dx()-4)
-	m.rows.SetSize(innerWidth, max(3, operations.Dy()-7))
-	m.load.SetSize(innerWidth, 1)
-	m.autoRefresh.SetSize(innerWidth, 1)
-	m.openLogs.SetSize(innerWidth, 1)
+	actionContent := frame.PanelContentRect(actions, frame.PanelOptions{Padding: 1})
+	m.actions.SetSize(actionContent.Dx(), actionContent.Dy())
+	operationContent := frame.PanelContentRect(operations, frame.PanelOptions{Padding: 1})
+	m.rows.SetSize(operationContent.Dx(), max(3, operationContent.Dy()-3))
+	m.load.SetSize(operationContent.Dx(), 1)
+	m.autoRefresh.SetSize(operationContent.Dx(), 1)
+	m.openLogs.SetSize(operationContent.Dx(), 1)
 
 	m.status.SetSize(footer.Dx(), footer.Dy())
 	paletteWidth := min(56, max(16, m.width-4))
@@ -275,18 +276,19 @@ func (m model) render() string {
 		Focused: m.actions.Focused(),
 		Padding: 1,
 	})
-	innerWidth := max(0, operations.Dx()-4)
+	operationOptions := frame.PanelOptions{
+		Title:   "Operations",
+		Focused: m.rows.Focused() || m.autoRefresh.Focused() || m.openLogs.Focused(),
+		Padding: 1,
+	}
+	innerWidth := frame.PanelContentRect(operations, operationOptions).Dx()
 	operationsContent := stack.Vertical(m.theme, innerWidth, stack.Options{Gap: 0},
 		func(int) string { return m.rows.View() },
 		func(int) string { return m.load.View() },
 		func(int) string { return m.autoRefresh.View() },
 		func(int) string { return m.openLogs.View() },
 	)
-	operationsView := frame.Panel(m.theme, operationsContent, operations.Dx(), frame.PanelOptions{
-		Title:   "Operations",
-		Focused: m.rows.Focused() || m.autoRefresh.Focused() || m.openLogs.Focused(),
-		Padding: 1,
-	})
+	operationsView := frame.Panel(m.theme, operationsContent, operations.Dx(), operationOptions)
 	bodyView := splitpane.Horizontal(m.theme, body.Dx(), splitpane.Options{Gap: 1},
 		func(int) string { return actionsView },
 		func(int) string { return operationsView },

@@ -187,6 +187,10 @@ and useful in at least two unrelated application types.
       width-aware titled panels, padding, separators, and semantic badges;
       `examples/frame` demonstrates composition and goldens cover normal,
       focused, narrow, multiline, and role-labeled rendering.
+- [x] **Framing inset contract (initial refinement)**:
+      `frame.PanelContentRect` exposes the border/padding-adjusted inner
+      rectangle for bounded children; the frame, ops, and palette examples use
+      it instead of duplicating inset arithmetic.
 - [ ] Extend framing utilities where real reference apps need them; avoid
       adding convenience variants before those composition patterns recur.
       The ops pressure test currently points to a reusable inner-content

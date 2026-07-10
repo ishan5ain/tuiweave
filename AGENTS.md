@@ -203,6 +203,8 @@ panel := frame.Panel(theme, content, area.Dx(), frame.PanelOptions{
     Focused: focused,
     Padding: 1,
 })
+contentArea := frame.PanelContentRect(area, frame.PanelOptions{Padding: 1})
+component.SetSize(contentArea.Dx(), contentArea.Dy())
 divider := frame.Divider(theme, area.Dx())
 badge := frame.Badge(theme, "healthy", frame.BadgeSuccess)
 ```
@@ -211,6 +213,9 @@ badge := frame.Badge(theme, "healthy", frame.BadgeSuccess)
   titles truncate to the available top-border width.
 - `Panel` returns a natural-height frame with exactly the requested width. It
   handles multiline and narrow content, but the app still owns height layout.
+- `PanelContentRect` returns the exact inner rectangle for a fixed outer panel
+  area, accounting for the rounded border and symmetric padding. Use it to
+  size bounded children instead of repeating `width-4`/`height-4` arithmetic.
 - `Badge` kinds describe meaning (`Accent`, `Muted`, `Success`, `Warning`,
   `Danger`, `Info`); do not select a kind merely to obtain a preferred color.
 - Keep borders, titles, and badges in the composition layer. Do not make a
