@@ -17,6 +17,8 @@ rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
 | Stack headers, sections, and footers | `stack.Vertical`; empty sections are omitted |
 | Show task completion | `progress`; passive, exact-width, status-aware indicator |
 | Add an on/off setting | `toggle`; focusable, semantic, and emits `ChangedMsg` |
+| Add one focused action | `button`; enter/space and semantic activation emit `PressedMsg` |
+| Search and activate actions | `palette`; filters stable actions and emits `SelectedMsg` |
 | Split panes or rows | `layout.Vertical` / `layout.Horizontal` + `SetSize` |
 | Show selectable records | `list` or `table`; add `scrollbar.For` |
 | Show long content | `viewport`; forward mouse wheels; add `scrollbar.For` |
@@ -64,6 +66,8 @@ rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
 | `stack` | Composing vertical app chrome | `Vertical(theme, width, Options, views...)`; exact-width natural-height sections |
 | `progress` | Showing task or operation completion | `SetLabel`, `SetPercent`, `SetStatus`; passive and exact-width |
 | `toggle` | Editing a boolean setting | `SetLabel`, `SetChecked`, `Focus`; space/enter/x emit `ChangedMsg` |
+| `button` | Activating one application-owned action | `SetLabel`, `Focus`, `PressedMsg`; enter/space activate |
+| `palette` | Discovering actions by query | `SetItems`, `SetQuery`, `SelectedMsg`; filters ID/label/description |
 
 ### Agentic domain components
 
@@ -80,7 +84,8 @@ Canonical examples are under [`examples/`](examples/): `statusbar` is the
 smallest component wiring example, `frame` demonstrates pure composition,
 `demo` composes general primitives, `table` combines selection/diff/scrolling,
 and `chat` exercises streaming, permission, toolcall, diff, markdown, usage,
-and textarea behavior.
+and textarea behavior; `palette` demonstrates filtered command discovery and
+activation.
 
 ## Canonical wiring
 

@@ -1,0 +1,12 @@
+╭ Commands ────────────────────────────────────────────────────╮
+│                                                              │
+│ ›                                                            │
+│ ▸ Open workspace  Choose a workspace                         │
+│   Format document  Run the formatter                         │
+│   Search files  Find a file by name                          │
+│   Delete workspace  Destructive action                       │
+│   Open settings  Edit preferences                            │
+│                                                              │
+│                                                              │
+╰──────────────────────────────────────────────────────────────╯
+ palette  open                                   5/5  enter run

@@ -211,8 +211,7 @@ and useful in at least two unrelated application types.
       `examples/frame` uses it for both the header and root frame.
 - [ ] Structural components: additional layout patterns driven by reference
       applications
-- [ ] Common controls: buttons, selectable actions, and command-palette
-      foundations
+- [ ] Common controls: selectable actions
 - [x] **Progress indicator (initial slice)**: `gotui/progress` provides a
       passive exact-width task indicator with label truncation, clamped values,
       semantic status roles, inspection metadata, golden/width tests, and
@@ -221,6 +220,14 @@ and useful in at least two unrelated application types.
       boolean setting with keyboard and semantic actions, change messages,
       disabled behavior, inspection metadata, scenario/width goldens, and
       coverage in `examples/frame`.
+- [x] **Button control (initial slice)**: `gotui/button` provides a focusable
+      single-action control with keyboard and semantic activation, press
+      messages, disabled behavior, inspection metadata, scenario/width
+      goldens, and coverage in `examples/frame`.
+- [x] **Command-palette foundation (initial slice)**: `gotui/palette` combines
+      query editing with stable-ID action filtering, disabled-item handling,
+      semantic selection/activation, inspection metadata, explicit empty
+      state, scenario/width goldens, and coverage in `examples/palette`.
 - [ ] Width-aware composition helpers for truncation, alignment, fill zones,
       and graceful narrow-terminal behavior
 - [ ] Reference example apps beyond agentic UIs: a file browser, dashboard, or

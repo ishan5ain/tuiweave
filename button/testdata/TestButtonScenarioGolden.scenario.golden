@@ -1,0 +1,11 @@
+## initial
+command: no
+[ Open workspace           ]
+
+## activate
+command: yes
+[ Open workspace           ]
+
+## activate semantically
+command: yes
+[ Open workspace           ]

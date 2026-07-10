@@ -43,6 +43,7 @@ backend protocols, and session lifecycle.
 | `gotui/stack` | Width-aware vertical section composition for headers, bodies, separators, and footers |
 | `gotui/progress` | Passive, exact-width task progress indicator with semantic status roles |
 | `gotui/toggle` | Focusable on/off control with semantic actions and change messages |
+| `gotui/button` | Focusable single-action control with semantic activation and press messages |
 | `gotui/statusbar` | One-line status bar with themed left/right segments |
 | `gotui/list` | Scrolling list with selection cursor and filtering (original-index selection) |
 | `gotui/viewport` | Scrollable window over pre-rendered content (keys + mouse wheel) |
@@ -61,7 +62,8 @@ backend protocols, and session lifecycle.
 | `agentic/diffview` | Styled unified diffs, inline or scrollable |
 | `agentic/permission` | Numbered permission prompt (esc = safe default) |
 | `agentic/usagebar` | Model / tokens / cost / context bar with thresholds |
-| `examples/…` | Runnable apps: `go run ./examples/chat` (mock agentic session), `./examples/table` (git-status mock), `./examples/frame` (composition, tabs, menu, toolbar, split panes, and stacked chrome), `./examples/demo`, `./examples/statusbar` |
+| `gotui/palette` | Bounded command-palette foundation with filtering, stable action IDs, and semantic activation |
+| `examples/…` | Runnable apps: `go run ./examples/chat` (mock agentic session), `./examples/table` (git-status mock), `./examples/frame` (composition, tabs, menu, toolbar, split panes, stacked chrome, and controls), `./examples/palette` (command palette), `./examples/demo`, `./examples/statusbar` |
 
 Agentic packages are important reference implementations, not the boundary of
 the library. The same primitives should support editors, dashboards, file

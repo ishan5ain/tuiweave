@@ -1,0 +1,59 @@
+## initial
+command: no
+╭ Commands ────────────────────────────────────────────────────╮
+│                                                              │
+│ ›                                                            │
+│ ▸ Open workspace  Choose a workspace                         │
+│   Format document  Run the formatter                         │
+│   Search files  Find a file by name                          │
+│   Delete workspace  Destructive action                       │
+│   Open settings  Edit preferences                            │
+│                                                              │
+│                                                              │
+╰──────────────────────────────────────────────────────────────╯
+ palette  open                                   5/5  enter run
+
+## search format
+command: no
+╭ Commands ────────────────────────────────────────────────────╮
+│                                                              │
+│ › f                                                          │
+│ ▸ Format document  Run the formatter                         │
+│   Search files  Find a file by name                          │
+│   Open settings  Edit preferences                            │
+│                                                              │
+│                                                              │
+│                                                              │
+│                                                              │
+╰──────────────────────────────────────────────────────────────╯
+ palette  format                                 3/5  enter run
+
+## search formatter
+command: no
+╭ Commands ────────────────────────────────────────────────────╮
+│                                                              │
+│ › fo                                                         │
+│ ▸ Format document  Run the formatter                         │
+│                                                              │
+│                                                              │
+│                                                              │
+│                                                              │
+│                                                              │
+│                                                              │
+╰──────────────────────────────────────────────────────────────╯
+ palette  format                                 1/5  enter run
+
+## activate
+command: yes
+╭ Commands ────────────────────────────────────────────────────╮
+│                                                              │
+│ › fo                                                         │
+│ ▸ Format document  Run the formatter                         │
+│                                                              │
+│                                                              │
+│                                                              │
+│                                                              │
+│                                                              │
+│                                                              │
+╰──────────────────────────────────────────────────────────────╯
+ palette  format                                 1/5  enter run

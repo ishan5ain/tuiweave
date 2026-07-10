@@ -1,0 +1,28 @@
+## initial
+command: no
+›
+▸ Open workspace  Choose a workspace
+  Format document  Run the formatter
+  Delete workspace  Destructive action
+  Open settings  Edit preferences
+
+## search format
+command: no
+› f
+▸ Format document  Run the formatter
+  Open settings  Edit preferences
+
+
+## search formatter
+command: no
+› fo
+▸ Format document  Run the formatter
+
+
+
+## activate
+command: yes
+› fo
+▸ Format document  Run the formatter
+
+

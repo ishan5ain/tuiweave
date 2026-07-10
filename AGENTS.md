@@ -2,7 +2,7 @@
 
 Rules for writing code **with** gotui (apps) and **in** gotui (components).
 This file is deliberately short; recipes link into the runnable example apps
-(`examples/statusbar`, `examples/demo`, `examples/chat`, `examples/frame`). Architecture
+(`examples/statusbar`, `examples/demo`, `examples/chat`, `examples/frame`, `examples/palette`). Architecture
 rationale lives in [DESIGN.md](DESIGN.md) — read it before adding a
 component; you don't need it to build an app.
 
@@ -22,6 +22,8 @@ and example before reading the detailed recipes below.
 - Stacked chrome: `github.com/ishansain/gotui/stack` (headers, sections, footers)
 - Progress: `github.com/ishansain/gotui/progress` (passive task indicators)
 - Toggles: `github.com/ishansain/gotui/toggle` (focusable boolean settings)
+- Buttons: `github.com/ishansain/gotui/button` (focusable single actions)
+- Command palettes: `github.com/ishansain/gotui/palette` (filtered action discovery)
 - Testing: `github.com/ishansain/gotui/snaptest` (golden files)
 - Domain packages: `gotui/agentic/…` (markdown, chat, toolcall, diffview,
   permission, usagebar) — optional, backend-agnostic layers built on the
@@ -390,6 +392,60 @@ case toggle.ChangedMsg:
   state changes.
 - It renders one exact-width row and truncates its label at narrow widths; do
   not pre-truncate the setting label in the app.
+
+### button
+
+Use `button` for one application-owned action that needs a focused, visible
+activation target. Enter and space emit a typed `PressedMsg`; the application
+owns the resulting operation.
+
+```go
+b := button.New(theme)
+b.ID = "open-workspace"
+b.SetLabel("Open workspace")
+b.SetSize(area.Dx(), 1)
+b.Focus()
+
+case button.PressedMsg:
+    // Start the operation associated with msg.ID in the application.
+```
+
+- Register the button in the app's `focus.Manager` when it belongs in tab
+  order, and apply fresh component addresses after every focus change.
+- `button` exposes `focus`, `blur`, and `activate` semantic actions through
+  `Inspect()`. Disabled buttons remain visible but reject focus and activation.
+- Use `menu` or `toolbar` when the user must choose among several actions; use
+  `button` when there is one action at that location.
+- It renders one exact-width row and truncates the label inside its brackets;
+  do not pre-truncate the label in the app.
+
+### palette
+
+Use `palette` when users need to discover and activate many actions by query.
+It combines a text input and filtered action window into one focusable bounded
+component; visibility and command side effects remain application-owned.
+
+```go
+p := palette.New(theme)
+p.SetItems(
+    palette.Item{ID: "open", Label: "Open workspace", Description: "Choose a workspace"},
+    palette.Item{ID: "format", Label: "Format document", Description: "Run the formatter"},
+)
+p.SetSize(area.Dx(), area.Dy())
+p.Focus()
+
+case palette.SelectedMsg:
+    // Run the application operation associated with msg.ID.
+```
+
+- Filtering is case-insensitive over stable ID, label, and description. The
+  selected index remains an original item index, even while filtered.
+- Up/down, `j`/`k`, page keys, home/end, enter, and space follow the established
+  selection conventions. Disabled actions remain visible and are skipped.
+- Semantic `select.<id>`, `next`, `previous`, `first`, `last`, `clear`, and
+  `activate` actions are exposed through `Inspect()` for tests and agents.
+- The palette renders an explicit `No matching commands` state and exact-width
+  query/result rows. Do not pre-filter or pre-truncate actions in the app.
 
 ### statusbar
 

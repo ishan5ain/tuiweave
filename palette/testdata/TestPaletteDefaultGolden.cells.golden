@@ -1,0 +1,5 @@
+1: "› " [fg=Accent bg=SurfaceSunken]
+2: "▸ Open workspace  Choose a workspace        " [fg=Accent bg=SurfaceRaised bold]
+3: "  Format document  Run the formatter        " [fg=Text bg=SurfaceRaised]
+4: "  Delete workspace  Destructive action      " [fg=TextFaint bg=SurfaceRaised]
+5: "  Open settings  Edit preferences           " [fg=Text bg=SurfaceRaised]
