@@ -19,6 +19,7 @@ rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
 | Add an on/off setting | `toggle`; focusable, semantic, and emits `ChangedMsg` |
 | Add one focused action | `button`; enter/space and semantic activation emit `PressedMsg` |
 | Search and activate actions | `palette`; filters stable actions and emits `SelectedMsg` |
+| Compose a fixed-width row | `line.Fit`, `line.Fill`, `line.Join`; preserves visible cell widths |
 | Split panes or rows | `layout.Vertical` / `layout.Horizontal` + `SetSize` |
 | Show selectable records | `list` or `table`; add `scrollbar.For` |
 | Show long content | `viewport`; forward mouse wheels; add `scrollbar.For` |
@@ -68,6 +69,7 @@ rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
 | `toggle` | Editing a boolean setting | `SetLabel`, `SetChecked`, `Focus`; space/enter/x emit `ChangedMsg` |
 | `button` | Activating one application-owned action | `SetLabel`, `Focus`, `PressedMsg`; enter/space activate |
 | `palette` | Discovering actions by query | `SetItems`, `SetQuery`, `SelectedMsg`; filters ID/label/description |
+| `line` | Composing width-aware single rows | `Truncate`, `Fit`, `Fill`, `Join`; `JoinOptions{NoEllipsis:true}` for rules |
 
 ### Agentic domain components
 

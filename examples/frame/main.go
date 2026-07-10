@@ -19,6 +19,7 @@ import (
 	"github.com/ishansain/gotui/focus"
 	"github.com/ishansain/gotui/frame"
 	"github.com/ishansain/gotui/layout"
+	"github.com/ishansain/gotui/line"
 	"github.com/ishansain/gotui/menu"
 	"github.com/ishansain/gotui/progress"
 	"github.com/ishansain/gotui/splitpane"
@@ -194,7 +195,7 @@ func (m model) render() string {
 	footerView := lipgloss.NewStyle().
 		Width(footer.Dx()).
 		Foreground(m.theme.TextMuted).
-		Render(frame.Divider(m.theme, footer.Dx()-1) + " q quit")
+		Render(line.Join(footer.Dx(), frame.Divider(m.theme, footer.Dx()), "q quit", line.JoinOptions{Gap: 1, NoEllipsis: true}))
 
 	bodyView := splitpane.Horizontal(m.theme, body.Dx(), splitpane.Options{Gap: 1},
 		func(int) string { return jobsView },

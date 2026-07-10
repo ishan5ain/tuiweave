@@ -24,6 +24,7 @@ and example before reading the detailed recipes below.
 - Toggles: `github.com/ishansain/gotui/toggle` (focusable boolean settings)
 - Buttons: `github.com/ishansain/gotui/button` (focusable single actions)
 - Command palettes: `github.com/ishansain/gotui/palette` (filtered action discovery)
+- Line composition: `github.com/ishansain/gotui/line` (truncation, alignment, fill zones)
 - Testing: `github.com/ishansain/gotui/snaptest` (golden files)
 - Domain packages: `gotui/agentic/…` (markdown, chat, toolcall, diffview,
   permission, usagebar) — optional, backend-agnostic layers built on the
@@ -446,6 +447,28 @@ case palette.SelectedMsg:
   `activate` actions are exposed through `Inspect()` for tests and agents.
 - The palette renders an explicit `No matching commands` state and exact-width
   query/result rows. Do not pre-filter or pre-truncate actions in the app.
+
+### line
+
+Use `line` for one-row composition when several values must remain readable and
+exactly sized at narrow widths. It preserves ANSI styling while measuring
+visible cells, so callers do not need separate byte-length logic.
+
+```go
+title := line.Fit("service overview", width, line.AlignLeft)
+position := line.Fit("Ln 12", width, line.AlignRight)
+footer := line.Join(width, frame.Divider(theme, width), "q quit",
+    line.JoinOptions{Gap: 1, NoEllipsis: true})
+```
+
+- `Truncate` uses an ellipsis; `Fit` truncates and pads to exactly the requested
+  width with left, center, or right alignment.
+- `Fill` repeats a visible pattern without splitting a multi-cell glyph. `Join`
+  reserves a right-side value and uses the remaining cells as a fill zone;
+  narrow joins truncate the left side first.
+- Set `NoEllipsis` for decorative rules, dividers, or other patterns where an
+  ellipsis would be misleading. The helper does not invent colors or surfaces;
+  wrap its result in the app's themed style when needed.
 
 ### statusbar
 

@@ -10,5 +10,4 @@
 10: "│" [fg=Border] | " " [bg=SurfaceRaised] | "                              " [fg=Text bg=SurfaceRaised] | " " [bg=SurfaceRaised] | "│" [fg=Border] | "│" [fg=BorderMuted] | "│" [fg=Accent] | " " [bg=SurfaceRaised] | "[ Open workspace            ]" [fg=Text bg=SurfaceRaised] | " " [bg=SurfaceRaised] | "│" [fg=Accent]
 11: "│" [fg=Border] | "                                " [bg=SurfaceRaised] | "│" [fg=Border] | "│" [fg=BorderMuted] | "│" [fg=Accent] | "                               " [bg=SurfaceRaised] | "│" [fg=Accent]
 12: "╰────────────────────────────────╯" [fg=Border] | "│" [fg=BorderMuted] | "╰───────────────────────────────╯" [fg=Accent]
-13: "───────────────────────────────────────────────────────────────────" [fg=BorderMuted]
-14: "q quit" [fg=TextMuted]
+13: "─────────────────────────────────────────────────────────────" [fg=BorderMuted] | " q quit"

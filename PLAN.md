@@ -228,8 +228,10 @@ and useful in at least two unrelated application types.
       query editing with stable-ID action filtering, disabled-item handling,
       semantic selection/activation, inspection metadata, explicit empty
       state, scenario/width goldens, and coverage in `examples/palette`.
-- [ ] Width-aware composition helpers for truncation, alignment, fill zones,
-      and graceful narrow-terminal behavior
+- [x] **Width-aware line helpers (initial slice)**: `gotui/line` provides
+      ANSI-aware truncation, exact-width alignment, repeated fill patterns,
+      left/right fill-zone composition, and explicit no-ellipsis handling for
+      decorative rules; `examples/frame` uses it for the footer.
 - [ ] Reference example apps beyond agentic UIs: a file browser, dashboard, or
       operations console
 - [ ] Recipes and golden coverage for every new composition pattern

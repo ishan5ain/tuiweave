@@ -329,6 +329,7 @@ github.com/ishansain/gotui
 ├── toggle/            focusable boolean setting control
 ├── button/            focusable single-action control
 ├── palette/           bounded command-palette foundation
+├── line/              width-aware single-row composition helpers
 ├── statusbar/  list/  viewport/  textinput/  textarea/  table/  help/  spinner/
 │                    generic primitives, one package each
 ├── scrollbar/       one-column bar for anything implementing Scrollable

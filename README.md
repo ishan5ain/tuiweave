@@ -63,6 +63,7 @@ backend protocols, and session lifecycle.
 | `agentic/permission` | Numbered permission prompt (esc = safe default) |
 | `agentic/usagebar` | Model / tokens / cost / context bar with thresholds |
 | `gotui/palette` | Bounded command-palette foundation with filtering, stable action IDs, and semantic activation |
+| `gotui/line` | Style-preserving one-row truncation, alignment, fill, and left/right composition helpers |
 | `examples/…` | Runnable apps: `go run ./examples/chat` (mock agentic session), `./examples/table` (git-status mock), `./examples/frame` (composition, tabs, menu, toolbar, split panes, stacked chrome, and controls), `./examples/palette` (command palette), `./examples/demo`, `./examples/statusbar` |
 
 Agentic packages are important reference implementations, not the boundary of
