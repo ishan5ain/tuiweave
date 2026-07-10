@@ -41,9 +41,9 @@ be completed before broadening the composition catalog too far.
       lifecycle states, transcript lookup/replacement, assistant source
       revisions, and tool-call retry/cancel semantics without coupling to a
       backend protocol.
-- [ ] **Permission provenance**: evolve approval data beyond title/body to
-      describe the exact operation, scope, impact, reversibility, and policy
-      context while keeping MCP/JSON-RPC adapters outside the core.
+- [x] **Permission provenance (initial slice)**: evolve approval data beyond
+      title/body to describe the exact operation, scope, impact, reversibility,
+      and policy context while keeping MCP/JSON-RPC adapters outside the core.
 - [ ] **Agent catalog**: provide a compact, discoverable index of packages,
       recipes, setup sequences, common mistakes, and canonical examples.
 - [x] **Streaming invalidation correctness**: use an explicit source revision

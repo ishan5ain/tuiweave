@@ -1,5 +1,6 @@
 // Package permission provides the modal prompt agentic tools show before a
-// sensitive action: a question with vertically stacked options.
+// sensitive action: a question with vertically stacked options and optional
+// structured provenance for the operation being approved.
 //
 // Like dialog, the app owns visibility: render it (composited with
 // gotui/overlay) while waiting, and close it when Update returns a
@@ -25,11 +26,34 @@ type ResultMsg struct {
 	Option string
 }
 
+// Provenance describes the operation behind a permission request. All fields
+// are optional so existing title/body prompts remain valid.
+type Provenance struct {
+	// Tool identifies the tool or integration requesting approval.
+	Tool string
+	// Operation is the intended operation, such as "execute" or "write".
+	Operation string
+	// Target identifies the primary resource, repository, or service.
+	Target string
+	// Scope describes the affected paths, resources, or permission boundary.
+	Scope string
+	// Detail contains the exact command, patch, request, or other operation data.
+	Detail string
+	// Impact explains the expected user-visible or system effect.
+	Impact string
+	// Reversibility should be "reversible", "irreversible", or empty when
+	// unknown.
+	Reversibility string
+	// Policy explains why approval is required or which policy applies.
+	Policy string
+}
+
 // Model is a permission prompt component. Create one with New.
 type Model struct {
 	width, height int
 	sel           int
 	options       []string
+	provenance    Provenance
 
 	// ID tags the ResultMsg this prompt emits.
 	ID string
@@ -38,12 +62,13 @@ type Model struct {
 	// Body adds detail below the title.
 	Body string
 
-	panelStyle    lipgloss.Style
-	titleStyle    lipgloss.Style
-	bodyStyle     lipgloss.Style
-	optionStyle   lipgloss.Style
-	selectedStyle lipgloss.Style
-	numStyle      lipgloss.Style
+	panelStyle      lipgloss.Style
+	titleStyle      lipgloss.Style
+	bodyStyle       lipgloss.Style
+	optionStyle     lipgloss.Style
+	selectedStyle   lipgloss.Style
+	numStyle        lipgloss.Style
+	provenanceStyle lipgloss.Style
 }
 
 // New returns a prompt with the standard options: Allow once, Allow always,
@@ -74,8 +99,17 @@ func New(theme gotui.Theme) Model {
 		numStyle: lipgloss.NewStyle().
 			Foreground(theme.TextFaint).
 			Background(theme.SurfaceRaised),
+		provenanceStyle: lipgloss.NewStyle().
+			Foreground(theme.TextMuted).
+			Background(theme.SurfaceRaised),
 	}
 }
+
+// SetProvenance replaces the structured operation details shown in the prompt.
+func (m *Model) SetProvenance(p Provenance) { m.provenance = p }
+
+// Provenance returns the structured operation details for this prompt.
+func (m Model) Provenance() Provenance { return m.provenance }
 
 // SetOptions replaces the options. The last option is treated as the safe
 // default: esc picks it.
@@ -95,6 +129,9 @@ func (m *Model) SetSize(width, height int) {
 // answer directly, enter answers the selection, esc picks the last option
 // (the safe default).
 func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
+	if next, cmd, handled := m.applyAction(msg); handled {
+		return next, cmd
+	}
 	key, ok := msg.(tea.KeyPressMsg)
 	if !ok {
 		return m, nil
@@ -137,6 +174,7 @@ func (m Model) View() string {
 	if m.Body != "" {
 		rows = append(rows, m.bodyStyle.Width(inner).Render(m.Body))
 	}
+	rows = append(rows, m.provenanceLines(inner)...)
 	rows = append(rows, m.bodyStyle.Width(inner).Render(""))
 	for i, opt := range m.options {
 		label := fmt.Sprintf(" %s ", opt)
@@ -152,4 +190,29 @@ func (m Model) View() string {
 		rows = append(rows, line)
 	}
 	return m.panelStyle.Width(m.width - 2).Render(strings.Join(rows, "\n"))
+}
+
+func (m Model) provenanceLines(width int) []string {
+	p := m.provenance
+	fields := []struct {
+		label string
+		value string
+	}{
+		{"Tool", p.Tool},
+		{"Operation", p.Operation},
+		{"Target", p.Target},
+		{"Scope", p.Scope},
+		{"Detail", p.Detail},
+		{"Impact", p.Impact},
+		{"Reversibility", p.Reversibility},
+		{"Policy", p.Policy},
+	}
+	rows := make([]string, 0, len(fields))
+	for _, field := range fields {
+		if field.value == "" {
+			continue
+		}
+		rows = append(rows, m.provenanceStyle.Width(width).Render(field.label+": "+field.value))
+	}
+	return rows
 }

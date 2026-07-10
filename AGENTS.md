@@ -346,6 +346,21 @@ Same modal pattern as dialog (app owns visibility, answer arrives as a
 `ResultMsg` command), with vertical numbered options; number keys answer
 directly, esc picks the **last** option — order options safest-last.
 
+Attach structured provenance when the prompt represents an external operation:
+
+```go
+m.perm.SetProvenance(permission.Provenance{
+    Tool: "Bash", Operation: "execute", Target: "repo",
+    Scope: "workspace", Detail: "go test ./...",
+    Impact: "runs tests", Reversibility: "reversible",
+    Policy: "shell commands require approval",
+})
+```
+
+The prompt renders these fields and exposes them through `Inspect()`. Keep the
+exact operation and scope visible; the application remains responsible for
+policy enforcement and transport.
+
 ### usagebar
 
 `u.SetStats(usagebar.Stats{Model, TokensIn, TokensOut, Cost, ContextUsed})` —

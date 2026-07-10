@@ -108,6 +108,16 @@ func newModel() model {
 	m.perm.ID = "bash"
 	m.perm.Title = `Run "go test ./..."?`
 	m.perm.Body = "The agent wants to run a shell command."
+	m.perm.SetProvenance(permission.Provenance{
+		Tool:          "Bash",
+		Operation:     "execute",
+		Target:        "gotui workspace",
+		Scope:         "repository",
+		Detail:        "go test ./...",
+		Impact:        "runs the repository test suite",
+		Reversibility: "reversible",
+		Policy:        "shell commands require approval",
+	})
 	intro := chat.NewText(theme, "mock session — responses are scripted")
 	intro.SetID("system-1")
 	m.transcript.Append(intro)

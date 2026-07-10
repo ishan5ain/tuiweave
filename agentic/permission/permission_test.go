@@ -6,6 +6,7 @@ import (
 	tea "charm.land/bubbletea/v2"
 
 	"github.com/ishansain/gotui"
+	"github.com/ishansain/gotui/inspect"
 	"github.com/ishansain/gotui/snaptest"
 )
 
@@ -92,5 +93,33 @@ func TestCustomOptions(t *testing.T) {
 	_, cmd := p.Update(key("esc"))
 	if res := resultOf(t, cmd); res.Option != "No" {
 		t.Errorf("esc with custom options picked %q, want No", res.Option)
+	}
+}
+
+func TestProvenanceAndSemanticChoice(t *testing.T) {
+	p := newTestPrompt()
+	p.SetProvenance(Provenance{
+		Tool:          "Bash",
+		Operation:     "execute",
+		Target:        "repo",
+		Scope:         "workspace",
+		Detail:        "go test ./...",
+		Impact:        "runs tests",
+		Reversibility: "reversible",
+		Policy:        "shell approval",
+	})
+	if got := p.Provenance(); got.Detail != "go test ./..." || got.Policy != "shell approval" {
+		t.Fatalf("provenance = %+v", got)
+	}
+	node := p.Inspect()
+	if node.Status != "awaiting_approval" || node.Attributes["tool"] != "Bash" {
+		t.Fatalf("inspection = %+v", node)
+	}
+	if len(node.Actions) != 3 || node.Actions[1].ID != "choose.2" {
+		t.Fatalf("inspection actions = %+v", node.Actions)
+	}
+	_, cmd := p.Update(inspect.Invoke("choose.2"))
+	if res := resultOf(t, cmd); res.Choice != 1 || res.Option != "Allow always" {
+		t.Fatalf("semantic choice result = %+v", res)
 	}
 }
