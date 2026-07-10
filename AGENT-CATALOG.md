@@ -10,6 +10,7 @@ rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
 |---|---|
 | Build an app shell | `layout`, then `focus`, `statusbar`, `help` |
 | Frame content or add semantic badges | `frame.Panel`, `frame.Divider`, `frame.Badge` |
+| Navigate sibling views | `tabs`; switch app-owned content from `SelectedID()` |
 | Split panes or rows | `layout.Vertical` / `layout.Horizontal` + `SetSize` |
 | Show selectable records | `list` or `table`; add `scrollbar.For` |
 | Show long content | `viewport`; forward mouse wheels; add `scrollbar.For` |
@@ -50,6 +51,7 @@ rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
 | `help` | Showing key hints | Drops whole hints from the right when narrow |
 | `spinner` | Showing activity | Intrinsic-size; start with `Tick`, forward `TickMsg` |
 | `dialog` | Confirming or cancelling | App owns visibility; result arrives as `ResultMsg` |
+| `tabs` | Navigating sibling views | `SetTabs`, `Focus`, `SelectedID`; left/right while focused |
 
 ### Agentic domain components
 
@@ -138,6 +140,8 @@ that behavior is part of the scenario.
 - Forgetting to apply focus after the value-type model has been copied.
 - Handling Enter inside `textinput`/`textarea` when the app owns submit policy.
 - Gating mouse-wheel delegation on focus for a `viewport`-backed component.
+- Using `tab` inside `tabs` and stealing the app's global focus key; use
+  arrows or `h`/`l` for tab navigation.
 - Splicing one pair of side borders around a multiline string; use
   `frame.Panel`, which frames every rendered line.
 - Mutating a chat cell without calling `transcript.Invalidate()`.

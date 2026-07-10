@@ -1,4 +1,5 @@
  OPS  service overview
+▸Overview   Activity   Settings
 ╭ Jobs ──────────────────────────╮ ╭ Services ─────────────────────╮
 │                                │ │                               │
 │ queue      3                   │ │ api         healthy           │

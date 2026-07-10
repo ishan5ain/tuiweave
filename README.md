@@ -35,6 +35,7 @@ backend protocols, and session lifecycle.
 | `gotui/snaptest` | Snapshot test harness: plain-text, raw-ANSI, role-labeled cell-grid, and interaction-scenario goldens |
 | `gotui/inspect` | Optional semantic UI tree and action metadata: IDs, bounds, focus, selection, scrolling, actions, and children |
 | `gotui/frame` | Width-aware themed panels, titled borders, dividers, and semantic badges |
+| `gotui/tabs` | Focusable, width-aware sibling-view navigation with stable tab IDs |
 | `gotui/statusbar` | One-line status bar with themed left/right segments |
 | `gotui/list` | Scrolling list with selection cursor and filtering (original-index selection) |
 | `gotui/viewport` | Scrollable window over pre-rendered content (keys + mouse wheel) |
@@ -53,7 +54,7 @@ backend protocols, and session lifecycle.
 | `agentic/diffview` | Styled unified diffs, inline or scrollable |
 | `agentic/permission` | Numbered permission prompt (esc = safe default) |
 | `agentic/usagebar` | Model / tokens / cost / context bar with thresholds |
-| `examples/…` | Runnable apps: `go run ./examples/chat` (mock agentic session), `./examples/table` (git-status mock), `./examples/frame` (composition helpers), `./examples/demo`, `./examples/statusbar` |
+| `examples/…` | Runnable apps: `go run ./examples/chat` (mock agentic session), `./examples/table` (git-status mock), `./examples/frame` (composition and tabs), `./examples/demo`, `./examples/statusbar` |
 
 Agentic packages are important reference implementations, not the boundary of
 the library. The same primitives should support editors, dashboards, file

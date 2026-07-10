@@ -189,7 +189,11 @@ and useful in at least two unrelated application types.
       focused, narrow, multiline, and role-labeled rendering.
 - [ ] Extend framing utilities where real reference apps need them; avoid
       adding convenience variants before those composition patterns recur.
-- [ ] Structural components: tabs, menus, toolbars, split panes, and stacked
+- [x] **Structural navigation (initial slice)**: `gotui/tabs` provides
+      focus-gated sibling-view navigation, stable IDs, narrow-width handling,
+      semantic selection actions, inspection metadata, and scenario goldens;
+      `examples/frame` demonstrates it in a dashboard shell.
+- [ ] Structural components: menus, toolbars, split panes, and stacked
       headers/footers
 - [ ] Common controls: toggles, buttons, progress indicators, selectable
       actions, and command-palette foundations

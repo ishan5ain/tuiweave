@@ -15,6 +15,7 @@ and example before reading the detailed recipes below.
 - Styling: `charm.land/lipgloss/v2` (components render styled **strings**)
 - Layout: `github.com/ishansain/gotui/layout` (flexbox-like constraints → rects)
 - Composition: `github.com/ishansain/gotui/frame` (width-aware themed decoration)
+- Navigation: `github.com/ishansain/gotui/tabs` (focusable sibling-view tabs)
 - Testing: `github.com/ishansain/gotui/snaptest` (golden files)
 - Domain packages: `gotui/agentic/…` (markdown, chat, toolcall, diffview,
   permission, usagebar) — optional, backend-agnostic layers built on the
@@ -206,6 +207,33 @@ badge := frame.Badge(theme, "healthy", frame.BadgeSuccess)
 - Keep borders, titles, and badges in the composition layer. Do not make a
   domain component reimplement them or splice side borders around multiline
   content itself.
+
+### tabs
+
+Use `tabs` for navigation among sibling views; the app owns the selected
+view's content. Full composition coverage is in
+[examples/frame](examples/frame/main.go).
+
+```go
+nav := tabs.New(theme)
+nav.SetTabs(
+    tabs.Tab{ID: "overview", Label: "Overview"},
+    tabs.Tab{ID: "logs", Label: "Logs"},
+)
+nav.SetSize(area.Dx(), 1)
+nav.Focus()
+// In the app, render nav.View() and switch content from nav.SelectedID().
+```
+
+- `tabs` handles left/right arrows, `h`/`l`, `home`/`g`, and `end`/`G` only
+  while focused; leave `tab`/`shift+tab` to the app's global focus manager.
+- `SetTabs` preserves selection by stable ID when possible. Keep IDs stable
+  across updates so `SelectedID()` and semantic `select.<id>` actions remain
+  meaningful.
+- It renders one exact-width row, keeps the selected tab visible when narrow,
+  and drops earlier tabs from the visible window as selection moves right.
+- The tab strip is navigation chrome, not a container for the tab bodies; use
+  the app's layout and render the selected view separately.
 
 ### statusbar
 

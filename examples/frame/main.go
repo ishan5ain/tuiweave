@@ -17,15 +17,25 @@ import (
 	"github.com/ishansain/gotui"
 	"github.com/ishansain/gotui/frame"
 	"github.com/ishansain/gotui/layout"
+	"github.com/ishansain/gotui/tabs"
 )
 
 type model struct {
 	theme         gotui.Theme
 	width, height int
+	nav           tabs.Model
 }
 
 func newModel() model {
-	return model{theme: gotui.Dark()}
+	theme := gotui.Dark()
+	nav := tabs.New(theme)
+	nav.SetTabs(
+		tabs.Tab{ID: "overview", Label: "Overview"},
+		tabs.Tab{ID: "activity", Label: "Activity"},
+		tabs.Tab{ID: "settings", Label: "Settings"},
+	)
+	nav.Focus()
+	return model{theme: theme, nav: nav}
 }
 
 func (m model) Init() tea.Cmd { return nil }
@@ -34,10 +44,14 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		m.width, m.height = msg.Width, msg.Height
+		m.nav.SetSize(msg.Width, 1)
 	case tea.KeyPressMsg:
 		if msg.String() == "ctrl+c" || msg.String() == "q" {
 			return m, tea.Quit
 		}
+		var cmd tea.Cmd
+		m.nav, cmd = m.nav.Update(msg)
+		return m, cmd
 	}
 	return m, nil
 }
@@ -58,13 +72,14 @@ func (m model) render() string {
 		Width(header.Dx()).
 		Foreground(m.theme.Text).
 		Background(m.theme.Surface)
-	headerView := headerStyle.Render(
+	headerLine := headerStyle.Render(
 		lipgloss.JoinHorizontal(lipgloss.Top,
 			frame.Badge(m.theme, "OPS", frame.BadgeAccent),
 			" ",
 			lipgloss.NewStyle().Foreground(m.theme.TextMuted).Render("service overview"),
 		),
 	)
+	headerView := lipgloss.JoinVertical(lipgloss.Left, headerLine, m.nav.View())
 
 	var jobs, services layout.Rect
 	layout.Horizontal(layout.Fill(1), layout.Fill(1)).WithSpacing(1).Split(body).Assign(&jobs, &services)
