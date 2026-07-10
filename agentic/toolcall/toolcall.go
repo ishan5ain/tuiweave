@@ -2,9 +2,9 @@
 // icon, tool name, argument summary, and collapsible output.
 //
 // Block is a chat cell, not an MVU component: create it with New, keep the
-// pointer, and mutate it as the tool progresses (SetStatus, AppendOutput,
-// Expanded). The chat transcript re-renders cells every frame, so mutations
-// show up immediately.
+// pointer, and mutate it as the tool progresses (SetID, SetStatus, AppendOutput,
+// Retry, Cancel, Expanded). The chat transcript re-renders cells every frame,
+// so mutations show up immediately.
 package toolcall
 
 import (
@@ -15,6 +15,7 @@ import (
 	"github.com/charmbracelet/x/ansi"
 
 	"github.com/ishansain/gotui"
+	"github.com/ishansain/gotui/agentic/chat"
 )
 
 // Status is the lifecycle state of a tool call.
@@ -25,11 +26,14 @@ const (
 	StatusRunning
 	StatusSuccess
 	StatusError
+	StatusCancelled
 )
 
 // Block is one tool call in a transcript. Mutate it via the exported fields
 // and methods; it renders on demand.
 type Block struct {
+	id string
+
 	// Name is the tool name, e.g. "Bash".
 	Name string
 	// Summary is a one-line description of the call, e.g. the command.
@@ -40,6 +44,8 @@ type Block struct {
 	// MaxOutputLines caps the expanded output; the rest collapses into a
 	// "+N more" line. Default 8.
 	MaxOutputLines int
+
+	attempt int
 
 	status Status
 	output []string
@@ -58,10 +64,11 @@ func New(theme gotui.Theme, name, summary string) *Block {
 		Summary:        summary,
 		MaxOutputLines: 8,
 		iconStyles: map[Status]lipgloss.Style{
-			StatusPending: lipgloss.NewStyle().Foreground(theme.TextFaint),
-			StatusRunning: lipgloss.NewStyle().Foreground(theme.Warning),
-			StatusSuccess: lipgloss.NewStyle().Foreground(theme.Success),
-			StatusError:   lipgloss.NewStyle().Foreground(theme.Danger),
+			StatusPending:   lipgloss.NewStyle().Foreground(theme.TextFaint),
+			StatusRunning:   lipgloss.NewStyle().Foreground(theme.Warning),
+			StatusSuccess:   lipgloss.NewStyle().Foreground(theme.Success),
+			StatusError:     lipgloss.NewStyle().Foreground(theme.Danger),
+			StatusCancelled: lipgloss.NewStyle().Foreground(theme.TextFaint),
 		},
 		nameStyle:   lipgloss.NewStyle().Foreground(theme.Text).Bold(true),
 		summarySt:   lipgloss.NewStyle().Foreground(theme.TextMuted),
@@ -69,6 +76,48 @@ func New(theme gotui.Theme, name, summary string) *Block {
 		hintStyle:   lipgloss.NewStyle().Foreground(theme.TextFaint),
 	}
 }
+
+// SetID assigns the application-owned stable identity for this tool call.
+func (b *Block) SetID(id string) { b.id = id }
+
+// CellID implements chat.CellIdentity.
+func (b *Block) CellID() string { return b.id }
+
+// CellKind implements chat.CellKind.
+func (b *Block) CellKind() string { return "toolcall" }
+
+// Lifecycle implements chat.CellLifecycle.
+func (b *Block) Lifecycle() chat.State {
+	switch b.status {
+	case StatusPending:
+		return chat.StatePending
+	case StatusRunning:
+		return chat.StateRunning
+	case StatusSuccess:
+		return chat.StateComplete
+	case StatusError:
+		return chat.StateFailed
+	case StatusCancelled:
+		return chat.StateCancelled
+	default:
+		return chat.StateFailed
+	}
+}
+
+// Attempt returns the zero-based retry count for this tool call.
+func (b *Block) Attempt() int { return b.attempt }
+
+// Retry clears prior output, increments the attempt, and returns the block to
+// pending state while preserving its stable identity.
+func (b *Block) Retry() {
+	b.attempt++
+	b.status = StatusPending
+	b.output = nil
+	b.Expanded = false
+}
+
+// Cancel marks the tool call as cancelled without discarding its output.
+func (b *Block) Cancel() { b.status = StatusCancelled }
 
 // SetStatus updates the lifecycle state.
 func (b *Block) SetStatus(s Status) { b.status = s }
@@ -82,10 +131,11 @@ func (b *Block) AppendOutput(s string) {
 }
 
 var icons = map[Status]string{
-	StatusPending: "○",
-	StatusRunning: "◐",
-	StatusSuccess: "✓",
-	StatusError:   "✗",
+	StatusPending:   "○",
+	StatusRunning:   "◐",
+	StatusSuccess:   "✓",
+	StatusError:     "✗",
+	StatusCancelled: "⊘",
 }
 
 // Render draws the block at the given width (chat cell contract).

@@ -311,6 +311,7 @@ c := chat.New(theme)
 c.Append(chat.NewUser(theme, question))
 
 a := chat.NewAssistant(theme, mdRenderer)  // keep the pointer
+a.SetID("assistant-1")                      // stable identity is app-owned
 c.Append(a)
 // per streamed delta:
 a.Append(delta); c.Invalidate()
@@ -322,6 +323,10 @@ a.Append(delta); c.Invalidate()
   or the continuation renders above it.
 - Adapt anything to a cell with `chat.CellFunc(func(w int) string {...})`
   — e.g. `diffview.Sprint(theme, diff, w)`.
+- Identified cells can be found or replaced with `c.Cell(id)` and
+  `c.Replace(id, cell)`. Assistant cells expose lifecycle state; tool-call
+  blocks support `SetID`, `Retry`, and `Cancel`. Keep IDs stable across retries
+  when the logical operation is the same.
 
 ### markdown
 
@@ -332,7 +337,7 @@ falls back to raw source on error; transcript UIs should degrade, not fail.
 ### toolcall
 
 `toolcall.New(theme, name, summary)` returns a `*Block` chat cell: mutate
-`SetStatus`/`AppendOutput`/`Expanded` as the tool progresses. Collapsed
+`SetID`/`SetStatus`/`AppendOutput`/`Retry`/`Cancel`/`Expanded` as the tool progresses. Collapsed
 blocks show a line-count hint; expanded output is capped by `MaxOutputLines`.
 
 ### permission

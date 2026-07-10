@@ -83,6 +83,7 @@ type model struct {
 	fm         focus.Manager
 
 	step      step
+	turn      int
 	deltas    []string
 	cur       *chat.Assistant
 	tool      *toolcall.Block
@@ -107,7 +108,9 @@ func newModel() model {
 	m.perm.ID = "bash"
 	m.perm.Title = `Run "go test ./..."?`
 	m.perm.Body = "The agent wants to run a shell command."
-	m.transcript.Append(chat.NewText(theme, "mock session — responses are scripted"))
+	intro := chat.NewText(theme, "mock session — responses are scripted")
+	intro.SetID("system-1")
+	m.transcript.Append(intro)
 	m.fm.Set(1) // input first
 	m.applyFocus()
 	m.usage.SetStats(m.stats)
@@ -129,8 +132,12 @@ func chunk(s string) []string {
 }
 
 func (m *model) startSession(question string) tea.Cmd {
-	m.transcript.Append(chat.NewUser(m.theme, question))
+	m.turn++
+	user := chat.NewUser(m.theme, question)
+	user.SetID(fmt.Sprintf("user-%d", m.turn))
+	m.transcript.Append(user)
 	m.cur = chat.NewAssistant(m.theme, m.md)
+	m.cur.SetID(fmt.Sprintf("assistant-%d", m.turn))
 	m.transcript.Append(m.cur)
 	m.deltas = chunk(responsePart1)
 	m.step = stepStreamingIntro
@@ -154,6 +161,7 @@ func (m *model) advance() tea.Cmd {
 			m.showPerm = true
 			return nil // wait for the user's answer
 		}
+		m.cur.SetLifecycle(chat.StateComplete)
 		m.step = stepIdle
 		return nil
 
@@ -169,6 +177,7 @@ func (m *model) advance() tea.Cmd {
 		// part 2 streams into a fresh assistant cell so it appears after the
 		// tool call and diff, not inside the pre-tool message.
 		m.cur = chat.NewAssistant(theme, m.md)
+		m.cur.SetID(fmt.Sprintf("assistant-%d-followup", m.turn))
 		m.transcript.Append(
 			chat.NewText(theme, "applied layout fix:"),
 			chat.CellFunc(func(w int) string { return diffview.Sprint(theme, diff, w) }),
@@ -225,10 +234,17 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case permission.ResultMsg:
 		m.showPerm = false
 		if msg.Option == "Deny" {
+			if m.cur != nil {
+				m.cur.SetLifecycle(chat.StateCancelled)
+			}
 			m.transcript.Append(chat.NewText(m.theme, "tool call denied — stopping here"))
 			m.step = stepIdle
 		} else {
+			if m.cur != nil {
+				m.cur.SetLifecycle(chat.StateComplete)
+			}
 			m.tool = toolcall.New(m.theme, "Bash", "go test ./...")
+			m.tool.SetID(fmt.Sprintf("tool-%d", m.turn))
 			m.tool.SetStatus(toolcall.StatusRunning)
 			m.transcript.Append(m.tool)
 			m.step = stepToolRunning

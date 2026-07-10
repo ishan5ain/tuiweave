@@ -23,7 +23,8 @@ import (
 
 // Cell is one unit of transcript content, rendered at the transcript width.
 // Cell implementations live in this package (Text, User, Assistant) and in
-// agentic/toolcall; adapt anything else with CellFunc.
+// agentic/toolcall; adapt anything else with CellFunc. Cells may optionally
+// implement CellIdentity, CellKind, and CellLifecycle for semantic inspection.
 type Cell interface {
 	Render(width int) string
 }
@@ -66,6 +67,31 @@ func (m *Model) Append(cells ...Cell) {
 
 // Cells returns the transcript's cells, oldest first.
 func (m Model) Cells() []Cell { return m.cells }
+
+// Cell returns the identified cell with id, if present.
+func (m Model) Cell(id string) (Cell, bool) {
+	for _, cell := range m.cells {
+		identified, ok := cell.(CellIdentity)
+		if ok && identified.CellID() == id {
+			return cell, true
+		}
+	}
+	return nil, false
+}
+
+// Replace swaps an identified cell in place and invalidates the transcript.
+// It returns false when no cell with id exists.
+func (m *Model) Replace(id string, cell Cell) bool {
+	for i, current := range m.cells {
+		identified, ok := current.(CellIdentity)
+		if ok && identified.CellID() == id {
+			m.cells[i] = cell
+			m.Invalidate()
+			return true
+		}
+	}
+	return false
+}
 
 // Invalidate re-renders the transcript from its cells. Call it after
 // mutating a cell in place (streaming a delta, changing a tool status).

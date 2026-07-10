@@ -59,12 +59,36 @@ func (m Model) applyAction(msg tea.Msg) (Model, bool) {
 // state. Cell contents remain owned by the application and are not copied into
 // the semantic tree.
 func (m Model) Inspect() inspect.Node {
+	children := make([]inspect.Node, 0, len(m.cells))
+	for _, cell := range m.cells {
+		identified, ok := cell.(CellIdentity)
+		if !ok || identified.CellID() == "" {
+			continue
+		}
+		kind := "cell"
+		if typed, ok := cell.(CellKind); ok && typed.CellKind() != "" {
+			kind = typed.CellKind()
+		}
+		child := inspect.Node{ID: identified.CellID(), Kind: kind}
+		if detailed, ok := cell.(inspect.Inspectable); ok {
+			child = detailed.Inspect()
+			child.ID = identified.CellID()
+			if child.Kind == "" {
+				child.Kind = kind
+			}
+		}
+		if lifecycle, ok := cell.(CellLifecycle); ok {
+			child.Status = string(lifecycle.Lifecycle())
+		}
+		children = append(children, child)
+	}
 	return inspect.Node{
-		Kind:    "chat",
-		Bounds:  inspect.Bounds{Width: m.width, Height: m.height},
-		Focused: m.Focused(),
-		Scroll:  &inspect.Scroll{Total: m.TotalLines(), Visible: m.VisibleLines(), Offset: m.YOffset()},
-		Actions: m.Actions(),
+		Kind:     "chat",
+		Bounds:   inspect.Bounds{Width: m.width, Height: m.height},
+		Focused:  m.Focused(),
+		Scroll:   &inspect.Scroll{Total: m.TotalLines(), Visible: m.VisibleLines(), Offset: m.YOffset()},
+		Actions:  m.Actions(),
+		Children: children,
 		Attributes: map[string]string{
 			"cell_count": strconv.Itoa(len(m.cells)),
 			"following":  strconv.FormatBool(m.follow),

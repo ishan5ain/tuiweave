@@ -10,6 +10,7 @@ import (
 
 	"github.com/ishansain/gotui"
 	"github.com/ishansain/gotui/agentic/markdown"
+	"github.com/ishansain/gotui/inspect"
 	"github.com/ishansain/gotui/snaptest"
 )
 
@@ -95,6 +96,60 @@ func TestAssistantRenderCache(t *testing.T) {
 	}
 	if wider := a.Render(40); wider == "" {
 		t.Error("render at new width is empty")
+	}
+}
+
+type countingRenderer struct{ calls int }
+
+func (r *countingRenderer) Render(source string, _ int) (string, error) {
+	r.calls++
+	return source, nil
+}
+
+func TestAssistantSetSourceRefreshesSameLengthContent(t *testing.T) {
+	r := &countingRenderer{}
+	a := NewAssistant(gotui.Dark(), r)
+	a.SetSource("one")
+	a.Render(20)
+	a.SetSource("two")
+	a.Render(20)
+	if r.calls != 2 {
+		t.Fatalf("renderer calls = %d, want 2 after same-length replacement", r.calls)
+	}
+}
+
+func TestCellIdentityLookupAndReplace(t *testing.T) {
+	c := newTranscript(30, 4)
+	a := NewAssistant(gotui.Dark(), markdown.NewRenderer(gotui.Dark()))
+	a.SetID("assistant-1")
+	c.Append(a)
+
+	found, ok := c.Cell("assistant-1")
+	if !ok || found != a {
+		t.Fatalf("Cell lookup = (%v, %v), want assistant-1", found, ok)
+	}
+	replacement := NewText(gotui.Dark(), "replayed")
+	replacement.SetID("assistant-1")
+	if !c.Replace("assistant-1", replacement) {
+		t.Fatal("Replace did not find assistant-1")
+	}
+	found, ok = c.Cell("assistant-1")
+	if !ok || found != replacement {
+		t.Fatal("Cell lookup did not return replacement")
+	}
+}
+
+func TestInspectIncludesIdentifiedLifecycleChildren(t *testing.T) {
+	c := newTranscript(30, 4)
+	a := NewAssistant(gotui.Dark(), markdown.NewRenderer(gotui.Dark()))
+	a.SetID("assistant-1")
+	c.Append(a)
+	node := c.Inspect()
+	if len(node.Children) != 1 || node.Children[0].ID != "assistant-1" || node.Children[0].Status != string(StateStreaming) {
+		t.Fatalf("inspection children = %+v", node.Children)
+	}
+	if _, err := inspect.Marshal(node); err != nil {
+		t.Fatalf("marshal inspection: %v", err)
 	}
 }
 

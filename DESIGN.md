@@ -409,9 +409,12 @@ theme API from growing per-component.
 - **Streaming markdown renderer design:** incremental block parser vs
   full-document reparse with damage hints — decide when glamour's limits are
   measured, not guessed.
-- **Inspection and action schema:** choose a small stable representation for
-  semantic state and actions without turning gotui into a framework.
-- **Scenario format:** decide whether interaction goldens are Go-native,
-  JSON-based, or both; they should remain deterministic and readable in diffs.
-- **Agentic session identity:** decide how chat cells and tool calls receive
-  stable IDs and support updates, retries, cancellation, and replay.
+- **Inspection/action schema hardening:** evolve the initial data-only schema
+  without turning gotui into a framework; preserve stable IDs as APIs mature.
+- **Scenario format expansion:** the initial Go-native plain golden is in place;
+  decide whether a separate machine-readable event format is needed for richer
+  command outcomes and replay.
+- **Agentic session ledger:** the initial slice provides optional cell IDs,
+  lifecycle states, lookup/replacement, retries, cancellation, and source
+  revisions. A future ledger must decide persistence, event ordering, resume,
+  and replay across sessions.

@@ -9,6 +9,7 @@ import (
 
 // User is a user-message cell: an accent "❯ you" header over plain text.
 type User struct {
+	id          string
 	text        string
 	headerStyle lipgloss.Style
 	bodyStyle   lipgloss.Style
@@ -23,6 +24,18 @@ func NewUser(theme gotui.Theme, text string) *User {
 	}
 }
 
+// SetID assigns the application-owned stable identity for this cell.
+func (u *User) SetID(id string) { u.id = id }
+
+// CellID implements CellIdentity.
+func (u *User) CellID() string { return u.id }
+
+// CellKind implements CellKind.
+func (u *User) CellKind() string { return "user" }
+
+// Lifecycle implements CellLifecycle. User messages are complete when added.
+func (u *User) Lifecycle() State { return StateComplete }
+
 // Render implements Cell.
 func (u *User) Render(width int) string {
 	return u.headerStyle.Render("❯ you") + "\n" +
@@ -31,39 +44,71 @@ func (u *User) Render(width int) string {
 
 // Assistant is a streaming assistant-message cell: markdown-rendered text
 // under a "✦ assistant" header. Stream into it with Append; the render is
-// cached and recomputed only when the source or width changes.
+// cached and recomputed only when the source revision or width changes.
 type Assistant struct {
+	id          string
 	renderer    markdown.Renderer
 	source      string
+	state       State
 	headerStyle lipgloss.Style
 
-	cachedWidth int
-	cachedLen   int
-	cached      string
+	cachedWidth    int
+	sourceRevision uint64
+	cachedRevision uint64
+	cached         string
+	cachedValid    bool
 }
 
 // NewAssistant returns an empty assistant message cell rendering through r.
 func NewAssistant(theme gotui.Theme, r markdown.Renderer) *Assistant {
 	return &Assistant{
 		renderer:    r,
+		state:       StateStreaming,
 		headerStyle: lipgloss.NewStyle().Foreground(theme.TextMuted).Bold(true),
 	}
 }
 
+// SetID assigns the application-owned stable identity for this cell.
+func (a *Assistant) SetID(id string) { a.id = id }
+
+// CellID implements CellIdentity.
+func (a *Assistant) CellID() string { return a.id }
+
+// CellKind implements CellKind.
+func (a *Assistant) CellKind() string { return "assistant" }
+
+// SetLifecycle changes the assistant message lifecycle state.
+func (a *Assistant) SetLifecycle(state State) { a.state = state }
+
+// Lifecycle implements CellLifecycle.
+func (a *Assistant) Lifecycle() State { return a.state }
+
 // Append adds a streamed delta to the message source.
-func (a *Assistant) Append(delta string) { a.source += delta }
+func (a *Assistant) Append(delta string) {
+	if delta == "" {
+		return
+	}
+	a.source += delta
+	a.sourceRevision++
+}
 
 // SetSource replaces the message source.
-func (a *Assistant) SetSource(s string) { a.source = s }
+func (a *Assistant) SetSource(s string) {
+	if a.source == s {
+		return
+	}
+	a.source = s
+	a.sourceRevision++
+}
 
 // Source returns the raw markdown accumulated so far.
 func (a *Assistant) Source() string { return a.source }
 
 // Render implements Cell.
 func (a *Assistant) Render(width int) string {
-	if width != a.cachedWidth || len(a.source) != a.cachedLen {
+	if !a.cachedValid || width != a.cachedWidth || a.sourceRevision != a.cachedRevision {
 		a.cached = markdown.Sprint(a.renderer, a.source, width)
-		a.cachedWidth, a.cachedLen = width, len(a.source)
+		a.cachedWidth, a.cachedRevision, a.cachedValid = width, a.sourceRevision, true
 	}
 	return a.headerStyle.Render("✦ assistant") + "\n" + a.cached
 }
@@ -71,6 +116,7 @@ func (a *Assistant) Render(width int) string {
 // Text is a plain one-off cell for session notes ("compacted history",
 // errors), rendered faint.
 type Text struct {
+	id    string
 	text  string
 	style lipgloss.Style
 }
@@ -82,6 +128,18 @@ func NewText(theme gotui.Theme, text string) *Text {
 		style: lipgloss.NewStyle().Foreground(theme.TextFaint).Italic(true),
 	}
 }
+
+// SetID assigns the application-owned stable identity for this cell.
+func (t *Text) SetID(id string) { t.id = id }
+
+// CellID implements CellIdentity.
+func (t *Text) CellID() string { return t.id }
+
+// CellKind implements CellKind.
+func (t *Text) CellKind() string { return "text" }
+
+// Lifecycle implements CellLifecycle. Notes are complete when added.
+func (t *Text) Lifecycle() State { return StateComplete }
 
 // Render implements Cell.
 func (t *Text) Render(width int) string {

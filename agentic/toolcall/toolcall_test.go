@@ -5,6 +5,8 @@ import (
 	"testing"
 
 	"github.com/ishansain/gotui"
+	"github.com/ishansain/gotui/agentic/chat"
+	"github.com/ishansain/gotui/inspect"
 	"github.com/ishansain/gotui/snaptest"
 )
 
@@ -59,5 +61,55 @@ func TestNoOutputNoHint(t *testing.T) {
 	b := New(gotui.Dark(), "Bash", "ls")
 	if view := b.Render(30); strings.Contains(view, "output lines") {
 		t.Errorf("block without output shows hint: %q", view)
+	}
+}
+
+func TestIdentityLifecycleCancelAndRetry(t *testing.T) {
+	b := New(gotui.Dark(), "Bash", "go test ./...")
+	b.SetID("tool-1")
+	b.SetStatus(StatusRunning)
+	b.AppendOutput("partial output")
+	b.Cancel()
+	if b.CellID() != "tool-1" || b.Lifecycle() != chat.StateCancelled {
+		t.Fatalf("cancelled block identity/state = %q/%q", b.CellID(), b.Lifecycle())
+	}
+	b.Retry()
+	if b.Attempt() != 1 || b.Status() != StatusPending || b.Lifecycle() != chat.StatePending {
+		t.Fatalf("retried block = attempt %d, status %d, state %q", b.Attempt(), b.Status(), b.Lifecycle())
+	}
+	if strings.Contains(b.Render(40), "output lines") {
+		t.Fatal("retry retained prior output")
+	}
+	if !b.ApplyAction(ActionCancel) || b.Status() != StatusCancelled {
+		t.Fatal("cancel action did not cancel the retried block")
+	}
+	b.SetStatus(StatusError)
+	if !b.ApplyAction(ActionRetry) || b.Status() != StatusPending {
+		t.Fatal("retry action did not return an errored block to pending")
+	}
+
+	node := inspect.Bind("tools", b)
+	if node.ID != "tools" || b.CellKind() != "toolcall" {
+		t.Fatalf("bound tool node = %+v", node)
+	}
+}
+
+func TestTranscriptInspectionIncludesToolCallMetadata(t *testing.T) {
+	c := chat.New(gotui.Dark())
+	c.SetSize(40, 5)
+	b := New(gotui.Dark(), "Bash", "go test ./...")
+	b.SetID("tool-1")
+	c.Append(b)
+
+	node := c.Inspect()
+	if len(node.Children) != 1 {
+		t.Fatalf("transcript children = %+v", node.Children)
+	}
+	child := node.Children[0]
+	if child.ID != "tool-1" || child.Kind != "toolcall" || child.Status != string(chat.StatePending) {
+		t.Fatalf("tool child = %+v", child)
+	}
+	if len(child.Actions) != 2 {
+		t.Fatalf("tool actions = %+v", child.Actions)
 	}
 }
