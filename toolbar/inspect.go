@@ -3,6 +3,7 @@ package toolbar
 import (
 	"strconv"
 
+	"github.com/ishansain/gotui/action"
 	"github.com/ishansain/gotui/inspect"
 )
 
@@ -44,12 +45,6 @@ func (m Model) Inspect() inspect.Node {
 			Label: m.items[m.selected].Label,
 		}
 	}
-	enabled := 0
-	for _, item := range m.items {
-		if !item.Disabled {
-			enabled++
-		}
-	}
 	return inspect.Node{
 		Kind:     "toolbar",
 		Bounds:   inspect.Bounds{Width: m.width, Height: m.height},
@@ -60,7 +55,7 @@ func (m Model) Inspect() inspect.Node {
 		Actions:  m.Actions(),
 		Attributes: map[string]string{
 			"item_count":    strconv.Itoa(len(m.items)),
-			"enabled_count": strconv.Itoa(enabled),
+			"enabled_count": strconv.Itoa(action.EnabledCount(m.items)),
 		},
 	}
 }

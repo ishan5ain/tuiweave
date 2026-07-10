@@ -35,6 +35,7 @@ backend protocols, and session lifecycle.
 | `gotui/layout` | Flexbox-like layout: constraints → rectangles → component sizes |
 | `gotui/snaptest` | Snapshot test harness: plain-text, raw-ANSI, role-labeled cell-grid, and interaction-scenario goldens |
 | `gotui/inspect` | Optional semantic UI tree and action metadata: IDs, bounds, focus, selection, scrolling, actions, and children |
+| `gotui/action` | Shared stable-ID selectable-action definitions for menus, toolbars, palettes, and app-owned routing |
 | `gotui/frame` | Width-aware themed panels, titled borders, dividers, and semantic badges |
 | `gotui/tabs` | Focusable, width-aware sibling-view navigation with stable tab IDs |
 | `gotui/menu` | Focusable vertical action menu with disabled entries and activation messages |

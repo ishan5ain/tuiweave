@@ -15,6 +15,7 @@ import (
 	lipgloss "charm.land/lipgloss/v2"
 
 	"github.com/ishansain/gotui"
+	"github.com/ishansain/gotui/action"
 	"github.com/ishansain/gotui/button"
 	"github.com/ishansain/gotui/focus"
 	"github.com/ishansain/gotui/frame"
@@ -73,12 +74,13 @@ func newModel() model {
 		tabs.Tab{ID: "jobs", Label: "Jobs"},
 		tabs.Tab{ID: "audit", Label: "Audit"},
 	)
-	m.actions.SetItems(
-		menu.Item{ID: "restart", Label: "Restart service", Description: "Restart the selected service"},
-		menu.Item{ID: "drain", Label: "Drain traffic", Description: "Remove a service from rotation"},
-		menu.Item{ID: "ack", Label: "Acknowledge alert", Description: "Mark the current alert handled"},
-		menu.Item{ID: "delete", Label: "Delete service", Description: "Destructive action", Disabled: true},
-	)
+	operations := []action.Item{
+		{ID: "restart", Label: "Restart service", Description: "Restart the selected service"},
+		{ID: "drain", Label: "Drain traffic", Description: "Remove a service from rotation"},
+		{ID: "ack", Label: "Acknowledge alert", Description: "Mark the current alert handled"},
+		{ID: "delete", Label: "Delete service", Description: "Destructive action", Disabled: true},
+	}
+	m.actions.SetItems(operations...)
 	m.load.SetLabel("Deploy")
 	m.load.SetPercent(0.72)
 	m.load.SetStatus(progress.StatusInfo)
@@ -87,13 +89,12 @@ func newModel() model {
 	m.autoRefresh.SetChecked(true)
 	m.openLogs.ID = "open-logs"
 	m.openLogs.SetLabel("Open logs")
-	m.commands.SetItems(
-		palette.Item{ID: "restart", Label: "Restart service", Description: "Restart the selected service"},
-		palette.Item{ID: "drain", Label: "Drain traffic", Description: "Remove a service from rotation"},
-		palette.Item{ID: "ack", Label: "Acknowledge alert", Description: "Mark the current alert handled"},
-		palette.Item{ID: "refresh", Label: "Refresh data", Description: "Reload service state"},
-		palette.Item{ID: "delete", Label: "Delete service", Description: "Destructive action", Disabled: true},
-	)
+	paletteItems := append([]action.Item(nil), operations[:3]...)
+	paletteItems = append(paletteItems, action.Item{
+		ID: "refresh", Label: "Refresh data", Description: "Reload service state",
+	})
+	paletteItems = append(paletteItems, operations[3])
+	m.commands.SetItems(paletteItems...)
 	m.syncRows()
 	m.applyFocus()
 	m.syncStatus()

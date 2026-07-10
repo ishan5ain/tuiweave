@@ -226,10 +226,14 @@ and useful in at least two unrelated application types.
 - [ ] Structural components: additional layout patterns driven by reference
       applications; add another helper only when a distinct recurring pattern
       cannot be expressed by `layout`, `stack`, or `splitpane`.
-- [ ] Common controls: selectable actions. Menu, toolbar, and palette now share
-      behavior informally; the next refinement should determine whether a
-      common action definition/recipe reduces duplication without forcing their
-      distinct renderers together.
+- [x] **Shared selectable-action contract (initial refinement)**:
+      `gotui/action.Item` defines stable IDs, labels, descriptions, and
+      disabled state once; menu, toolbar, and palette alias that definition
+      while retaining distinct renderers and message types. `examples/ops`
+      derives its menu and palette entries from one action set.
+- [ ] Common controls: selectable-action refinements beyond the shared
+      definition contract; preserve distinct renderers and activation messages
+      while looking for recurring behavior worth extracting.
 - [x] **Progress indicator (initial slice)**: `gotui/progress` provides a
       passive exact-width task indicator with label truncation, clamped values,
       semantic status roles, inspection metadata, golden/width tests, and

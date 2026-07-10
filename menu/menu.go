@@ -11,6 +11,7 @@ import (
 	"github.com/charmbracelet/x/ansi"
 
 	"github.com/ishansain/gotui"
+	"github.com/ishansain/gotui/action"
 	"github.com/ishansain/gotui/inspect"
 )
 
@@ -34,16 +35,8 @@ const (
 	ActionSelectPrefix = "select."
 )
 
-// Item is one menu action. ID should be stable across updates when the
-// application wants to expose semantic selection actions and stable
-// SelectedMsg values. Disabled items remain visible but cannot be selected or
-// activated.
-type Item struct {
-	ID          string
-	Label       string
-	Description string
-	Disabled    bool
-}
+// Item is the shared action.Item definition rendered by the menu.
+type Item = action.Item
 
 // SelectedMsg is emitted when a menu item is activated with enter or the
 // ActionActivate semantic action.

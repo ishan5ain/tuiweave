@@ -11,6 +11,7 @@ import (
 	"github.com/charmbracelet/x/ansi"
 
 	"github.com/ishansain/gotui"
+	"github.com/ishansain/gotui/action"
 	"github.com/ishansain/gotui/inspect"
 )
 
@@ -33,14 +34,8 @@ const (
 	ActionSelectPrefix = "select."
 )
 
-// Item is one toolbar action. Disabled items remain visible but cannot be
-// selected or activated.
-type Item struct {
-	ID          string
-	Label       string
-	Description string
-	Disabled    bool
-}
+// Item is the shared action.Item definition rendered by the toolbar.
+type Item = action.Item
 
 // SelectedMsg is emitted when a toolbar item is activated with enter or the
 // ActionActivate semantic action.

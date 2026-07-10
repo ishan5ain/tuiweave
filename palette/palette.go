@@ -11,6 +11,7 @@ import (
 	"github.com/charmbracelet/x/ansi"
 
 	"github.com/ishansain/gotui"
+	"github.com/ishansain/gotui/action"
 	"github.com/ishansain/gotui/inspect"
 	"github.com/ishansain/gotui/textinput"
 )
@@ -36,16 +37,9 @@ const (
 	ActionSelectPrefix = "select."
 )
 
-// Item is one command-palette action. ID should remain stable across updates;
-// Description is included in search and can explain the action to users and
-// semantic clients. Disabled items remain visible but cannot be selected or
-// activated.
-type Item struct {
-	ID          string
-	Label       string
-	Description string
-	Disabled    bool
-}
+// Item is the shared action.Item definition rendered by the palette. The
+// description is included in its search window.
+type Item = action.Item
 
 // SelectedMsg is emitted when an action is activated with enter, space, or a
 // semantic activation action.

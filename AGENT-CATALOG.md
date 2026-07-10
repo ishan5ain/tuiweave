@@ -11,6 +11,7 @@ rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
 | Build an app shell | `layout`, then `focus`, `statusbar`, `help` |
 | Frame content or add semantic badges | `frame.Panel`, `frame.Divider`, `frame.Badge` |
 | Navigate sibling views | `tabs`; switch app-owned content from `SelectedID()` |
+| Define actions shared across surfaces | `action.Item`; keep IDs and disabled state stable |
 | Choose or activate an action | `menu`; handle `menu.SelectedMsg` in the app |
 | Add a horizontal action strip | `toolbar`; handle `toolbar.SelectedMsg` in the app |
 | Compose two sibling panes | `splitpane.Horizontal`; callbacks receive pane widths |
@@ -42,6 +43,7 @@ rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
 | `layout` | Converting window space to component boxes | `layout.Vertical(...).Apply(area, &components...)`; `SizeModeOf` for sizing exceptions |
 | `snaptest` | Verifying rendering or interactions | `Snap`, `SnapCells`, `RunScenario`, `SnapScenario` |
 | `inspect` | Describing UI semantics for tests/tools/agents | `Inspect()`, `Bind`, `BindAt`, `Group`, `Marshal` |
+| `action` | Sharing selectable action definitions across components | `Item{ID, Label, Description, Disabled}`; `Find`, `EnabledCount` |
 | `focus` | Managing tab order and modal scopes across copied MVU models | `NewManager(n)` or `NewScope(n)`; apply fresh addresses after changes |
 | `overlay` | Compositing a modal or popover | `overlay.Center(base, over)` or `Place` |
 | `scrollbar` | Adding a standalone scroll indicator | `scrollbar.For(theme, component)` in a 1-cell layout segment |
@@ -61,14 +63,14 @@ rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
 | `spinner` | Showing activity | Intrinsic-size; start with `Tick`, forward `TickMsg` |
 | `dialog` | Confirming or cancelling | App owns visibility; result arrives as `ResultMsg` |
 | `tabs` | Navigating sibling views | `SetTabs`, `Focus`, `SelectedID`; left/right while focused |
-| `menu` | Choosing application-owned actions | `SetItems`, `Focus`, `SelectedMsg`; disabled entries are skipped |
-| `toolbar` | Rendering horizontal actions | `SetItems`, `Focus`, `SelectedMsg`; selected action stays visible when narrow |
+| `menu` | Choosing application-owned actions | `SetItems([]action.Item...)`, `Focus`, `SelectedMsg`; disabled entries are skipped |
+| `toolbar` | Rendering horizontal actions | `SetItems([]action.Item...)`, `Focus`, `SelectedMsg`; selected action stays visible when narrow |
 | `splitpane` | Composing two width-aware views | `Horizontal(theme, width, Options, left, right)`; natural-height alignment |
 | `stack` | Composing vertical app chrome | `Vertical(theme, width, Options, views...)`; exact-width natural-height sections |
 | `progress` | Showing task or operation completion | `SetLabel`, `SetPercent`, `SetStatus`; passive and exact-width |
 | `toggle` | Editing a boolean setting | `SetLabel`, `SetChecked`, `Focus`; space/enter/x emit `ChangedMsg` |
 | `button` | Activating one application-owned action | `SetLabel`, `Focus`, `PressedMsg`; enter/space activate |
-| `palette` | Discovering actions by query | `SetItems`, `SetQuery`, `SelectedMsg`; filters ID/label/description |
+| `palette` | Discovering actions by query | `SetItems([]action.Item...)`, `SetQuery`, `SelectedMsg`; filters ID/label/description |
 | `line` | Composing width-aware single rows | `Truncate`, `Fit`, `Fill`, `Join`; `JoinOptions{NoEllipsis:true}` for rules |
 
 ### Agentic domain components

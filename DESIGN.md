@@ -319,6 +319,7 @@ github.com/ishansain/gotui
 │                    Vertical/Horizontal, Sizable, Apply
 ├── snaptest/        snapshot test harness (Snap, SnapCells, SnapStyled, -update)
 ├── inspect/         optional semantic UI tree (IDs, bounds, focus, state)
+├── action/          shared stable-ID selectable-action definitions
 ├── frame/            domain-neutral framing and decoration helpers
 ├── tabs/             focusable sibling-view navigation
 ├── menu/             focusable vertical action choices

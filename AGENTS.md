@@ -14,6 +14,7 @@ and example before reading the detailed recipes below.
 - Runtime: `charm.land/bubbletea/v2` (MVU; root model's `View()` returns `tea.View`)
 - Styling: `charm.land/lipgloss/v2` (components render styled **strings**)
 - Layout: `github.com/ishansain/gotui/layout` (flexbox-like constraints → rects)
+- Action definitions: `github.com/ishansain/gotui/action` (shared stable-ID action definitions)
 - Composition: `github.com/ishansain/gotui/frame` (width-aware themed decoration)
 - Navigation: `github.com/ishansain/gotui/tabs` (focusable sibling-view tabs)
 - Actions: `github.com/ishansain/gotui/menu` (focusable action choices)
@@ -249,6 +250,21 @@ nav.Focus()
 - The tab strip is navigation chrome, not a container for the tab bodies; use
   the app's layout and render the selected view separately.
 
+### action definitions
+
+Use `action.Item` as the application-owned definition when one operation appears
+in more than one selectable surface. Keep IDs stable; `Disabled` is shared by
+menus, toolbars, and palettes, while each component retains its own renderer,
+focus behavior, and `SelectedMsg` type.
+
+```go
+commands := []action.Item{
+    {ID: "open", Label: "Open workspace"},
+    {ID: "refresh", Label: "Refresh data"},
+    {ID: "delete", Label: "Delete workspace", Disabled: true},
+}
+```
+
 ### menu
 
 Use `menu` for a vertical set of application-owned actions. Disabled items
@@ -258,11 +274,7 @@ remain visible and are skipped by navigation. `enter` emits a typed
 
 ```go
 actions := menu.New(theme)
-actions.SetItems(
-    menu.Item{ID: "open", Label: "Open workspace"},
-    menu.Item{ID: "refresh", Label: "Refresh data"},
-    menu.Item{ID: "delete", Label: "Delete workspace", Disabled: true},
-)
+actions.SetItems(commands...)
 actions.SetSize(area.Dx(), area.Dy())
 actions.Focus()
 
@@ -288,11 +300,7 @@ available width is narrow. Full composition coverage is in
 
 ```go
 tools := toolbar.New(theme)
-tools.SetItems(
-    toolbar.Item{ID: "refresh", Label: "Refresh"},
-    toolbar.Item{ID: "export", Label: "Export"},
-    toolbar.Item{ID: "delete", Label: "Delete", Disabled: true},
-)
+tools.SetItems(commands...)
 tools.SetSize(area.Dx(), 1)
 tools.Focus()
 
@@ -433,10 +441,7 @@ component; visibility and command side effects remain application-owned.
 
 ```go
 p := palette.New(theme)
-p.SetItems(
-    palette.Item{ID: "open", Label: "Open workspace", Description: "Choose a workspace"},
-    palette.Item{ID: "format", Label: "Format document", Description: "Run the formatter"},
-)
+p.SetItems(commands...)
 p.SetSize(area.Dx(), area.Dy())
 p.Focus()
 
