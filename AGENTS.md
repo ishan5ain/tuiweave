@@ -96,6 +96,19 @@ to tuiweave require explicit authorization.
    should follow existing component conventions unless the component documents
    a deliberate difference.
 
+### Theme presets
+
+Use `tuiweave.Presets()` when an app needs to list or cycle the built-in themes,
+and resolve the selected stable ID with `tuiweave.ThemeForPreset(id)`. For a
+fixed theme, use a named constructor such as `Dark()`, `Dracula()`, `Nord()`,
+`CatppuccinMocha()`, or `GruvboxLight()`.
+
+Components derive styles from the theme passed to `New`. When the app changes
+themes, reconstruct its themed components from the selected `Theme`, restoring
+application-owned content, selection, focus, and dimensions as appropriate.
+Do not mutate component internals or add app-local colors. The canonical cycling
+example is [examples/statusbar](examples/statusbar/main.go).
+
 ## Wiring an app (the only layout pattern)
 
 Split the window on every `tea.WindowSizeMsg`; let rects size the components:

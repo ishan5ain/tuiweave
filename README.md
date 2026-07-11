@@ -53,6 +53,13 @@ in top-level packages such as `layout`, `frame`, `tabs`, `menu`, `viewport`,
 `textinput`, and `textarea`; optional domain packages live under `agentic/`.
 The [agent catalog](AGENT-CATALOG.md) maps common tasks to packages and examples.
 
+Eight built-in theme presets are available through `tuiweave.Presets()` and
+`tuiweave.ThemeForPreset(id)`. Named constructors such as `Dark()`, `Nord()`,
+and `CatppuccinLatte()` are convenient when an app does not need discovery.
+Components derive styles when constructed, so an app that changes themes
+reconstructs its components from the newly selected `Theme` while preserving
+application-owned state. See [`examples/statusbar`](examples/statusbar).
+
 ## Development
 
 ```sh

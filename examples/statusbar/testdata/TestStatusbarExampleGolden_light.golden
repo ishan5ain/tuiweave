@@ -1,0 +1,8 @@
+
+  tuiweave statusbar demo
+
+  Press t to cycle theme presets, q to quit.
+
+
+
+ tuiweave  examples/statusbar             t: theme  Light  64×8

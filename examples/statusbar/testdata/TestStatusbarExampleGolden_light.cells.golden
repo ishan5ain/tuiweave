@@ -1,0 +1,8 @@
+1: "                                                                " [bg=Surface]
+2: "  " [bg=Surface] | "tuiweave statusbar demo" [fg=Text bg=Surface] | "                                       " [bg=Surface]
+3: "                                                                " [bg=Surface]
+4: "  " [bg=Surface] | "Press t to cycle theme presets, q to quit." [fg=Text bg=Surface] | "                    " [bg=Surface]
+5: "                                                                " [bg=Surface]
+6: "                                                                " [bg=Surface]
+7: "                                                                " [bg=Surface]
+8: " tuiweave " [fg=Surface bg=Accent bold] | " examples/statusbar " [fg=Text bg=SurfaceRaised] | "           " [bg=SurfaceRaised] | " t: theme " [fg=Info bg=SurfaceRaised] | " Light  64×8 " [fg=TextMuted bg=SurfaceRaised]
