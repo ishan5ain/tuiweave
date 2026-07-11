@@ -1,0 +1,17 @@
+## initial
+command: no
+▸ git checkout  switch branch
+  git status  show changes
+  go test  run tests
+
+## next suggestion
+command: no
+  git checkout  switch branch
+▸ git status  show changes
+  go test  run tests
+
+## accept suggestion
+command: yes
+  git checkout  switch branch
+▸ git status  show changes
+  go test  run tests

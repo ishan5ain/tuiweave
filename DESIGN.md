@@ -335,6 +335,7 @@ github.com/ishansain/gotui
 ├── toggle/            focusable boolean setting control
 ├── button/            focusable single-action control
 ├── palette/           bounded command-palette foundation
+├── autocomplete/      app-owned input plus bounded suggestion window
 ├── line/              width-aware single-row composition helpers
 ├── statusbar/  list/  viewport/  textinput/  textarea/  table/  help/  spinner/
 │                    generic primitives, one package each
@@ -449,12 +450,13 @@ theme API from growing per-component.
   bounded model-owned kill/yank ring (`ctrl+w/u/k`, `alt+y`; `ctrl+y` remains
   redo). Consecutive kills coalesce in direction-aware order, and repeated
   yanks rotate through older kills without duplicating the inserted text. Still
-  open: IME, further editor-specific commands, and a broader cell-width audit
+  open: IME and further editor-specific commands. The current cell-width audit
+  covers ANSI/lipgloss components plus grapheme-safe table, snapshot, and
+  overlay cell paths.
   across text-bearing components. `textinput` now has a corresponding initial audit
   slice for cell-aware prompt, placeholder, cursor, and horizontal-window
   geometry. The initial shared/agentic audit also clamps chat-cell headers and
-  tool-call output to their assigned width; the remaining audit is still
-  intentionally incremental. Dialog and permission panels now apply the same
+  tool-call output to their assigned width. Dialog and permission panels now apply the same
   bounded-width rule to their outer frame and inner action/content rows.
 - **Streaming markdown renderer design:** incremental block parser vs
   full-document reparse with damage hints — decide when glamour's limits are

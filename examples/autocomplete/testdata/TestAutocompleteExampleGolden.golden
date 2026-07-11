@@ -1,0 +1,12 @@
+╭ Command completion ──────────────────────────────────────────╮
+│                                                              │
+│ > type a command prefix                                      │
+│ ▸ git checkout  switch branch                                │
+│   git status  show changes                                   │
+│   go test  run tests                                         │
+│   go run  run a command                                      │
+│   deploy preview  preview a deployment                       │
+│                                                              │
+│                                                              │
+╰──────────────────────────────────────────────────────────────╯
+ completion  git-checkout    5 matches  ↑↓ choose  enter accept

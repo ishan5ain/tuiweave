@@ -2,7 +2,7 @@
 
 Rules for writing code **with** gotui (apps) and **in** gotui (components).
 This file is deliberately short; recipes link into the runnable example apps
-(`examples/statusbar`, `examples/demo`, `examples/chat`, `examples/frame`, `examples/palette`, `examples/ops`, `examples/browser`). Architecture
+(`examples/statusbar`, `examples/demo`, `examples/chat`, `examples/frame`, `examples/palette`, `examples/autocomplete`, `examples/ops`, `examples/browser`). Architecture
 rationale lives in [DESIGN.md](DESIGN.md) — read it before adding a
 component; you don't need it to build an app.
 
@@ -25,6 +25,7 @@ and example before reading the detailed recipes below.
 - Toggles: `github.com/ishansain/gotui/toggle` (focusable boolean settings)
 - Buttons: `github.com/ishansain/gotui/button` (focusable single actions)
 - Command palettes: `github.com/ishansain/gotui/palette` (filtered action discovery)
+- Autocomplete: `github.com/ishansain/gotui/autocomplete` (app-owned input plus suggestions)
 - Line composition: `github.com/ishansain/gotui/line` (truncation, alignment, fill zones)
 - Testing: `github.com/ishansain/gotui/snaptest` (golden files)
 - Domain packages: `gotui/agentic/…` (markdown, chat, toolcall, diffview,
@@ -464,6 +465,43 @@ case palette.SelectedMsg:
   `activate` actions are exposed through `Inspect()` for tests and agents.
 - The palette renders an explicit `No matching commands` state and exact-width
   query/result rows. Do not pre-filter or pre-truncate actions in the app.
+
+### autocomplete
+
+Use `autocomplete` beside an app-owned `textinput` when the input should keep
+its own editing semantics while a separate suggestion window offers accepted
+values.
+
+```go
+input := textinput.New(theme)
+input.Focus()
+ac := autocomplete.New(theme)
+ac.SetItems(
+    autocomplete.Item{ID: "git-status", Value: "git status", Label: "git status", Description: "show changes"},
+)
+ac.Focus()
+
+case tea.KeyPressMsg:
+    before := input.Value()
+    input, inputCmd = input.Update(msg)
+    if input.Value() != before {
+        ac.SetQuery(input.Value())
+    }
+    ac, suggestionCmd = ac.Update(msg)
+case autocomplete.SelectedMsg:
+    input.SetValue(msg.Value)
+```
+
+- Matching is case-insensitive by prefix over `Value` or `Label`, with
+  description substring matching as a fallback. The app owns query
+  synchronization and decides how `Value` replaces text.
+- Up/down, `j`/`k`, page keys, home/end, and enter follow existing selection
+  conventions. Disabled suggestions remain visible and are skipped.
+- `SelectedMsg` carries stable ID, original index, display label, and inserted
+  value. Semantic selection, focus, navigation, clear, and activation actions
+  are available through `Inspect()`.
+- No matches render an empty suggestion window; matching rows remain exact-width
+  and fill the assigned height.
 
 ### line
 

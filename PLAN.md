@@ -344,9 +344,13 @@ daily use.
 - [x] **Cell-width audit (overlay slice):** modal/popover composition now
       preserves combining graphemes in overlaid content and shares the
       internal protection helper with `SnapCells`.
-- [ ] **Cell-width audit (remaining components):** review other text-bearing
-      components and shared helpers for wide/combining-rune behavior.
-- [ ] Autocomplete and command-palette primitives
+- [x] **Cell-width audit (remaining components):** review other text-bearing
+      components and shared helpers; ANSI/lipgloss paths are width-aware, and
+      UV consumers have grapheme-safe table, snapshot, and overlay handling.
+- [x] **Autocomplete primitive:** `gotui/autocomplete` pairs an app-owned
+      input with prefix-matched suggestions, stable IDs, disabled handling,
+      semantic actions, inspection, exact-width rendering, and a runnable
+      example.
 - [ ] More explicit mouse interaction conventions where bubbletea supports them
 - [ ] Focus scopes and nested modal/focus routing utilities
 - [ ] Extend interaction scenarios across mouse input, focus scopes, nested

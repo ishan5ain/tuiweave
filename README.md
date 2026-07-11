@@ -46,6 +46,7 @@ backend protocols, and session lifecycle.
 | `gotui/toggle` | Focusable on/off control with semantic actions and change messages |
 | `gotui/button` | Focusable single-action control with semantic activation and press messages |
 | `gotui/statusbar` | One-line status bar with themed left/right segments |
+| `gotui/autocomplete` | App-owned textinput paired with prefix-matched, stable-ID suggestions |
 | `gotui/list` | Scrolling list with selection cursor and filtering (original-index selection) |
 | `gotui/viewport` | Scrollable window over pre-rendered content (keys + mouse wheel) |
 | `gotui/textinput` | Single-line input: cell-aware cursor, placeholder, and horizontal scroll |
@@ -65,7 +66,7 @@ backend protocols, and session lifecycle.
 | `agentic/usagebar` | Model / tokens / cost / context bar with thresholds |
 | `gotui/palette` | Bounded command-palette foundation with filtering, stable action IDs, and semantic activation |
 | `gotui/line` | Style-preserving one-row truncation, alignment, fill, and left/right composition helpers |
-| `examples/…` | Runnable apps: `go run ./examples/chat` (mock agentic session), `./examples/table` (git-status mock), `./examples/frame` (composition, tabs, menu, toolbar, split panes, stacked chrome, and controls), `./examples/palette` (command palette), `./examples/ops` (non-agentic operations console), `./examples/browser` (file-browser composition), `./examples/demo`, `./examples/statusbar` |
+| `examples/…` | Runnable apps: `go run ./examples/chat` (mock agentic session), `./examples/table` (git-status mock), `./examples/frame` (composition, tabs, menu, toolbar, split panes, stacked chrome, and controls), `./examples/palette` (command palette), `./examples/autocomplete` (app-owned input plus suggestions), `./examples/ops` (non-agentic operations console), `./examples/browser` (file-browser composition), `./examples/demo`, `./examples/statusbar` |
 
 Agentic packages are important reference implementations, not the boundary of
 the library. The same primitives should support editors, dashboards, file

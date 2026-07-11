@@ -1,0 +1,3 @@
+▸ git checkout  switch branch
+  git status  show changes
+  go test  run tests
