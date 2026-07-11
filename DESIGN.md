@@ -353,7 +353,7 @@ github.com/ishansain/gotui
 ├── scrollbar/       one-column bar for anything implementing Scrollable
 ├── dialog/          modal confirm box (ResultMsg pattern)
 ├── overlay/         cell-space compositing — Place/Center (UV internal)
-├── focus/           copy-safe (index-only) tab-order manager
+├── focus/           copy-safe manager, one-modal Scope, nested Stack
 ├── agentic/          optional domain layer built on the primitives
 │   ├── markdown/    Renderer interface + glamour v2 implementation
 │   ├── chat/        cell-based streaming transcript (User/Assistant/Text cells)
@@ -367,6 +367,7 @@ github.com/ishansain/gotui
 │   ├── chat/        mock agentic session (Phase 3 exit criterion), golden-tested
 │   ├── frame/       framing/decorations/tabs/menu/toolbar/splitpane/stack/progress/toggle/button composition example, golden-tested
 │   ├── palette/     filtered command discovery and activation example, golden-tested
+│   ├── autocomplete/ app-owned input plus bounded suggestions, golden-tested
 │   ├── ops/         non-agentic operations-console pressure test, golden-tested
 │   ├── browser/     filterable file list + scrollable preview, golden-tested
 │   └── table/       git-status mock: table + diffview + scrollbars, golden-tested

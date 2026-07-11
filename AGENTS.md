@@ -1,8 +1,8 @@
 # gotui — Agent Conventions
 
 Rules for writing code **with** gotui (apps) and **in** gotui (components).
-This file is deliberately short; recipes link into the runnable example apps
-(`examples/statusbar`, `examples/demo`, `examples/chat`, `examples/frame`, `examples/palette`, `examples/autocomplete`, `examples/ops`, `examples/browser`). Architecture
+The rules layer is compact; recipes link into the runnable example apps
+(`examples/statusbar`, `examples/demo`, `examples/chat`, `examples/frame`, `examples/palette`, `examples/autocomplete`, `examples/ops`, `examples/browser`, `examples/table`). Architecture
 rationale lives in [DESIGN.md](DESIGN.md) — read it before adding a
 component; you don't need it to build an app.
 
@@ -909,7 +909,9 @@ context ≥80% styles Warning, ≥95% Danger, automatically.
 
 Order matters; see [examples/demo](examples/demo/main.go) for the full shape:
 
-1. If a modal is open, all keys go to it — nothing else.
+1. If a modal layer is open, route keys to the top layer only — nested
+   `focus.Stack` layers must not leak input to the palette or background.
+   Deliver command-produced result messages explicitly in deterministic tests.
 2. Global keys next (`ctrl+c`, `tab`/`shift+tab` + `fm.Apply`, app actions).
 3. Everything else is delegated to *all* components; blurred ones ignore
    keys themselves.

@@ -366,8 +366,10 @@ daily use.
       scrolling; ops covers focus-layer entry, nested confirmation, explicit
       cancellation-result delivery, restoration, and a narrow 36×12 layout;
       demo covers explicit dialog cancellation delivery.
-- [ ] Audit APIs and recipes for discoverability by a coding agent starting from
-      the package list and AGENTS.md
+- [x] **Agent discoverability audit:** reconcile the public package and example
+      indexes across README, DESIGN, AGENTS, and AGENT-CATALOG; add a task-to-
+      recipe workflow, clarify nested-modal/result-message routing, and ensure
+      every current public package has a discoverable catalog entry.
 
 **Exit criteria:** a small editor or command-driven console can be implemented
 with library primitives rather than application-specific editing machinery.

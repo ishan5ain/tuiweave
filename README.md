@@ -18,10 +18,10 @@ and coding agents. Applications own orchestration and domain state; gotui owns
 reusable primitives and optional domain kits. Agentic UIs are a demanding
 proving ground, not the boundary of the core library.
 
-**Status: pre-v1.** Phases 0–3.5 are complete, and Phase 4 is underway with
-framing, navigation, action, pane/stack composition, and common-control
-slices. APIs still change freely while the agent-operable foundations and
-broader composition layer evolve.
+**Status: pre-v1.** Phases 0–3.5 and the initial Phase 4 composition gate are
+complete; Phase 5 editing and interaction depth is underway. APIs still change
+freely while the agent-operable foundations and broader composition layer
+evolve.
 
 ## What's here
 
@@ -120,6 +120,11 @@ depends on a domain model or service.
 
 ## Documentation
 
+Start with [AGENT-CATALOG.md](AGENT-CATALOG.md) when you have a task: it maps
+the task to a package, recipe, and canonical example. Read the matching section
+of [AGENTS.md](AGENTS.md) before implementing; use [DESIGN.md](DESIGN.md) when
+the package boundary or ownership is unclear.
+
 - [DESIGN.md](DESIGN.md) — architecture, decision record, component contract
 - [PLAN.md](PLAN.md) — phased roadmap with exit criteria
 - [AGENTS.md](AGENTS.md) — conventions for coding agents building with gotui
@@ -130,6 +135,7 @@ depends on a domain model or service.
 ```sh
 go build ./... && go vet ./... && go test ./...
 
-# regenerate snapshot goldens after an intentional visual change:
+# regenerate snapshot goldens after an intentional visual change; packages
+# without snaptest's -update flag may report an expected flag error:
 go test ./... -update
 ```

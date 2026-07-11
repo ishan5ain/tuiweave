@@ -4,6 +4,18 @@ Use this file to route a task quickly. Read [AGENTS.md](AGENTS.md) for hard
 rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
 [PLAN.md](PLAN.md) for unfinished work.
 
+## Agent workflow
+
+1. Choose the task in **Fast routing** and identify the closest canonical
+   example.
+2. Read the matching recipe in `AGENTS.md`, then copy its layout, focus, and
+   message-routing shape before inventing new local helpers.
+3. Check the package's `Inspect()`/semantic actions when the UI will be driven
+   by tests or another agent; keep tree assembly and side effects in the app.
+4. Add or update a named `snaptest.RunScenario` checkpoint for every important
+   transition, explicitly delivering command-produced messages when needed.
+5. Run the validation loop and read any golden diff before handoff.
+
 ## Fast routing
 
 | Task | Start here |
@@ -11,6 +23,7 @@ rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
 | Build an app shell | `layout`, then `focus`, `statusbar`, `help` |
 | Build a file browser | `examples/browser`; compose `textinput`, `list`, `viewport`, `tabs`, and `focus` |
 | Compose a multi-pane reference app | `examples/ops` or `examples/browser`; follow the recipes in `AGENTS.md` |
+| Route a nested modal | `focus.Stack`; apply root-to-top `focus.Group` layers and route keys to the top layer |
 | Frame content or add semantic badges | `frame.Panel`, `frame.Divider`, `frame.Badge` |
 | Handle mouse input | `mouse.WheelDelta`, `mouse.Position`, `mouse.InBounds`; apps own click routing |
 | Navigate sibling views | `tabs`; switch app-owned content from `SelectedID()` |
@@ -20,6 +33,7 @@ rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
 | Compose two sibling panes | `splitpane.Horizontal`; callbacks receive pane widths |
 | Stack headers, sections, and footers | `stack.Vertical`; empty sections are omitted |
 | Show task completion | `progress`; passive, exact-width, status-aware indicator |
+| Show activity or key hints | `spinner` for ticks; `help` for whole key-binding hints |
 | Add an on/off setting | `toggle`; focusable, semantic, and emits `ChangedMsg` |
 | Add one focused action | `button`; enter/space and semantic activation emit `PressedMsg` |
 | Search and activate actions | `palette`; filters stable actions and emits `SelectedMsg` |
@@ -30,12 +44,14 @@ rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
 | Show long content | `viewport`; forward mouse wheels; add `scrollbar.For` |
 | Accept one line | `textinput`; the app owns Enter/submit |
 | Accept chat-style text | `textarea`; app owns Enter/send and optional Alt+Enter newline; word movement and kill/yank are built in |
+| Render markdown | `agentic/markdown`; depend on the `Renderer` interface and degrade to raw source |
+| Show model usage | `agentic/usagebar`; thresholds map context usage to semantic roles |
 | Confirm or gate an action | `dialog` or `agentic/permission` + `overlay` |
 | Stream a transcript | `agentic/chat` + `agentic/markdown`; keep cell pointers |
 | Show tool execution | `agentic/toolcall`; set ID/status and mutate output |
 | Show a diff | `agentic/diffview.Sprint` inline or `diffview.Model` in a pane |
 | Expose machine-readable UI state | `inspect` + app-owned `Group`/`Bind` tree |
-| Test an interaction sequence | `snaptest.RunScenario` + `SnapScenario` |
+| Test an interaction sequence | `snaptest.RunScenario` + `SnapScenario`; deliver emitted messages explicitly |
 
 ## Package map
 
@@ -93,8 +109,9 @@ rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
 Canonical examples are under [`examples/`](examples/): `statusbar` is the
 smallest component wiring example, `frame` demonstrates pure composition,
 `demo` composes general primitives, `table` combines selection/diff/scrolling,
-`palette` demonstrates filtered command discovery and activation, `ops` is the
-non-agentic composition pressure test, `browser` is a filterable file-list and
+`palette` demonstrates filtered command discovery and activation, `autocomplete`
+pairs an app-owned input with suggestions, `ops` is the non-agentic composition
+pressure test with nested modal routing, `browser` is a filterable file-list and
 scrollable-preview reference, and `chat` exercises streaming,
 permission, toolcall, diff, markdown, usage, and textarea behavior.
 
@@ -114,7 +131,8 @@ layout.Vertical(
 
 Route messages in this order:
 
-1. Modal open: delegate all keys to the modal.
+1. If a modal layer is open, delegate keys to the top layer only; deliver any
+   command-produced result message explicitly in deterministic tests.
 2. Global keys: quit, tab/shift-tab, app actions.
 3. Everything else: delegate to every component; blurred components ignore keys.
 
@@ -199,6 +217,11 @@ After an intentional rendering change:
 go test ./... -update
 git diff -- '**/testdata/**'
 ```
+
+The repository-wide update command reaches packages with no snapshot flag
+(`action`, `focus`, `inspect`, `layout`, and `mouse`); their
+`flag provided but not defined: -update` output is expected. Snapshot-bearing
+packages must still pass, and every changed golden must be reviewed.
 
 Run the closest example while developing:
 
