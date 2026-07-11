@@ -1,0 +1,59 @@
+## initial
+command: no
+ OPS  operations co… ctrl+p commands
+▸Services   Jobs   Audit
+╭ Actions ───────╮│╭ Operations ───╮
+│                │││               │
+│ ▸ Restart ser… │││  State      … │
+│   Drain traff… │││ ───────────── │
+│   Acknowledge… │││ Deploy ░  72% │
+│   Delete serv… │││ [x] Auto-ref… │
+│                │││ [ Open logs ] │
+│                │││               │
+╰────────────────╯│╰───────────────╯
+tab focus · ctrl+p commands · q quit
+
+## open commands
+command: no
+ OPS  operations co… ctrl+p commands
+▸Services   Jobs   Audit
+╭ Actions ───────╮│╭ Operations ───╮
+│ ╭ Command palette ─────────────╮ │
+│ │                              │ │
+│ │ ›                            │ │
+│ │ ▸ Restart service  Restart … │ │
+│ │                              │ │
+│ ╰──────────────────────────────╯ │
+│                │││               │
+╰────────────────╯│╰───────────────╯
+tab focus · ctrl+p commands · q quit
+
+## open restart confirmation
+command: no
+ OPS  operations co… ctrl+p commands
+▸S╭──────────────────────────────╮
+╭ │                              │─╮
+│ │  Restart service?            │ │
+│ │  Restarting the selected     │ │
+│ │  service may interrupt       │ │
+│ │  traffic.                    │ │
+│ │                              │ │
+│ │       Restart      Cancel    │ │
+│ │                              │ │
+╰─╰──────────────────────────────╯─╯
+tab focus · ctrl+p commands · q quit
+
+## cancel confirmation
+command: no
+ OPS  operations co… ctrl+p commands
+▸Services   Jobs   Audit
+╭ Actions ───────╮│╭ Operations ───╮
+│ ╭ Command palette ─────────────╮ │
+│ │                              │ │
+│ │ ›                            │ │
+│ │ ▸ Restart service  Restart … │ │
+│ │                              │ │
+│ ╰──────────────────────────────╯ │
+│                │││               │
+╰────────────────╯│╰───────────────╯
+tab focus · ctrl+p commands · q quit

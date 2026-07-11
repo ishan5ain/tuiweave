@@ -726,18 +726,18 @@ child layer is open:
 ```go
 m.focus = focus.NewStack(2) // root tab order
 m.focus.Push(1)             // palette layer
-m.focus.Push(2)             // confirmation layer
+m.focus.Push(0)             // dialog routes its own selection
 m.focus.Apply(
     focus.Group{&m.backgroundA, &m.backgroundB},
     focus.Group{&m.palette},
-    focus.Group{&m.confirm, &m.cancel},
+    focus.Group{}, // dialog routes its own button selection via Update
 )
 // close the top modal, then reapply all fresh addresses:
 m.focus.Pop()
 m.focus.Apply(
     focus.Group{&m.backgroundA, &m.backgroundB},
     focus.Group{&m.palette},
-    focus.Group{&m.confirm, &m.cancel},
+    focus.Group{},
 )
 ```
 
@@ -749,6 +749,9 @@ m.focus.Apply(
 - `Stack.Apply` blurs every supplied non-active group. Pass one group per layer,
   from the root outward, and keep visibility, results, and side effects in the
   application.
+- Dialogs and permission prompts can use an empty group when their own
+  `Update` method owns button/option selection; the stack still isolates the
+  background and records the nested modal depth.
 
 ### dialog + overlay (modals)
 
@@ -782,17 +785,19 @@ adding a new helper.
 
 [examples/ops](examples/ops/main.go) is the action-heavy recipe: tabs across
 the top, a menu beside a fixed-control operations panel, a command-palette
-scope, and a statusbar. Its focus order is tabs → menu → table → toggle →
-button; the palette temporarily owns focus through `focus.Scope`.
+layer, a nested restart confirmation, and a statusbar. Its focus order is tabs
+→ menu → table → toggle → button; the palette and confirmation are routed by
+`focus.Stack`.
 
 - Define one `[]action.Item` slice for actions shared by the menu and palette;
   keep IDs and disabled state in the application-owned data.
 - Use `frame.PanelContentRect` before sizing bounded children. For a panel with
   a flexible table and fixed controls, split the inner rect with
   `layout.Vertical(layout.Fill(1), layout.Len(1), ...)`.
-- Route modal/palette keys first, global keys (`tab`, `shift+tab`, quit, and
-  app commands) second, then delegate to every background component and batch
-  every returned command.
+- Route the top modal layer first, then global keys (`tab`, `shift+tab`, quit,
+  and app commands), then delegate to every background component and batch
+  every returned command. The ops scenario explicitly delivers the dialog's
+  cancellation `ResultMsg` before restoring the palette layer.
 - Build an app-owned `inspect.Group` containing the tabs, actions, operation
   table, controls, and conditional palette. Exercise focus, palette activation,
   and narrow layout with `snaptest.RunScenario` and screen goldens.

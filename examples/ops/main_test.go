@@ -5,15 +5,20 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 
+	"github.com/ishansain/gotui/dialog"
 	"github.com/ishansain/gotui/inspect"
 	"github.com/ishansain/gotui/palette"
 	"github.com/ishansain/gotui/snaptest"
 )
 
 func sized(t *testing.T) model {
+	return sizedAt(t, 80, 22)
+}
+
+func sizedAt(t *testing.T, width, height int) model {
 	t.Helper()
 	m := newModel()
-	next, _ := m.Update(tea.WindowSizeMsg{Width: 80, Height: 22})
+	next, _ := m.Update(tea.WindowSizeMsg{Width: width, Height: height})
 	return next.(model)
 }
 
@@ -54,10 +59,10 @@ func TestOpsCommandPaletteGolden(t *testing.T) {
 func TestOpsCommandPaletteActivation(t *testing.T) {
 	m := sized(t)
 	m, _ = update(t, m, tea.KeyPressMsg{Code: 'p', Mod: tea.ModCtrl})
-	if !m.paletteScope.Active() || !m.commands.Focused() || m.tabs.Focused() {
-		t.Fatalf("palette scope: active=%v palette=%v tabs=%v", m.paletteScope.Active(), m.commands.Focused(), m.tabs.Focused())
+	if !m.fm.Active() || m.fm.Depth() != 1 || !m.commands.Focused() || m.tabs.Focused() {
+		t.Fatalf("palette scope: active=%v depth=%d palette=%v tabs=%v", m.fm.Active(), m.fm.Depth(), m.commands.Focused(), m.tabs.Focused())
 	}
-	for _, r := range "restart" {
+	for _, r := range "refresh" {
 		m, _ = update(t, m, tea.KeyPressMsg{Code: r, Text: string(r)})
 	}
 	m, cmd := update(t, m, tea.KeyPressMsg{Code: tea.KeyEnter})
@@ -70,16 +75,38 @@ func TestOpsCommandPaletteActivation(t *testing.T) {
 		t.Fatal("palette closed before SelectedMsg was delivered")
 	}
 	selected, ok := cmd().(palette.SelectedMsg)
-	if !ok || selected.ID != "restart" {
-		t.Fatalf("palette message = %#v, want restart", selected)
+	if !ok || selected.ID != "refresh" {
+		t.Fatalf("palette message = %#v, want refresh", selected)
 	}
 	next, _ := m.Update(selected)
 	m = next.(model)
-	if m.showPalette || m.notice != "ran Restart service" {
+	if m.showPalette || m.notice != "ran Refresh data" {
 		t.Fatalf("palette result: open=%v notice=%q", m.showPalette, m.notice)
 	}
-	if m.paletteScope.Active() || !m.tabs.Focused() || m.commands.Focused() {
-		t.Fatalf("restored focus: active=%v tabs=%v palette=%v", m.paletteScope.Active(), m.tabs.Focused(), m.commands.Focused())
+	if m.fm.Active() || m.fm.Depth() != 0 || !m.tabs.Focused() || m.commands.Focused() {
+		t.Fatalf("restored focus: active=%v depth=%d tabs=%v palette=%v", m.fm.Active(), m.fm.Depth(), m.tabs.Focused(), m.commands.Focused())
+	}
+}
+
+func TestOpsNestedConfirmationCancellation(t *testing.T) {
+	m := sized(t)
+	m, _ = update(t, m, tea.KeyPressMsg{Code: 'p', Mod: tea.ModCtrl})
+	m, _ = update(t, m, palette.SelectedMsg{ID: "restart", Label: "Restart service"})
+	if !m.showPalette || !m.showConfirm || m.fm.Depth() != 2 || m.commands.Focused() {
+		t.Fatalf("nested confirmation: palette=%v confirm=%v depth=%d paletteFocused=%v", m.showPalette, m.showConfirm, m.fm.Depth(), m.commands.Focused())
+	}
+
+	m, cmd := update(t, m, tea.KeyPressMsg{Code: tea.KeyEscape})
+	if cmd == nil {
+		t.Fatal("confirmation escape returned no result command")
+	}
+	result, ok := cmd().(dialog.ResultMsg)
+	if !ok || result.ID != "restart" || result.OK {
+		t.Fatalf("confirmation result = %#v, want restart cancellation", result)
+	}
+	m, _ = update(t, m, result)
+	if !m.showPalette || m.showConfirm || m.fm.Depth() != 1 || !m.commands.Focused() || m.tabs.Focused() {
+		t.Fatalf("after cancellation: palette=%v confirm=%v depth=%d paletteFocused=%v tabsFocused=%v", m.showPalette, m.showConfirm, m.fm.Depth(), m.commands.Focused(), m.tabs.Focused())
 	}
 }
 
@@ -99,6 +126,19 @@ func TestOpsScenarioGolden(t *testing.T) {
 		snaptest.ScenarioStep{Name: "focus actions", Msg: tea.KeyPressMsg{Code: tea.KeyTab}},
 		snaptest.ScenarioStep{Name: "navigate action", Msg: tea.KeyPressMsg{Code: tea.KeyDown}},
 		snaptest.ScenarioStep{Name: "open commands", Msg: tea.KeyPressMsg{Code: 'p', Mod: tea.ModCtrl}},
+		snaptest.ScenarioStep{Name: "request restart", Msg: palette.SelectedMsg{ID: "restart", Label: "Restart service"}},
+		snaptest.ScenarioStep{Name: "request cancellation", Msg: tea.KeyPressMsg{Code: tea.KeyEscape}},
+		snaptest.ScenarioStep{Name: "deliver cancellation", Msg: dialog.ResultMsg{ID: "restart", OK: false}},
+		snaptest.ScenarioStep{Name: "close commands", Msg: palette.SelectedMsg{ID: "refresh", Label: "Refresh data"}},
+	)
+	snaptest.SnapScenario(t, result)
+}
+
+func TestOpsNarrowScenarioGolden(t *testing.T) {
+	result := snaptest.RunScenario(sizedAt(t, 36, 12),
+		snaptest.ScenarioStep{Name: "open commands", Msg: tea.KeyPressMsg{Code: 'p', Mod: tea.ModCtrl}},
+		snaptest.ScenarioStep{Name: "open restart confirmation", Msg: palette.SelectedMsg{ID: "restart", Label: "Restart service"}},
+		snaptest.ScenarioStep{Name: "cancel confirmation", Msg: dialog.ResultMsg{ID: "restart", OK: false}},
 	)
 	snaptest.SnapScenario(t, result)
 }

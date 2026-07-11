@@ -4,7 +4,8 @@
 //
 //	go run ./examples/ops
 //
-// tab/shift+tab cycles focus, ctrl+p opens commands, and q quits.
+// tab/shift+tab cycles focus, ctrl+p opens commands, selecting restart opens a
+// nested confirmation, and q quits.
 package main
 
 import (
@@ -17,6 +18,7 @@ import (
 	"github.com/ishansain/gotui"
 	"github.com/ishansain/gotui/action"
 	"github.com/ishansain/gotui/button"
+	"github.com/ishansain/gotui/dialog"
 	"github.com/ishansain/gotui/focus"
 	"github.com/ishansain/gotui/frame"
 	"github.com/ishansain/gotui/inspect"
@@ -45,29 +47,30 @@ type model struct {
 	autoRefresh toggle.Model
 	openLogs    button.Model
 	commands    palette.Model
+	confirm     dialog.Model
 	status      statusbar.Model
 
-	fm           focus.Manager
-	paletteScope focus.Scope
-	showPalette  bool
-	notice       string
+	fm          focus.Stack
+	showPalette bool
+	showConfirm bool
+	notice      string
 }
 
 func newModel() model {
 	theme := gotui.Dark()
 	m := model{
-		theme:        theme,
-		tabs:         tabs.New(theme),
-		actions:      menu.New(theme),
-		rows:         table.New(theme),
-		load:         progress.New(theme),
-		autoRefresh:  toggle.New(theme),
-		openLogs:     button.New(theme),
-		commands:     palette.New(theme),
-		status:       statusbar.New(theme),
-		fm:           focus.NewManager(5),
-		paletteScope: focus.NewScope(1),
-		notice:       "ready",
+		theme:       theme,
+		tabs:        tabs.New(theme),
+		actions:     menu.New(theme),
+		rows:        table.New(theme),
+		load:        progress.New(theme),
+		autoRefresh: toggle.New(theme),
+		openLogs:    button.New(theme),
+		commands:    palette.New(theme),
+		confirm:     dialog.New(theme),
+		status:      statusbar.New(theme),
+		fm:          focus.NewStack(5),
+		notice:      "ready",
 	}
 	m.tabs.SetTabs(
 		tabs.Tab{ID: "services", Label: "Services"},
@@ -89,6 +92,11 @@ func newModel() model {
 	m.autoRefresh.SetChecked(true)
 	m.openLogs.ID = "open-logs"
 	m.openLogs.SetLabel("Open logs")
+	m.confirm.ID = "restart"
+	m.confirm.Title = "Restart service?"
+	m.confirm.Body = "Restarting the selected service may interrupt traffic."
+	m.confirm.ConfirmLabel = "Restart"
+	m.confirm.CancelLabel = "Cancel"
 	paletteItems := append([]action.Item(nil), operations[:3]...)
 	paletteItems = append(paletteItems, action.Item{
 		ID: "refresh", Label: "Refresh data", Description: "Reload service state",
@@ -102,8 +110,11 @@ func newModel() model {
 }
 
 func (m *model) applyFocus() {
-	m.paletteScope.ApplyBackground(m.fm, &m.tabs, &m.actions, &m.rows, &m.autoRefresh, &m.openLogs)
-	m.paletteScope.Apply(&m.commands)
+	m.fm.Apply(
+		focus.Group{&m.tabs, &m.actions, &m.rows, &m.autoRefresh, &m.openLogs},
+		focus.Group{&m.commands},
+		focus.Group{}, // dialog routes its own button selection while visible
+	)
 }
 
 func (m *model) syncRows() {
@@ -145,9 +156,12 @@ func (m *model) syncRows() {
 }
 
 func (m *model) syncStatus() {
-	focusName := "palette"
-	if !m.showPalette {
+	focusName := "confirm"
+	switch m.fm.Depth() {
+	case 0:
 		focusName = [...]string{"tabs", "actions", "table", "refresh", "open logs"}[m.fm.Index()]
+	case 1:
+		focusName = "palette"
 	}
 	m.status.SetLeft(
 		statusbar.Segment{Text: "ops", Kind: statusbar.KindAccent},
@@ -170,10 +184,32 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.width, m.height = msg.Width, msg.Height
 		m.layout()
 	case palette.SelectedMsg:
+		if msg.ID == "restart" {
+			m.showConfirm = true
+			m.fm.Push(0)
+			m.applyFocus()
+			m.notice = "confirm restart"
+			break
+		}
 		m.showPalette = false
-		m.paletteScope.Exit(&m.fm)
+		m.fm.Pop()
 		m.applyFocus()
 		m.notice = "ran " + msg.Label
+	case dialog.ResultMsg:
+		if !m.showConfirm {
+			break
+		}
+		m.showConfirm = false
+		m.fm.Pop()
+		m.applyFocus()
+		if msg.OK {
+			m.showPalette = false
+			m.fm.Pop()
+			m.applyFocus()
+			m.notice = "restarted service"
+		} else {
+			m.notice = "restart cancelled"
+		}
 	case menu.SelectedMsg:
 		m.notice = "ran " + msg.Label
 	case toggle.ChangedMsg:
@@ -181,6 +217,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case button.PressedMsg:
 		m.notice = "opened logs"
 	case tea.KeyPressMsg:
+		if m.showConfirm {
+			m.confirm, cmd = m.confirm.Update(msg)
+			cmds = append(cmds, cmd)
+			break
+		}
 		if m.showPalette {
 			m.commands, cmd = m.commands.Update(msg)
 			cmds = append(cmds, cmd)
@@ -192,7 +233,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+p":
 			m.showPalette = true
 			m.commands.SetQuery("")
-			m.paletteScope.Enter(m.fm)
+			m.fm.Push(1)
 			m.applyFocus()
 		default:
 			beforeTab := m.tabs.SelectedID()
@@ -254,6 +295,7 @@ func (m *model) layout() {
 	paletteWidth := min(56, max(16, m.width-4))
 	paletteHeight := min(8, max(5, m.height-6))
 	m.commands.SetSize(max(1, paletteWidth-4), max(1, paletteHeight-4))
+	m.confirm.SetSize(min(44, max(1, m.width-4)), 10)
 }
 
 func (m model) render() string {
@@ -316,16 +358,19 @@ func (m model) render() string {
 		func(int) string { return bodyView },
 		func(int) string { return footerView },
 	)
-	if !m.showPalette {
-		return base
+	if m.showPalette {
+		paletteWidth := min(56, max(16, m.width-4))
+		prompt := frame.Panel(m.theme, m.commands.View(), paletteWidth, frame.PanelOptions{
+			Title:   "Command palette",
+			Focused: true,
+			Padding: 1,
+		})
+		base = overlay.Center(base, prompt)
 	}
-	paletteWidth := min(56, max(16, m.width-4))
-	prompt := frame.Panel(m.theme, m.commands.View(), paletteWidth, frame.PanelOptions{
-		Title:   "Command palette",
-		Focused: true,
-		Padding: 1,
-	})
-	return overlay.Center(base, prompt)
+	if m.showConfirm {
+		base = overlay.Center(base, m.confirm.View())
+	}
+	return base
 }
 
 func (m model) Inspect() inspect.Node {
@@ -339,6 +384,9 @@ func (m model) Inspect() inspect.Node {
 	}
 	if m.showPalette {
 		children = append(children, inspect.Bind("commands", m.commands))
+	}
+	if m.showConfirm {
+		children = append(children, inspect.Bind("confirm-restart", m.confirm))
 	}
 	return inspect.Group("ops", "application", inspect.Bounds{Width: m.width, Height: m.height}, children...)
 }

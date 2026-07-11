@@ -6,6 +6,7 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 
+	"github.com/ishansain/gotui/dialog"
 	"github.com/ishansain/gotui/inspect"
 	"github.com/ishansain/gotui/snaptest"
 )
@@ -99,14 +100,18 @@ func TestDemoInteractionScenarioGolden(t *testing.T) {
 			Name: "request cancel",
 			Msg:  tea.KeyPressMsg{Code: tea.KeyEscape},
 		},
+		snaptest.ScenarioStep{
+			Name: "deliver cancel result",
+			Msg:  dialog.ResultMsg{ID: "quit", OK: false},
+		},
 	)
 
 	final, ok := result.Model.(model)
 	if !ok {
 		t.Fatalf("scenario returned %T, want model", result.Model)
 	}
-	if !final.showDialog {
-		t.Fatal("scenario did not leave the dialog open while its result command is pending")
+	if final.showDialog {
+		t.Fatal("scenario did not close the dialog after its cancellation result")
 	}
 	snaptest.SnapScenario(t, result)
 }

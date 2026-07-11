@@ -361,9 +361,11 @@ daily use.
       `Depth`/`Index` routing state, and grouped `Apply` that blurs every
       background layer. Applications still own visibility, message routing,
       modal results, and side effects; `focus.Scope` remains the one-modal
-      convenience used by `examples/ops`.
-- [ ] Extend interaction scenarios across mouse input, focus scopes, nested
-      modals, cancellation, and narrow-terminal behavior
+      convenience for simpler applications.
+- [x] **Interaction scenario coverage:** browser covers blurred mouse-wheel
+      scrolling; ops covers focus-layer entry, nested confirmation, explicit
+      cancellation-result delivery, restoration, and a narrow 36×12 layout;
+      demo covers explicit dialog cancellation delivery.
 - [ ] Audit APIs and recipes for discoverability by a coding agent starting from
       the package list and AGENTS.md
 
