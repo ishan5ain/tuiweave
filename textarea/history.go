@@ -20,6 +20,41 @@ func (m Model) cursorPosition() position {
 	return position{row: m.row, col: m.col}
 }
 
+// CursorPosition reports the cursor's logical rune position.
+func (m Model) CursorPosition() Position {
+	return Position{Row: m.row, Column: m.col}
+}
+
+func (m Model) clampPosition(p Position) position {
+	if len(m.lines) == 0 {
+		return position{}
+	}
+	row := max(0, min(p.Row, len(m.lines)-1))
+	col := max(0, min(p.Column, len(m.lines[row])))
+	return position{row: row, col: col}
+}
+
+func beforePosition(left, right position) bool {
+	return left.row < right.row || (left.row == right.row && left.col < right.col)
+}
+
+// ReplaceRange replaces the normalized logical-rune range [start, end) with
+// value. Coordinates are clamped to the current logical buffer and reversed
+// ranges are ordered automatically. The replacement is one undoable edit and
+// leaves the cursor immediately after the inserted value.
+func (m *Model) ReplaceRange(start, end Position, value string) {
+	first := m.clampPosition(start)
+	last := m.clampPosition(end)
+	if beforePosition(last, first) {
+		first, last = last, first
+	}
+	m.resetTransientEditing()
+	m.applyEdit(func() {
+		m.setSelection(first, last)
+		m.replaceSelection(value)
+	})
+}
+
 func (m Model) selectionRange() (start, end position, ok bool) {
 	if !m.hasAnchor {
 		return position{}, position{}, false

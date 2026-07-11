@@ -2,9 +2,10 @@
 
 Rules for writing code **with** gotui (apps) and **in** gotui (components).
 The rules layer is compact; recipes link into the runnable example apps
-(`examples/statusbar`, `examples/demo`, `examples/chat`, `examples/frame`, `examples/palette`, `examples/autocomplete`, `examples/ops`, `examples/browser`, `examples/table`). Architecture
+(`examples/statusbar`, `examples/demo`, `examples/chat`, `examples/frame`, `examples/palette`, `examples/autocomplete`, `examples/textarea-autocomplete`, `examples/ops`, `examples/browser`, `examples/table`). Architecture
 rationale lives in [DESIGN.md](DESIGN.md) — read it before adding a
-component; you don't need it to build an app.
+component; you don't need it to build an app. The portable workflow contract
+is in [AGENT-CONTRACT.md](AGENT-CONTRACT.md).
 
 Use [AGENT-CATALOG.md](AGENT-CATALOG.md) to route a task to the right package
 and example before reading the detailed recipes below.
@@ -42,6 +43,23 @@ gotui is agent-friendly by design. Treat its primitives, theme roles, layout
 rules, interaction conventions, examples, and snapshots as a small design
 grammar: compose from that vocabulary first, then add a new abstraction only
 when the existing vocabulary cannot express the intended behavior cleanly.
+
+## Agent workflow and compatibility
+
+For greenfield work, inspect `go.mod`, route to the closest example, map
+components/layout/focus/state ownership, build the smallest shell, then add
+snapshot and scenario coverage. For an existing-TUI migration, inventory
+rendering/input/scrolling/focus/domain logic, classify reusable behavior versus
+application behavior versus a candidate gotui API gap, and work in vertically
+sliced tasks with explicit file ownership. Preserve behavior before changing
+visuals. For reviews, audit the hard rules, actual API names, narrow states,
+mouse bounds, modal results, and golden diffs.
+
+Pin gotui to a tagged version or commit. Do not use
+`@latest` in application instructions. A local `replace` directive is for
+development only. Application agents must report a reusable API gap with a
+minimal example and acceptance test instead of inventing a local fork; changes
+to gotui require explicit authorization.
 
 ## Hard rules
 
@@ -612,6 +630,8 @@ ta := textarea.New(theme)        // multi-line, soft-wrapped
 ta.SelectAll()                   // logical-rune selection; inspect with SelectedText()
 ta.Undo() / ta.Redo()             // bounded edit history; CanUndo/CanRedo report state
 ta.Yank()                         // insert the latest killed text; CanYank reports state
+cursor := ta.CursorPosition()    // logical row/rune-column, not display cells
+ta.ReplaceRange(cursor, cursor, "completion") // one undoable app-owned edit
 // enter inserts a newline INSIDE the textarea — for chat-style "enter sends",
 // intercept enter at the app level and offer alt+enter for newlines:
 case "enter":     /* read ta.Value(), send, ta.Reset() */
@@ -621,6 +641,11 @@ case "alt+enter": ta.InsertString("\n")
 - `textinput` and `textarea` calculate display geometry in terminal cells while
   keeping logical cursor positions rune-based. Wide and combining graphemes
   stay intact at prompt, placeholder, cursor, and wrap/window boundaries.
+- `textarea.Position` coordinates are clamped and normalized by
+  `ReplaceRange`; the replacement is one undoable edit and the cursor moves to
+  the end of the inserted logical value. Use the app-owned token range plus
+  `CursorPosition` for completion instead of reconstructing cursor state from
+  `Value()` alone. See [examples/textarea-autocomplete](examples/textarea-autocomplete/main.go).
 
 Grow a chat input with its content by re-splitting the layout after edits:
 `layout.Len(min(4, ta.ContentHeight()))` — see [examples/chat](examples/chat/main.go).

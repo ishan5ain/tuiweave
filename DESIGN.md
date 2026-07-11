@@ -36,6 +36,7 @@ proving ground, but they do not define the core API.
 | D12 | Generality | **Domain-neutral core, layered domain packages** — reusable interaction patterns stay portable |
 | D13 | Composition quality | **A small design grammar** — consistency comes from shared contracts and patterns, not visual sameness |
 | D14 | Agent operability | **Optional semantic inspection and actions** — make composed UIs understandable and controllable without owning an app framework |
+| D15 | Agent workflow | **Gotui is API truth; a portable kit owns workflow** — migrations report reusable gaps instead of forking behavior |
 
 ### D1 — Human- and agent-friendly by design
 
@@ -314,6 +315,22 @@ Action metadata follows the same ownership boundary. Components advertise local
 IDs and accept `inspect.ActionMsg`; `inspect.Bind` qualifies reported IDs with
 the application-owned node ID. Tree-level dispatch remains application-owned,
 so gotui does not invent a router or a global focus model.
+
+### D15 — API truth and portable agent workflow
+
+Gotui's repository remains the source of truth for component contracts, design
+rules, compatibility, examples, and snapshots. `AGENT-CONTRACT.md` distills
+the workflow for agents without duplicating the rulebook. The separate
+`gotui-agent-kit` repository packages greenfield, migration, and review
+playbooks, portable templates, a standard Agent Skills skill, host installation
+instructions, and a read-only audit.
+
+The workflow deliberately separates reusable library behavior from application
+orchestration. An app agent may identify a candidate gotui API gap, but it must
+report the gap with a focused example and acceptance test instead of inventing
+a local fork; changes to gotui require explicit authorization. Kit releases
+record the gotui revision they were validated against, and applications pin a
+tag or commit rather than relying on moving `@latest` instructions.
 
 ---
 

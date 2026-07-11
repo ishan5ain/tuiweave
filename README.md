@@ -51,7 +51,7 @@ backend protocols, and session lifecycle.
 | `gotui/list` | Scrolling list with selection cursor and filtering (original-index selection) |
 | `gotui/viewport` | Scrollable window over pre-rendered content (keys + mouse wheel) |
 | `gotui/textinput` | Single-line input: cell-aware cursor, placeholder, and horizontal scroll |
-| `gotui/textarea` | Multi-line input: cell-aware soft wrap, visual-row cursor, logical-rune selection, word movement/deletion, bounded undo/redo and kill/yank, content-driven height |
+| `gotui/textarea` | Multi-line input: cell-aware soft wrap, visual-row cursor, logical-rune selection, word movement/deletion, bounded undo/redo and kill/yank, content-driven height, and completion-friendly cursor/range APIs |
 | `gotui/scrollbar` | One-column scroll indicator for any `Scrollable` component |
 | `gotui/table` | Fixed + flex columns, header, row selection |
 | `gotui/help` | One-line key-hint bar |
@@ -67,7 +67,7 @@ backend protocols, and session lifecycle.
 | `agentic/usagebar` | Model / tokens / cost / context bar with thresholds |
 | `gotui/palette` | Bounded command-palette foundation with filtering, stable action IDs, and semantic activation |
 | `gotui/line` | Style-preserving one-row truncation, alignment, fill, and left/right composition helpers |
-| `examples/…` | Runnable apps: `go run ./examples/chat` (mock agentic session), `./examples/table` (git-status mock), `./examples/frame` (composition, tabs, menu, toolbar, split panes, stacked chrome, and controls), `./examples/palette` (command palette), `./examples/autocomplete` (app-owned input plus suggestions), `./examples/ops` (non-agentic operations console), `./examples/browser` (file-browser composition), `./examples/demo`, `./examples/statusbar` |
+| `examples/…` | Runnable apps: `go run ./examples/chat` (mock agentic session), `./examples/table` (git-status mock), `./examples/frame` (composition, tabs, menu, toolbar, split panes, stacked chrome, and controls), `./examples/palette` (command palette), `./examples/autocomplete` (app-owned input plus suggestions), `./examples/textarea-autocomplete` (logical-rune completion replacement), `./examples/ops` (non-agentic operations console), `./examples/browser` (file-browser composition), `./examples/demo`, `./examples/statusbar` |
 
 Agentic packages are important reference implementations, not the boundary of
 the library. The same primitives should support editors, dashboards, file
@@ -128,7 +128,9 @@ the package boundary or ownership is unclear.
 - [DESIGN.md](DESIGN.md) — architecture, decision record, component contract
 - [PLAN.md](PLAN.md) — phased roadmap with exit criteria
 - [AGENTS.md](AGENTS.md) — conventions for coding agents building with gotui
+- [AGENT-CONTRACT.md](AGENT-CONTRACT.md) — concise portable greenfield, migration, review, and compatibility contract
 - [AGENT-CATALOG.md](AGENT-CATALOG.md) — compact package and task routing index
+- [gotui-agent-kit](https://github.com/ishansain/gotui-agent-kit) — portable playbooks, Agent Skills package, templates, and read-only audit tooling
 
 ## Development
 
