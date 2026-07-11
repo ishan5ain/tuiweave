@@ -526,6 +526,8 @@ tb.SetRows([]string{"1", "api"})
 - Viewport handles `tea.MouseWheelMsg` even when blurred; forward wheel
   events to it unconditionally.
 - Selection styling uses `SelectionBg/Fg` only while focused.
+- Table columns shrink to the assigned width when fixed columns compete for
+  space; wide and combining cell content is truncated by visible cell width.
 
 ### textinput / textarea
 

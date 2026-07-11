@@ -57,7 +57,7 @@ rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
 |---|---|---|
 | `statusbar` | Rendering one-line left/right segments | Drops right segments, then truncates left when narrow |
 | `list` | Selecting one-line items | Filtering preserves original-index `Selected()` |
-| `table` | Selecting rows with columns | Header and rule consume two rows |
+| `table` | Selecting rows with columns | Header and rule consume two rows; fixed/flex columns remain within the assigned width |
 | `viewport` | Scrolling pre-rendered content | Mouse wheel works even when blurred |
 | `textinput` | Editing one line | Cell-aware prompt, placeholder, cursor, and horizontal window; Enter is not handled |
 | `textarea` | Editing wrapped/multiline text | Logical-rune selection, cell-aware wrapping, bounded undo/redo, word movement/deletion, and a bounded kill/yank ring; Enter inserts a newline |

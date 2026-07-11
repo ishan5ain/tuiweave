@@ -335,6 +335,9 @@ daily use.
 - [x] **Cell-width audit (modal slice):** dialog and permission panels now
       preserve their assigned outer width and clamp wide titles, bodies,
       options, provenance, and buttons to the inner cell budget.
+- [x] **Cell-width audit (table slice):** fixed and flexible column allocation
+      now remains within narrow assigned widths, including wide and combining
+      cell content and multiple flexible columns.
 - [ ] **Cell-width audit (remaining components):** review other text-bearing
       components and shared helpers for wide/combining-rune behavior.
 - [ ] Autocomplete and command-palette primitives

@@ -166,33 +166,54 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 }
 
 // colWidths resolves fixed and flexible column widths for the current box,
-// accounting for a one-space gap between columns.
+// accounting for a one-space gap between columns. Fixed columns keep their
+// requested widths while they fit; at narrow widths they shrink from right to
+// left before flexible columns receive any space.
 func (m Model) colWidths() []int {
 	widths := make([]int, len(m.cols))
-	gaps := max(0, len(m.cols)-1)
-	remaining := m.width - gaps
+	content := max(0, m.width-max(0, len(m.cols)-1))
+	fixed := 0
 	flex := 0
 	for i, c := range m.cols {
 		if c.Width > 0 {
 			widths[i] = c.Width
-			remaining -= c.Width
+			fixed += c.Width
 		} else {
 			flex++
 		}
 	}
+
+	if fixed > content {
+		remaining := content
+		for i, c := range m.cols {
+			if c.Width <= 0 {
+				continue
+			}
+			widths[i] = min(c.Width, remaining)
+			remaining -= widths[i]
+		}
+		return widths
+	}
+
 	if flex > 0 {
-		share := max(1, remaining/flex)
+		remaining := content - fixed
+		share, extra := remaining/flex, remaining%flex
 		for i, c := range m.cols {
 			if c.Width == 0 {
 				widths[i] = share
+				if extra > 0 {
+					widths[i]++
+					extra--
+				}
 			}
 		}
 	}
 	return widths
 }
 
-func renderLine(cells []string, widths []int) string {
+func renderLine(cells []string, widths []int, totalWidth int) string {
 	parts := make([]string, len(widths))
+	used := 0
 	for i, w := range widths {
 		cell := ""
 		if i < len(cells) {
@@ -200,8 +221,22 @@ func renderLine(cells []string, widths []int) string {
 		}
 		cell = ansi.Truncate(cell, w, "…")
 		parts[i] = cell + strings.Repeat(" ", max(0, w-ansi.StringWidth(cell)))
+		used += w
 	}
-	return strings.Join(parts, " ")
+
+	gaps := min(max(0, len(parts)-1), max(0, totalWidth-used))
+	var b strings.Builder
+	for i, part := range parts {
+		b.WriteString(part)
+		if i < gaps {
+			b.WriteByte(' ')
+			used++
+		}
+	}
+	if used < totalWidth {
+		b.WriteString(strings.Repeat(" ", totalWidth-used))
+	}
+	return b.String()
 }
 
 // View renders the header, a rule, and the visible rows. The selected row is
@@ -217,7 +252,7 @@ func (m Model) View() string {
 		titles[i] = c.Title
 	}
 	out := make([]string, 0, m.height)
-	out = append(out, m.headerStyle.Render(renderLine(titles, widths)))
+	out = append(out, m.headerStyle.Render(renderLine(titles, widths, m.width)))
 	if m.height > 1 {
 		out = append(out, m.ruleStyle.Render(strings.Repeat("─", m.width)))
 	}
@@ -228,7 +263,7 @@ func (m Model) View() string {
 			out = append(out, strings.Repeat(" ", m.width))
 			continue
 		}
-		line := renderLine(m.rows[idx], widths)
+		line := renderLine(m.rows[idx], widths, m.width)
 		if idx == m.sel && m.focused {
 			out = append(out, m.selectedStyle.Render(line))
 		} else {

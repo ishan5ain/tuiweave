@@ -84,3 +84,41 @@ func TestTableEmpty(t *testing.T) {
 	tb, _ = tb.Update(keyPress("j")) // must not panic
 	_ = tb.View()
 }
+
+func TestTableNarrowWideContentStaysWithinBox(t *testing.T) {
+	for width := 1; width <= 32; width++ {
+		tb := New(gotui.Dark())
+		tb.SetSize(width, 5)
+		tb.SetColumns(
+			Column{Title: "識別子", Width: 8},
+			Column{Title: "説明"},
+			Column{Title: "状態", Width: 8},
+			Column{Title: "メモ"},
+		)
+		tb.SetRows(
+			[]string{"界界界", "サービスの説明", "运行中", "👍👍"},
+			[]string{"é", "combining text", "ready", "ok"},
+		)
+
+		for i, line := range strings.Split(tb.View(), "\n") {
+			if got := lipgloss.Width(line); got != width {
+				t.Fatalf("width %d line %d rendered as %d: %q", width, i+1, got, line)
+			}
+		}
+	}
+
+	tb := New(gotui.Dark())
+	tb.SetSize(8, 5)
+	tb.SetColumns(
+		Column{Title: "識別子", Width: 8},
+		Column{Title: "説明"},
+		Column{Title: "状態", Width: 8},
+		Column{Title: "メモ"},
+	)
+	tb.SetRows(
+		[]string{"界界界", "サービスの説明", "运行中", "👍👍"},
+		[]string{"é", "combining text", "ready", "ok"},
+	)
+	snaptest.Snap(t, tb.View())
+	snaptest.SnapCells(t, tb.View(), snaptest.WithRoles(gotui.Dark()))
+}
