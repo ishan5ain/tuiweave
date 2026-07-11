@@ -323,6 +323,9 @@ daily use.
 - [x] **Cell-width handling (initial textarea slice):** use grapheme clusters
       and terminal-cell widths for textarea wrapping, cursor columns, padding,
       placeholders, and exact-width rendering.
+- [x] **Cell-width handling (textinput audit slice):** use visible cell widths
+      for prompt and placeholder budgets, preserve grapheme clusters in the
+      horizontal cursor window, and keep wide/combining content within bounds.
 - [ ] **Cell-width audit (remaining components):** review other text-bearing
       components and shared helpers for wide/combining-rune behavior.
 - [ ] Autocomplete and command-palette primitives

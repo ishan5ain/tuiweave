@@ -59,7 +59,7 @@ rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
 | `list` | Selecting one-line items | Filtering preserves original-index `Selected()` |
 | `table` | Selecting rows with columns | Header and rule consume two rows |
 | `viewport` | Scrolling pre-rendered content | Mouse wheel works even when blurred |
-| `textinput` | Editing one line | Enter is not handled; read `Value()` in the app |
+| `textinput` | Editing one line | Cell-aware prompt, placeholder, cursor, and horizontal window; Enter is not handled |
 | `textarea` | Editing wrapped/multiline text | Logical-rune selection, cell-aware wrapping, bounded undo/redo, word movement, and a bounded kill/yank ring; Enter inserts a newline |
 | `help` | Showing key hints | Drops whole hints from the right when narrow |
 | `spinner` | Showing activity | Intrinsic-size; start with `Tick`, forward `TickMsg` |

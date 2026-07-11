@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	tea "charm.land/bubbletea/v2"
+	"github.com/charmbracelet/x/ansi"
 
 	"github.com/ishansain/gotui"
 	"github.com/ishansain/gotui/snaptest"
@@ -103,5 +104,30 @@ func TestHomeShowsStart(t *testing.T) {
 	ti := newFocused(12)
 	ti = typeString(ti, "0123456789ABCDEF")
 	ti, _ = ti.Update(key("home"))
+	snaptest.Snap(t, ti.View())
+}
+
+func TestCellWidthRendering(t *testing.T) {
+	ti := newFocused(8)
+	ti.SetValue("界abcd")
+	ti.pos = 0
+	if got := ansi.StringWidth(ansi.Strip(ti.View())); got > ti.width {
+		t.Fatalf("wide cursor view width = %d, want <= %d", got, ti.width)
+	}
+
+	ti.SetSize(3, 1)
+	ti.SetValue("界")
+	ti.pos = 0
+	if got := ansi.StringWidth(ansi.Strip(ti.View())); got != ti.width {
+		t.Fatalf("narrow wide-rune view width = %d, want %d", got, ti.width)
+	}
+
+	ti.SetSize(8, 1)
+	ti.Prompt = "界"
+	ti.SetValue("e\u0301abcd")
+	ti.pos = 1 // inside the combining grapheme; the whole cluster stays styled
+	if got := ansi.StringWidth(ansi.Strip(ti.View())); got > ti.width {
+		t.Fatalf("combining cursor view width = %d, want <= %d", got, ti.width)
+	}
 	snaptest.Snap(t, ti.View())
 }

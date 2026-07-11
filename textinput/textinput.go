@@ -1,5 +1,5 @@
 // Package textinput provides a single-line text input with a prompt,
-// placeholder, cursor, and horizontal scrolling.
+// placeholder, cursor, and grapheme-aware horizontal scrolling.
 package textinput
 
 import (
@@ -7,6 +7,7 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 	lipgloss "charm.land/lipgloss/v2"
+	"github.com/charmbracelet/x/ansi"
 
 	"github.com/ishansain/gotui"
 )
@@ -147,57 +148,51 @@ func (m Model) View() string {
 	if m.width <= 0 || m.height <= 0 {
 		return ""
 	}
-	prompt := m.promptStyle.Render(m.Prompt)
-	avail := m.width - len([]rune(m.Prompt))
+	prompt := ansi.Truncate(m.Prompt, m.width, "")
+	promptWidth := ansi.StringWidth(prompt)
+	avail := m.width - promptWidth
 	if avail <= 0 {
-		return prompt
+		return m.promptStyle.Render(prompt)
 	}
+	prompt = m.promptStyle.Render(prompt)
 
 	if len(m.value) == 0 {
 		return prompt + m.renderPlaceholder(avail)
 	}
 
-	// Keep the cursor inside the visible window. The cursor may sit one past
-	// the last rune, so the window holds avail-1 runes when focused. The
-	// window is derived from the cursor each render: content start until the
-	// cursor passes the right edge, then cursor pinned at the right edge.
-	visible := avail
-	if m.focused {
-		visible--
-	}
-	off := max(0, m.pos-visible)
-	off = min(off, max(0, len(m.value)-visible))
-
-	end := min(len(m.value), off+visible)
+	start, end, focusStart, focusEnd, focusVisible := windowForCursor(m.value, m.pos, avail, m.focused)
 	var b strings.Builder
 	b.WriteString(prompt)
 	if m.focused {
-		before := m.value[off:m.pos]
-		b.WriteString(m.textStyle.Render(string(before)))
-		if m.pos < len(m.value) {
-			b.WriteString(m.cursorStyle.Render(string(m.value[m.pos])))
-			if m.pos+1 <= end {
-				b.WriteString(m.textStyle.Render(string(m.value[m.pos+1 : end])))
-			}
+		if focusVisible && focusStart < focusEnd {
+			b.WriteString(m.textStyle.Render(string(m.value[start:focusStart])))
+			b.WriteString(m.cursorStyle.Render(string(m.value[focusStart:focusEnd])))
+			b.WriteString(m.textStyle.Render(string(m.value[focusEnd:end])))
 		} else {
-			b.WriteString(m.cursorStyle.Render(" "))
+			b.WriteString(m.textStyle.Render(string(m.value[start:end])))
+			if m.pos >= len(m.value) || !focusVisible {
+				b.WriteString(m.cursorStyle.Render(" "))
+			}
 		}
 	} else {
-		b.WriteString(m.textStyle.Render(string(m.value[off:end])))
+		b.WriteString(m.textStyle.Render(string(m.value[start:end])))
 	}
 	return b.String()
 }
 
 func (m Model) renderPlaceholder(avail int) string {
 	ph := []rune(m.Placeholder)
-	if len(ph) > avail {
-		ph = ph[:avail]
-	}
 	if !m.focused {
-		return m.placeholderStyle.Render(string(ph))
+		return m.placeholderStyle.Render(ansi.Truncate(string(ph), avail, ""))
 	}
-	if len(ph) == 0 {
+	if len(ph) == 0 || avail <= 0 {
 		return m.cursorStyle.Render(" ")
 	}
-	return m.cursorStyle.Render(string(ph[0])) + m.placeholderStyle.Render(string(ph[1:]))
+	clusters := clustersOf(ph)
+	if len(clusters) == 0 || clusters[0].width > avail {
+		return m.cursorStyle.Render(" ")
+	}
+	first := clusters[0]
+	remaining := ansi.Truncate(string(ph[first.end:]), avail-first.width, "")
+	return m.cursorStyle.Render(string(ph[first.start:first.end])) + m.placeholderStyle.Render(remaining)
 }

@@ -545,6 +545,10 @@ case "enter":     /* read ta.Value(), send, ta.Reset() */
 case "alt+enter": ta.InsertString("\n")
 ```
 
+- `textinput` and `textarea` calculate display geometry in terminal cells while
+  keeping logical cursor positions rune-based. Wide and combining graphemes
+  stay intact at prompt, placeholder, cursor, and wrap/window boundaries.
+
 Grow a chat input with its content by re-splitting the layout after edits:
 `layout.Len(min(4, ta.ContentHeight()))` — see [examples/chat](examples/chat/main.go).
 
