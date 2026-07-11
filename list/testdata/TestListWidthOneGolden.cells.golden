@@ -1,0 +1,4 @@
+1: "▎" [fg=Text]
+2: " " [fg=Text]
+3: "▌" [fg=Accent bg=SelectionBg]
+4: " " [fg=Text]

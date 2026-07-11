@@ -5,12 +5,11 @@ Updated: 2026-07-10
 ## Current state
 
 - Branch: `main`
-- HEAD: `d427eb3` (`docs: agent discoverability audit — reconcile indexes and add workflow`)
-- `main` is synchronized with `origin/main`.
+- HEAD at handoff creation: `b2c4486` (`HANDOFF: update session continuity record after 15-commit Phase 5 delivery`)
+- At handoff creation, `main` was one local commit ahead of `origin/main`.
 - Go package targets: 46 total — root, 29 reusable top-level packages, 6
   agentic packages, 1 internal package, and 9 examples.
-- `HANDOFF.md` is currently an untracked workspace file; preserve it unless
-  the user asks for repository housekeeping.
+- `HANDOFF.md` is tracked as the session-continuity record.
 
 The north star remains: a small, composable, domain-neutral Go vocabulary for
 terminal interfaces that is predictable for humans and coding agents. gotui

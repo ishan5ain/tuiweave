@@ -91,6 +91,21 @@ func TestTypeAndValue(t *testing.T) {
 	snaptest.Snap(t, ta.View())
 }
 
+func TestShiftAndLockModifiedPrintableText(t *testing.T) {
+	ta := newFocused(20, 3)
+	for _, msg := range []tea.KeyPressMsg{
+		{Code: 'a', Text: "A", Mod: tea.ModShift},
+		{Code: 'b', Text: "B", Mod: tea.ModCapsLock},
+		{Code: '1', Text: "!", Mod: tea.ModShift | tea.ModNumLock},
+		{Code: 'x', Text: "x", Mod: tea.ModAlt},
+	} {
+		ta, _ = ta.Update(msg)
+	}
+	if got := ta.Value(); got != "AB!" {
+		t.Fatalf("modified printable input = %q, want %q", got, "AB!")
+	}
+}
+
 func TestSoftWrapGolden(t *testing.T) {
 	ta := newFocused(12, 4) // wrap width 10
 	ta = typeString(ta, "abcdefghij0123456789xyz")

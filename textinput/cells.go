@@ -40,6 +40,26 @@ func cellWidth(runes []rune) int {
 	return ansi.StringWidth(string(runes))
 }
 
+func previousClusterStart(value []rune, pos int) int {
+	start := 0
+	for _, cluster := range clustersOf(value) {
+		if cluster.start >= pos {
+			break
+		}
+		start = cluster.start
+	}
+	return start
+}
+
+func nextClusterEnd(value []rune, pos int) int {
+	for _, cluster := range clustersOf(value) {
+		if cluster.end > pos {
+			return cluster.end
+		}
+	}
+	return len(value)
+}
+
 // windowForCursor returns a cluster-aligned visible range. Space before the
 // cursor is preferred, matching the usual single-line input behavior; when
 // the cursor is near the beginning, remaining cells are filled to the right.

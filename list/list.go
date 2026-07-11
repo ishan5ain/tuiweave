@@ -62,12 +62,12 @@ func (m *Model) SetSize(width, height int) {
 // SetItems replaces the items, reapplying any active filter and clamping the
 // selection.
 func (m *Model) SetItems(items ...string) {
-	m.items = items
+	m.items = append([]string(nil), items...)
 	m.applyFilter(m.Selected())
 }
 
 // Items returns the original, unfiltered items.
-func (m Model) Items() []string { return m.items }
+func (m Model) Items() []string { return append([]string(nil), m.items...) }
 
 // Len returns the number of original items.
 func (m Model) Len() int { return len(m.items) }
@@ -255,6 +255,16 @@ func (m Model) View() string {
 }
 
 func (m Model) renderItem(pos int) string {
+	if m.width == 1 {
+		if pos == m.pos && m.focused {
+			return m.markerStyle.Render("▌")
+		}
+		marker := " "
+		if pos == m.pos {
+			marker = "▎"
+		}
+		return m.itemStyle.Render(marker)
+	}
 	text := ansi.Truncate(m.items[m.origIndex(pos)], m.width-2, "…")
 	pad := strings.Repeat(" ", max(0, m.width-2-ansi.StringWidth(text)))
 

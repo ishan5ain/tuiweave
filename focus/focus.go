@@ -58,7 +58,7 @@ func (m Manager) Index() int { return m.idx }
 // current addresses (i.e. call this inside Update, after mutating focus).
 func (m Manager) Apply(items ...Focusable) {
 	for i, item := range items {
-		if i == m.idx {
+		if m.n > 0 && i == m.idx {
 			item.Focus()
 		} else {
 			item.Blur()

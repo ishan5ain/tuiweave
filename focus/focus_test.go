@@ -70,7 +70,20 @@ func TestManagerEmpty(t *testing.T) {
 	fm.Next() // must not panic
 	fm.Prev()
 	fm.Set(3)
-	fm.Apply()
+	a, b := &fake{focused: true}, &fake{focused: true}
+	fm.Apply(a, b)
+	if a.focused || b.focused {
+		t.Fatalf("empty manager retained focus: a=%v b=%v", a.focused, b.focused)
+	}
+}
+
+func TestZeroValueStackBlursRootGroup(t *testing.T) {
+	a, b := &fake{focused: true}, &fake{focused: true}
+	var stack Stack
+	stack.Apply(Group{a, b})
+	if a.focused || b.focused {
+		t.Fatalf("zero stack retained focus: a=%v b=%v", a.focused, b.focused)
+	}
 }
 
 func TestScopeRestoresParentAndIsolatesBackground(t *testing.T) {

@@ -142,11 +142,11 @@ app code.
 glamour v2 with all theme roles mapped into its stylesheet (including chroma
 syntax-highlighting colors), a renderer cached per wrap width, and streaming
 handled by re-rendering the in-progress message — the chat assistant cell
-caches by (source length, width) today; the roadmap replaces that with an
-explicit source revision so replacements cannot reuse a same-length render.
+caches by explicit source revision and width so replacements cannot reuse a
+same-length render.
 `Sprint`
 degrades to raw source on error; transcripts must not fail on bad markdown.
-The revision must change for replacements as well as appends; append-only
+The revision changes for replacements as well as appends; append-only
 streaming is a useful optimization, not a hidden correctness requirement.
 
 ### D8 — Domain packages live above generic primitives

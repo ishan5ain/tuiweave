@@ -1,3 +1,3 @@
 1: "▸ git checkout  switch branch         " [fg=Text bg=SelectionBg]
-2: "  git status  show changes            " [fg=Text bg=SurfaceRaised]
+2: "  git status  " [fg=Text bg=SurfaceRaised] | "show changes" [fg=TextMuted bg=SurfaceRaised] | "            " [fg=Text bg=SurfaceRaised]
 3: "  go test  run tests                  " [fg=TextFaint bg=SurfaceRaised]

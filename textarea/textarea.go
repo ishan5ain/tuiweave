@@ -420,7 +420,8 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 		return m, nil
 	}
 
-	if key.Text != "" && key.Mod == 0 {
+	commandMods := tea.ModCtrl | tea.ModAlt | tea.ModMeta | tea.ModSuper | tea.ModHyper
+	if key.Text != "" && key.Mod&commandMods == 0 {
 		m.InsertString(key.Text) // handles pasted newlines too
 		return m, nil
 	}

@@ -2,9 +2,11 @@ package list
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 
 	tea "charm.land/bubbletea/v2"
+	"charm.land/lipgloss/v2"
 
 	"github.com/ishansain/gotui"
 	"github.com/ishansain/gotui/snaptest"
@@ -84,6 +86,35 @@ func TestListTruncatesLongItems(t *testing.T) {
 	l.SetItems("a very long item name", "short")
 	l.Focus()
 	snaptest.Snap(t, l.View())
+}
+
+func TestListWidthOneGolden(t *testing.T) {
+	views := make([]string, 0, 2)
+	for _, focused := range []bool{false, true} {
+		l := newTestList(1, 2, 2)
+		if focused {
+			l.Focus()
+		}
+		for i, row := range strings.Split(l.View(), "\n") {
+			if got := lipgloss.Width(row); got != 1 {
+				t.Fatalf("focused=%v row %d width=%d, want 1", focused, i, got)
+			}
+		}
+		views = append(views, l.View())
+	}
+	snaptest.SnapCells(t, strings.Join(views, "\n"), snaptest.WithRoles(gotui.Dark()))
+}
+
+func TestItemsAreDefensiveCopies(t *testing.T) {
+	items := []string{"alpha", "beta"}
+	l := New(gotui.Dark())
+	l.SetItems(items...)
+	items[0] = "changed by caller"
+	got := l.Items()
+	got[1] = "changed through getter"
+	if l.SelectedItem() != "alpha" || l.Items()[1] != "beta" {
+		t.Fatalf("list items were mutated through shared storage: %q", l.Items())
+	}
 }
 
 func TestListBlurredIgnoresKeys(t *testing.T) {

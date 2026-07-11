@@ -291,8 +291,13 @@ func (m Model) renderItem(position int) string {
 		}
 	}
 	used := 2 + ansi.StringWidth(label) + gap + ansi.StringWidth(description)
-	line := marker + label + strings.Repeat(" ", gap) + description + strings.Repeat(" ", max(0, m.width-used))
-	return m.styleFor(position, item).Render(line)
+	padding := strings.Repeat(" ", max(0, m.width-used))
+	if item.Disabled || position == m.pos {
+		line := marker + label + strings.Repeat(" ", gap) + description + padding
+		return m.styleFor(position, item).Render(line)
+	}
+	return m.itemStyle.Render(marker+label+strings.Repeat(" ", gap)) +
+		m.descriptionStyle.Render(description) + m.itemStyle.Render(padding)
 }
 
 func (m Model) styleFor(position int, item Item) lipgloss.Style {

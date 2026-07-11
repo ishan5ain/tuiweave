@@ -49,6 +49,21 @@ func TestTypingAndValue(t *testing.T) {
 	snaptest.SnapCells(t, ti.View(), snaptest.WithRoles(gotui.Dark()))
 }
 
+func TestShiftAndLockModifiedPrintableText(t *testing.T) {
+	ti := newFocused(30)
+	for _, msg := range []tea.KeyPressMsg{
+		{Code: 'a', Text: "A", Mod: tea.ModShift},
+		{Code: 'b', Text: "B", Mod: tea.ModCapsLock},
+		{Code: '1', Text: "!", Mod: tea.ModShift | tea.ModNumLock},
+		{Code: 'x', Text: "x", Mod: tea.ModCtrl},
+	} {
+		ti, _ = ti.Update(msg)
+	}
+	if got := ti.Value(); got != "AB!" {
+		t.Fatalf("modified printable input = %q, want %q", got, "AB!")
+	}
+}
+
 func TestEditingKeys(t *testing.T) {
 	ti := newFocused(30)
 	ti = typeString(ti, "abc def")
@@ -130,4 +145,29 @@ func TestCellWidthRendering(t *testing.T) {
 		t.Fatalf("combining cursor view width = %d, want <= %d", got, ti.width)
 	}
 	snaptest.Snap(t, ti.View())
+}
+
+func TestEditingUsesGraphemeBoundaries(t *testing.T) {
+	ti := newFocused(20)
+	ti.SetValue("e\u0301x")
+
+	ti, _ = ti.Update(key("left"))
+	if ti.pos != 2 {
+		t.Fatalf("left from end moved to rune %d, want 2", ti.pos)
+	}
+	ti, _ = ti.Update(key("left"))
+	if ti.pos != 0 {
+		t.Fatalf("left split combining grapheme at rune %d", ti.pos)
+	}
+	ti, _ = ti.Update(tea.KeyPressMsg{Code: tea.KeyDelete})
+	if got := ti.Value(); got != "x" {
+		t.Fatalf("delete combining grapheme = %q, want x", got)
+	}
+
+	ti.SetValue("e\u0301x")
+	ti, _ = ti.Update(key("left"))
+	ti, _ = ti.Update(key("backspace"))
+	if got := ti.Value(); got != "x" {
+		t.Fatalf("backspace combining grapheme = %q, want x", got)
+	}
 }

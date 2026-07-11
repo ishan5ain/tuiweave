@@ -92,7 +92,8 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 		return m, nil
 	}
 
-	if key.Text != "" && key.Mod == 0 {
+	commandMods := tea.ModCtrl | tea.ModAlt | tea.ModMeta | tea.ModSuper | tea.ModHyper
+	if key.Text != "" && key.Mod&commandMods == 0 {
 		m.insert([]rune(key.Text))
 		return m, nil
 	}
@@ -100,17 +101,19 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 	switch key.String() {
 	case "backspace":
 		if m.pos > 0 {
-			m.value = append(m.value[:m.pos-1], m.value[m.pos:]...)
-			m.pos--
+			start := previousClusterStart(m.value, m.pos)
+			m.value = append(m.value[:start], m.value[m.pos:]...)
+			m.pos = start
 		}
 	case "delete":
 		if m.pos < len(m.value) {
-			m.value = append(m.value[:m.pos], m.value[m.pos+1:]...)
+			end := nextClusterEnd(m.value, m.pos)
+			m.value = append(m.value[:m.pos], m.value[end:]...)
 		}
 	case "left":
-		m.pos = max(0, m.pos-1)
+		m.pos = previousClusterStart(m.value, m.pos)
 	case "right":
-		m.pos = min(len(m.value), m.pos+1)
+		m.pos = nextClusterEnd(m.value, m.pos)
 	case "home", "ctrl+a":
 		m.pos = 0
 	case "end", "ctrl+e":
