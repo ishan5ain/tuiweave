@@ -93,7 +93,9 @@ derive their lipgloss styles exclusively from roles and never touch raw colors.
   Radix, shadcn saturate their training data) — "destructive actions use
   `Danger`" is far more reliable than choosing among 40 color fields.
 
-Roles live in the root `tuiweave` package (see §3). Component-level overrides,
+Roles and the discoverable built-in preset catalog live in the root `tuiweave`
+package (see §3). Presets are complete mappings onto the same semantic roles;
+they do not add per-preset or per-component style fields. Component-level overrides,
 if ever needed, arrive later as an escape hatch (`WithStyle(fn)`), not as the
 primary API.
 
@@ -346,7 +348,7 @@ a way to catch violations (D9→D10). Each choice load-bears for the others.
 
 ```
 github.com/ishan5ain/tuiweave
-├── tuiweave            (root) Theme roles, Dark/Light defaults
+├── tuiweave            (root) Theme roles and built-in preset catalog
 ├── layout/          facade over ultraviolet/layout: Rect, constraints,
 │                    Vertical/Horizontal, Sizable, Apply
 ├── mouse/           normalized wheel deltas and app-owned hit-testing helpers
@@ -453,6 +455,12 @@ Defined in the root package (`tuiweave.Theme`), all fields `image/color.Color`
 18 roles. Adding a role is an API event requiring justification that no
 existing role covers the semantics — this is the mechanism that keeps the
 theme API from growing per-component.
+
+The root package also exposes stable preset metadata and lookup by ID. Presets
+include the original Dark and Light defaults plus curated Dracula, Nord,
+Catppuccin, and Gruvbox variants. Components still receive a plain `Theme` and
+derive styles at construction time; runtime theme selection and component
+reconstruction remain application-owned.
 
 ## 6. Dependency policy
 

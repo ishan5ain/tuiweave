@@ -5,6 +5,9 @@ before v1, a minor release may contain breaking changes when clearly called out.
 
 ## [Unreleased]
 
+- Added a discoverable catalog of eight built-in theme presets with stable IDs,
+  lookup, named constructors, and a cycling statusbar example.
+
 ## [0.1.0] - 2026-07-11
 
 Initial public release, including semantic themes; constraint layout; frames,

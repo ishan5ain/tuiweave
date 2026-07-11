@@ -6,7 +6,7 @@
 //
 //	go run ./examples/statusbar
 //
-// Press t to toggle the theme, q to quit.
+// Press t to cycle theme presets, q to quit.
 package main
 
 import (
@@ -22,23 +22,21 @@ import (
 )
 
 type model struct {
-	dark          bool
+	preset        int
 	width, height int
 	body          layout.Rect
 	status        statusbar.Model
 }
 
 func newModel() model {
-	m := model{dark: true}
+	m := model{}
 	m.rebuildStatusbar()
 	return m
 }
 
 func (m model) theme() tuiweave.Theme {
-	if m.dark {
-		return tuiweave.Dark()
-	}
-	return tuiweave.Light()
+	theme, _ := tuiweave.ThemeForPreset(tuiweave.Presets()[m.preset].ID)
+	return theme
 }
 
 // rebuildStatusbar recreates the bar from the current theme and state.
@@ -51,10 +49,7 @@ func (m *model) rebuildStatusbar() {
 		statusbar.Segment{Text: "tuiweave", Kind: statusbar.KindAccent},
 		statusbar.Segment{Text: "examples/statusbar", Kind: statusbar.KindNormal},
 	)
-	themeName := "light"
-	if m.dark {
-		themeName = "dark"
-	}
+	themeName := tuiweave.Presets()[m.preset].Name
 	sb.SetRight(
 		statusbar.Segment{Text: "t: theme", Kind: statusbar.KindInfo},
 		statusbar.Segment{Text: themeName, Kind: statusbar.KindMuted},
@@ -80,7 +75,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "q", "ctrl+c":
 			return m, tea.Quit
 		case "t":
-			m.dark = !m.dark
+			m.preset = (m.preset + 1) % len(tuiweave.Presets())
 			m.rebuildStatusbar()
 		}
 	}
@@ -95,7 +90,7 @@ func (m model) View() tea.View {
 		Padding(1, 2).
 		Background(theme.Surface).
 		Foreground(theme.Text).
-		Render("tuiweave statusbar demo\n\nPress t to toggle the theme, q to quit.")
+		Render("tuiweave statusbar demo\n\nPress t to cycle theme presets, q to quit.")
 	v := tea.NewView(lipgloss.JoinVertical(lipgloss.Left, body, m.status.View()))
 	v.AltScreen = true
 	return v
