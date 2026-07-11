@@ -12,6 +12,7 @@ import (
 	"github.com/charmbracelet/x/ansi"
 
 	"github.com/ishansain/gotui"
+	"github.com/ishansain/gotui/mouse"
 )
 
 // Model is a viewport component. Create one with New.
@@ -105,13 +106,6 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 		return next, nil
 	}
 	switch msg := msg.(type) {
-	case tea.MouseWheelMsg:
-		switch msg.Button {
-		case tea.MouseWheelUp:
-			m.ScrollBy(-3)
-		case tea.MouseWheelDown:
-			m.ScrollBy(3)
-		}
 	case tea.KeyPressMsg:
 		if !m.focused {
 			return m, nil
@@ -134,6 +128,9 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 		case "G", "end":
 			m.GotoBottom()
 		}
+	}
+	if delta, ok := mouse.WheelDelta(msg); ok {
+		m.ScrollBy(delta)
 	}
 	return m, nil
 }

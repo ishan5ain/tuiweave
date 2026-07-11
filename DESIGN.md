@@ -245,6 +245,13 @@ semantics, scrolling statistics, modal routing, and common empty/loading/error
 states. Components may be visually distinct, but they should behave predictably
 when composed with one another.
 
+Mouse input follows the same explicit ownership model. A component can consume
+message-only behavior such as vertical wheel scrolling, including while it is
+blurred. The application remains responsible for mapping terminal coordinates
+to the layout rectangles it owns and for deciding what a click means. The small
+`mouse` package standardizes wheel deltas and half-open hit-testing without
+becoming a global event router.
+
 This is how gotui balances customization and consistency:
 
 - **Consistency comes from contracts and shared semantics**, not from forcing
@@ -322,6 +329,7 @@ github.com/ishansain/gotui
 ├── gotui            (root) Theme roles, Dark/Light defaults
 ├── layout/          facade over ultraviolet/layout: Rect, constraints,
 │                    Vertical/Horizontal, Sizable, Apply
+├── mouse/           normalized wheel deltas and app-owned hit-testing helpers
 ├── snaptest/        snapshot test harness (Snap, SnapCells, SnapStyled, -update)
 ├── inspect/         optional semantic UI tree (IDs, bounds, focus, state)
 ├── action/          shared stable-ID selectable-action definitions
@@ -452,12 +460,12 @@ theme API from growing per-component.
   yanks rotate through older kills without duplicating the inserted text. Still
   open: IME and further editor-specific commands. The current cell-width audit
   covers ANSI/lipgloss components plus grapheme-safe table, snapshot, and
-  overlay cell paths.
-  across text-bearing components. `textinput` now has a corresponding initial audit
-  slice for cell-aware prompt, placeholder, cursor, and horizontal-window
-  geometry. The initial shared/agentic audit also clamps chat-cell headers and
-  tool-call output to their assigned width. Dialog and permission panels now apply the same
-  bounded-width rule to their outer frame and inner action/content rows.
+  overlay cell paths across text-bearing components. `textinput` now has a
+  corresponding initial audit slice for cell-aware prompt, placeholder, cursor,
+  and horizontal-window geometry. The shared/agentic audit also clamps
+  chat-cell headers and tool-call output to their assigned width. Dialog and
+  permission panels apply the same bounded-width rule to their outer frame and
+  inner action/content rows.
 - **Streaming markdown renderer design:** incremental block parser vs
   full-document reparse with damage hints — decide when glamour's limits are
   measured, not guessed.

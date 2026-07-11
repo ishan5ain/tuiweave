@@ -351,7 +351,11 @@ daily use.
       input with prefix-matched suggestions, stable IDs, disabled handling,
       semantic actions, inspection, exact-width rendering, and a runnable
       example.
-- [ ] More explicit mouse interaction conventions where bubbletea supports them
+- [x] **Mouse interaction conventions:** `mouse.WheelDelta` standardizes the
+      three-line vertical wheel step, `viewport` consumes wheel events even
+      when blurred, and `mouse.Position`/`InBounds` keep coordinate hit-testing
+      app-owned. Browser scenario coverage proves a preview scrolls while the
+      filter owns focus; clicks and motion remain application routing concerns.
 - [ ] Focus scopes and nested modal/focus routing utilities
 - [ ] Extend interaction scenarios across mouse input, focus scopes, nested
       modals, cancellation, and narrow-terminal behavior

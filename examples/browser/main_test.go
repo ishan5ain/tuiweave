@@ -8,6 +8,7 @@ import (
 
 	"github.com/charmbracelet/x/ansi"
 	"github.com/ishansain/gotui/inspect"
+	"github.com/ishansain/gotui/mouse"
 	"github.com/ishansain/gotui/snaptest"
 )
 
@@ -75,6 +76,22 @@ func TestBrowserFocusAndTabComposition(t *testing.T) {
 	}
 }
 
+func TestBrowserWheelRoutesToPreviewWhenBlurred(t *testing.T) {
+	m := sized(t, 88, 24)
+	if m.preview.Focused() {
+		t.Fatal("preview should start blurred for this routing check")
+	}
+
+	m, _ = update(t, m, tea.MouseWheelMsg{
+		X:      70,
+		Y:      10,
+		Button: tea.MouseWheelDown,
+	})
+	if got := m.preview.YOffset(); got != mouse.WheelLines {
+		t.Fatalf("preview offset after blurred wheel = %d, want %d", got, mouse.WheelLines)
+	}
+}
+
 func TestBrowserRecentTabGolden(t *testing.T) {
 	m := sized(t, 88, 24)
 	m, _ = update(t, m, tea.KeyPressMsg{Code: tea.KeyRight})
@@ -102,6 +119,7 @@ func TestBrowserScenarioGolden(t *testing.T) {
 	result := snaptest.RunScenario(sized(t, 88, 24),
 		snaptest.ScenarioStep{Name: "focus filter", Msg: tea.KeyPressMsg{Code: tea.KeyTab}},
 		snaptest.ScenarioStep{Name: "filter main", Msg: key('m')},
+		snaptest.ScenarioStep{Name: "wheel preview while filter focused", Msg: tea.MouseWheelMsg{X: 70, Y: 10, Button: tea.MouseWheelDown}},
 		snaptest.ScenarioStep{Name: "focus files", Msg: tea.KeyPressMsg{Code: tea.KeyTab}},
 		snaptest.ScenarioStep{Name: "focus preview", Msg: tea.KeyPressMsg{Code: tea.KeyTab}},
 		snaptest.ScenarioStep{Name: "scroll preview", Msg: key('f')},

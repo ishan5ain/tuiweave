@@ -8,6 +8,7 @@ import (
 	tea "charm.land/bubbletea/v2"
 
 	"github.com/ishansain/gotui"
+	"github.com/ishansain/gotui/mouse"
 	"github.com/ishansain/gotui/snaptest"
 )
 
@@ -66,8 +67,16 @@ func TestViewportIgnoresKeysWhenBlurred(t *testing.T) {
 func TestViewportWheelScrollsEvenBlurred(t *testing.T) {
 	vp := newTestViewport(12, 4, 10)
 	vp, _ = vp.Update(tea.MouseWheelMsg{Button: tea.MouseWheelDown})
-	if vp.YOffset() != 3 {
-		t.Errorf("after wheel down: yoff = %d, want 3", vp.YOffset())
+	if vp.YOffset() != mouse.WheelLines {
+		t.Errorf("after wheel down: yoff = %d, want %d", vp.YOffset(), mouse.WheelLines)
+	}
+	vp, _ = vp.Update(tea.MouseWheelMsg{Button: tea.MouseWheelUp})
+	if vp.YOffset() != 0 {
+		t.Errorf("after wheel up: yoff = %d, want 0", vp.YOffset())
+	}
+	vp, _ = vp.Update(tea.MouseWheelMsg{Button: tea.MouseWheelLeft})
+	if vp.YOffset() != 0 {
+		t.Errorf("after horizontal wheel: yoff = %d, want 0", vp.YOffset())
 	}
 }
 

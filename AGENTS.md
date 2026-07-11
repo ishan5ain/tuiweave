@@ -14,6 +14,7 @@ and example before reading the detailed recipes below.
 - Runtime: `charm.land/bubbletea/v2` (MVU; root model's `View()` returns `tea.View`)
 - Styling: `charm.land/lipgloss/v2` (components render styled **strings**)
 - Layout: `github.com/ishansain/gotui/layout` (flexbox-like constraints → rects)
+- Mouse input: `github.com/ishansain/gotui/mouse` (wheel deltas and hit-testing)
 - Action definitions: `github.com/ishansain/gotui/action` (shared stable-ID action definitions)
 - Composition: `github.com/ishansain/gotui/frame` (width-aware themed decoration)
 - Navigation: `github.com/ishansain/gotui/tabs` (focusable sibling-view tabs)
@@ -103,6 +104,33 @@ wrap it once, at the root: `return tea.NewView(view)`. Full-screen apps set
 `v.AltScreen = true` on the returned view — bubbletea v2 has **no**
 `tea.WithAltScreen()` program option (a v1 idiom agents often reach for);
 mouse support is also a view field (`v.MouseMode = tea.MouseModeCellMotion`).
+
+### Mouse input
+
+Mouse routing follows the same ownership boundary as layout and focus:
+
+- `viewport`, `agentic/chat`, and `agentic/diffview` consume vertical
+  `tea.MouseWheelMsg` events even when blurred. Forward wheel events to a
+  scrollable component without checking `Focused()`; keyboard navigation is
+  focus-gated, wheel scrolling is not. `mouse.WheelDelta` is the shared
+  three-line convention for custom scrollables.
+- When an app has one scrollable pane, delegate the wheel message directly to
+  it. When it has several panes, retain their layout rectangles and use
+  `mouse.InBounds(msg, x, y, width, height)` to route the event to the pane
+  under the pointer. Reassign each returned model and collect its command.
+- Clicks, releases, and motion remain app-owned because components render
+  strings and do not know their screen origin. Use `mouse.Position` or
+  `mouse.InBounds` after layout, then explicitly focus/select/activate the
+  target. Do not make a component guess global coordinates.
+
+```go
+case tea.MouseWheelMsg:
+    if mouse.InBounds(msg, previewArea.Min.X, previewArea.Min.Y,
+        previewArea.Dx(), previewArea.Dy()) {
+        m.preview, cmd = m.preview.Update(msg)
+        cmds = append(cmds, cmd)
+    }
+```
 
 ## Writing a gotui component
 
@@ -566,7 +594,8 @@ tb.SetRows([]string{"1", "api"})
 
 - They ignore keys when blurred by design — never gate delegation yourself.
 - Viewport handles `tea.MouseWheelMsg` even when blurred; forward wheel
-  events to it unconditionally.
+  events to it unconditionally. Use `mouse.InBounds` when several scrollable
+  panes share the application.
 - Selection styling uses `SelectionBg/Fg` only while focused.
 - Table columns shrink to the assigned width when fixed columns compete for
   space; wide and combining cell content is truncated by visible cell width.

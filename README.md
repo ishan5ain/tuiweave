@@ -33,6 +33,7 @@ backend protocols, and session lifecycle.
 |---|---|
 | `gotui` (root) | Semantic theme roles (`Theme`), `Dark()`/`Light()` defaults |
 | `gotui/layout` | Flexbox-like layout: constraints → rectangles → component sizes |
+| `gotui/mouse` | Standard vertical wheel deltas and app-owned mouse hit-testing helpers |
 | `gotui/snaptest` | Snapshot test harness: plain-text, raw-ANSI, role-labeled cell-grid, and interaction-scenario goldens |
 | `gotui/inspect` | Optional semantic UI tree and action metadata: IDs, bounds, focus, selection, scrolling, actions, and children |
 | `gotui/action` | Shared stable-ID selectable-action definitions for menus, toolbars, palettes, and app-owned routing |

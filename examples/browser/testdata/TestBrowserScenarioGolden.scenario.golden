@@ -79,29 +79,56 @@ command: no
 ╰──────────────────────────────╯ ╰────────────────────────────────────────────────────╯
 ────────────────────────────────────────────────────────── tab focus · / filter · q quit
 
+## wheel preview while filter focused
+command: no
+ BROWSER  mock workspace                                                        / filter
+▸Workspace   Recent   Pinned
+╭ Files ───────────────────────╮ ╭ Preview ───────────────────────────────────────────╮
+│                              │ │                                                    │
+│ > m                          │ │     "fmt"                                          ││
+│ ▎ cmd/gotui/main.go          │ │     "os"                                           ││
+│   examples/browser/main.go   │ │ )                                                  │┃
+│   examples/frame/main.go     │ │                                                    │┃
+│                              │ │ func main() {                                      │┃
+│                              │ │     config := loadConfig()                         │┃
+│                              │ │     if err := run(config); err != nil {            │┃
+│                              │ │         fmt.Fprintln(os.Stderr, err)               │┃
+│                              │ │         os.Exit(1)                                 │┃
+│                              │ │     }                                              │┃
+│                              │ │ }                                                  │┃
+│                              │ │                                                    │┃
+│                              │ │ func loadConfig() Config {                         ││
+│                              │ │     return Config{Mode: "development"}             ││
+│                              │ │ }                                                  ││
+│                              │ │                                                    ││
+│                              │ │ func run(config Config) error {                    ││
+│                              │ │                                                    │
+╰──────────────────────────────╯ ╰────────────────────────────────────────────────────╯
+────────────────────────────────────────────────────────── tab focus · / filter · q quit
+
 ## focus files
 command: no
  BROWSER  mock workspace                                                        / filter
 ▸Workspace   Recent   Pinned
 ╭ Files ───────────────────────╮ ╭ Preview ───────────────────────────────────────────╮
 │                              │ │                                                    │
-│ > m                          │ │ package main                                       │┃
-│ ▌ cmd/gotui/main.go          │ │                                                    │┃
-│   examples/browser/main.go   │ │ import (                                           │┃
-│   examples/frame/main.go     │ │     "fmt"                                          │┃
-│                              │ │     "os"                                           │┃
-│                              │ │ )                                                  │┃
-│                              │ │                                                    │┃
+│ > m                          │ │     "fmt"                                          ││
+│ ▌ cmd/gotui/main.go          │ │     "os"                                           ││
+│   examples/browser/main.go   │ │ )                                                  │┃
+│   examples/frame/main.go     │ │                                                    │┃
 │                              │ │ func main() {                                      │┃
 │                              │ │     config := loadConfig()                         │┃
 │                              │ │     if err := run(config); err != nil {            │┃
-│                              │ │         fmt.Fprintln(os.Stderr, err)               ││
-│                              │ │         os.Exit(1)                                 ││
-│                              │ │     }                                              ││
-│                              │ │ }                                                  ││
-│                              │ │                                                    ││
+│                              │ │         fmt.Fprintln(os.Stderr, err)               │┃
+│                              │ │         os.Exit(1)                                 │┃
+│                              │ │     }                                              │┃
+│                              │ │ }                                                  │┃
+│                              │ │                                                    │┃
 │                              │ │ func loadConfig() Config {                         ││
 │                              │ │     return Config{Mode: "development"}             ││
+│                              │ │ }                                                  ││
+│                              │ │                                                    ││
+│                              │ │ func run(config Config) error {                    ││
 │                              │ │                                                    │
 ╰──────────────────────────────╯ ╰────────────────────────────────────────────────────╯
 ────────────────────────────────────────────────────────── tab focus · / filter · q quit
@@ -112,23 +139,23 @@ command: no
 ▸Workspace   Recent   Pinned
 ╭ Files ───────────────────────╮ ╭ Preview ───────────────────────────────────────────╮
 │                              │ │                                                    │
-│ > m                          │ │ package main                                       │┃
-│ ▎ cmd/gotui/main.go          │ │                                                    │┃
-│   examples/browser/main.go   │ │ import (                                           │┃
-│   examples/frame/main.go     │ │     "fmt"                                          │┃
-│                              │ │     "os"                                           │┃
-│                              │ │ )                                                  │┃
-│                              │ │                                                    │┃
+│ > m                          │ │     "fmt"                                          ││
+│ ▎ cmd/gotui/main.go          │ │     "os"                                           ││
+│   examples/browser/main.go   │ │ )                                                  │┃
+│   examples/frame/main.go     │ │                                                    │┃
 │                              │ │ func main() {                                      │┃
 │                              │ │     config := loadConfig()                         │┃
 │                              │ │     if err := run(config); err != nil {            │┃
-│                              │ │         fmt.Fprintln(os.Stderr, err)               ││
-│                              │ │         os.Exit(1)                                 ││
-│                              │ │     }                                              ││
-│                              │ │ }                                                  ││
-│                              │ │                                                    ││
+│                              │ │         fmt.Fprintln(os.Stderr, err)               │┃
+│                              │ │         os.Exit(1)                                 │┃
+│                              │ │     }                                              │┃
+│                              │ │ }                                                  │┃
+│                              │ │                                                    │┃
 │                              │ │ func loadConfig() Config {                         ││
 │                              │ │     return Config{Mode: "development"}             ││
+│                              │ │ }                                                  ││
+│                              │ │                                                    ││
+│                              │ │ func run(config Config) error {                    ││
 │                              │ │                                                    │
 ╰──────────────────────────────╯ ╰────────────────────────────────────────────────────╯
 ────────────────────────────────────────────────────────── tab focus · / filter · q quit

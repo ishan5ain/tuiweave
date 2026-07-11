@@ -12,6 +12,7 @@ rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
 | Build a file browser | `examples/browser`; compose `textinput`, `list`, `viewport`, `tabs`, and `focus` |
 | Compose a multi-pane reference app | `examples/ops` or `examples/browser`; follow the recipes in `AGENTS.md` |
 | Frame content or add semantic badges | `frame.Panel`, `frame.Divider`, `frame.Badge` |
+| Handle mouse input | `mouse.WheelDelta`, `mouse.Position`, `mouse.InBounds`; apps own click routing |
 | Navigate sibling views | `tabs`; switch app-owned content from `SelectedID()` |
 | Define actions shared across surfaces | `action.Item`; keep IDs and disabled state stable |
 | Choose or activate an action | `menu`; handle `menu.SelectedMsg` in the app |
@@ -44,6 +45,7 @@ rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
 |---|---|---|
 | `gotui` | Choosing semantic colors | `gotui.Dark()` or `gotui.Light()`; never raw colors |
 | `layout` | Converting window space to component boxes | `layout.Vertical(...).Apply(area, &components...)`; `SizeModeOf` for sizing exceptions |
+| `mouse` | Normalizing wheel input or hit-testing app-owned bounds | `WheelDelta`, `Position`, `InBounds`; no global router |
 | `snaptest` | Verifying rendering or interactions | `Snap`, grapheme-preserving `SnapCells`, `RunScenario`, `SnapScenario` |
 | `inspect` | Describing UI semantics for tests/tools/agents | `Inspect()`, `Bind`, `BindAt`, `Group`, `Marshal` |
 | `action` | Sharing selectable action definitions and semantic IDs | `Item{ID, Label, Description, Disabled}`; `SelectID`, `ParseSelectID` |
@@ -166,6 +168,8 @@ that behavior is part of the scenario.
 - Forgetting to apply focus after the value-type model has been copied.
 - Handling Enter inside `textinput`/`textarea` when the app owns submit policy.
 - Gating mouse-wheel delegation on focus for a `viewport`-backed component.
+- Letting a component infer global mouse coordinates; route clicks from the
+  app's layout rectangles and reapply focus explicitly.
 - Using `tab` inside `tabs` and stealing the app's global focus key; use
   arrows or `h`/`l` for tab navigation.
 - Dropping the `tea.Cmd` returned by `menu.Update` on enter; activation emits
