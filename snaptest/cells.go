@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	uv "github.com/charmbracelet/ultraviolet"
+	"github.com/charmbracelet/x/ansi"
 )
 
 // Option configures SnapCells.
@@ -84,11 +85,75 @@ func SnapCells(t *testing.T, view string, opts ...Option) {
 
 // renderToGrid parses a rendered ANSI string into a cell grid.
 func renderToGrid(view string) uv.ScreenBuffer {
-	ss := uv.NewStyledString(view)
+	protected, replacements := protectCombining(view)
+	ss := uv.NewStyledString(protected)
 	bounds := ss.Bounds()
 	buf := uv.NewScreenBuffer(bounds.Dx(), bounds.Dy())
+	// Snapshots must retain the complete grapheme in each cell. The buffer's
+	// default WcWidth decoder represents combining marks as separate width-zero
+	// cells, and its ASCII fast path can overwrite them with following padding.
+	buf.Method = ansi.GraphemeWidth
 	ss.Draw(buf, buf.Bounds())
+	for y := range buf.Height() {
+		for x := range buf.Width() {
+			cell := buf.CellAt(x, y)
+			if cell == nil {
+				continue
+			}
+			if original, ok := replacements[cell.Content]; ok {
+				cell.Content = original
+			}
+		}
+	}
 	return buf
+}
+
+// protectCombining replaces an ASCII-leading grapheme followed by combining
+// marks with a private-use sentinel. ultraviolet's ASCII fast path otherwise
+// decodes the base rune first, then lets the following padding overwrite the
+// separate width-zero mark before SnapCells can describe it.
+func protectCombining(view string) (string, map[string]string) {
+	replacements := map[string]string{}
+	var b strings.Builder
+	b.Grow(len(view))
+	parser := ansi.GetParser()
+	defer ansi.PutParser(parser)
+
+	const firstMarker = rune('\ue000')
+	nextMarker := firstMarker
+	state := byte(0)
+	remaining := view
+	for len(remaining) > 0 {
+		seq, width, n, nextState := ansi.DecodeSequence(remaining, state, parser)
+		if n <= 0 {
+			b.WriteByte(remaining[0])
+			remaining = remaining[1:]
+			state = 0
+			continue
+		}
+
+		if width == 1 && n == 1 && remaining[0] < 0x80 {
+			cluster, _ := ansi.FirstGraphemeCluster(remaining, ansi.GraphemeWidth)
+			if len(cluster) > 1 && ansi.StringWidth(cluster) == 1 {
+				marker := string(nextMarker)
+				for strings.Contains(view, marker) || replacements[marker] != "" {
+					nextMarker++
+					marker = string(nextMarker)
+				}
+				replacements[marker] = cluster
+				b.WriteString(marker)
+				remaining = remaining[len(cluster):]
+				state = 0
+				nextMarker++
+				continue
+			}
+		}
+
+		b.WriteString(seq)
+		remaining = remaining[n:]
+		state = nextState
+	}
+	return b.String(), replacements
 }
 
 // run is a horizontal stretch of cells sharing one style.
@@ -102,8 +167,22 @@ func formatRuns(buf uv.ScreenBuffer, y int, cfg config) string {
 	var cur *run
 	for x := range buf.Width() {
 		cell := buf.CellAt(x, y)
-		if cell == nil || cell.Width == 0 {
-			continue // continuation of a wide cell, or out of bounds
+		if cell == nil {
+			continue // out of bounds
+		}
+		if cell.Width == 0 {
+			if cell.Content == "" {
+				continue // continuation of a wide cell
+			}
+			// ultraviolet may store a combining mark as a non-empty
+			// width-zero cell after its base cell. Keep it in the style run
+			// instead of treating it like a wide-cell continuation.
+			if cur == nil || !cur.style.Equal(&cell.Style) {
+				cur = &run{style: cell.Style}
+				runs = append(runs, cur)
+			}
+			cur.text.WriteString(cell.Content)
+			continue
 		}
 		content := cell.Content
 		if content == "" {

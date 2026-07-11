@@ -338,6 +338,9 @@ daily use.
 - [x] **Cell-width audit (table slice):** fixed and flexible column allocation
       now remains within narrow assigned widths, including wide and combining
       cell content and multiple flexible columns.
+- [x] **Cell-width audit (snapshot slice):** `SnapCells` now preserves
+      ASCII-leading combining graphemes in style-run goldens instead of
+      losing them through the cell decoder's width-zero path.
 - [ ] **Cell-width audit (remaining components):** review other text-bearing
       components and shared helpers for wide/combining-rune behavior.
 - [ ] Autocomplete and command-palette primitives

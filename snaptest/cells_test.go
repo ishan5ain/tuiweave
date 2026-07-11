@@ -54,6 +54,20 @@ func TestSnapCellsUnstyled(t *testing.T) {
 	}
 }
 
+func TestSnapCellsPreservesCombiningGraphemes(t *testing.T) {
+	out := captureCellsGolden(t, "e\u0301")
+	if !strings.Contains(out, "\"e\u0301\"") {
+		t.Fatalf("combining grapheme was lost from cells output: %q", out)
+	}
+}
+
+func TestSnapCellsPreservesStyledCombiningGraphemes(t *testing.T) {
+	out := captureCellsGolden(t, "\x1b[1me\u0301\x1b[0m")
+	if !strings.Contains(out, "\"e\u0301\" [bold]") {
+		t.Fatalf("styled combining grapheme was lost from cells output: %q", out)
+	}
+}
+
 // captureCellsGolden runs the grid formatting without touching golden files.
 func captureCellsGolden(t *testing.T, view string) string {
 	t.Helper()

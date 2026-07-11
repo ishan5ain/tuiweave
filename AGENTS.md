@@ -141,6 +141,10 @@ use them to assert roles, e.g. that a selected row uses `SelectionBg`. (Roles
 sharing one color label as the first matching Theme field, so `TextInverted`
 may appear as `Surface` in the default themes.)
 
+`SnapCells` preserves combining graphemes in its style runs; if a plain golden
+and a cells golden disagree about a combining mark, inspect the snapshot
+harness before changing the component renderer.
+
 Snapshot states, not just defaults: focused/blurred, empty/full, truncation
 at small sizes. The plain `.golden` file is the artifact to read when judging
 whether output is correct.

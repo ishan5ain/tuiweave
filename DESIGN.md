@@ -172,7 +172,8 @@ rendered **deterministically** — no pty, no event loop, no timing flake:
 - `SnapCells` (since Phase 1): the rendered view parsed into a UV cell grid
   and dumped as role-labeled style runs, e.g.
   `" gotui " [fg=TextInverted bg=Accent bold]` — the artifact for asserting
-  *which role* styles what. `WithRoles(theme)` maps colors back to role names.
+  *which role* styles what. Combining graphemes are preserved in the dump;
+  `WithRoles(theme)` maps colors back to role names.
 - `SnapStyled`: raw-ANSI golden for byte-exact styling regressions.
 - `-update` flag regenerates; failures print readable line diffs.
 - Doubles as the library's own regression suite.
