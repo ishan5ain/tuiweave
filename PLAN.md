@@ -332,6 +332,9 @@ daily use.
 - [x] **Cell-width audit (initial shared/agentic pass):** core text renderers
       already use ANSI/lipgloss cell measurements; chat cells and tool-call
       headers/output now clamp wide and narrow content to their assigned width.
+- [x] **Cell-width audit (modal slice):** dialog and permission panels now
+      preserve their assigned outer width and clamp wide titles, bodies,
+      options, provenance, and buttons to the inner cell budget.
 - [ ] **Cell-width audit (remaining components):** review other text-bearing
       components and shared helpers for wide/combining-rune behavior.
 - [ ] Autocomplete and command-palette primitives

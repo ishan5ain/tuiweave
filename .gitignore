@@ -14,5 +14,5 @@
 # Example binaries
 /chat
 /ops
-examples/chat
-examples/ops
+examples/chat/chat
+examples/ops/ops

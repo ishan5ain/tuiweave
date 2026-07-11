@@ -449,7 +449,8 @@ theme API from growing per-component.
   slice for cell-aware prompt, placeholder, cursor, and horizontal-window
   geometry. The initial shared/agentic audit also clamps chat-cell headers and
   tool-call output to their assigned width; the remaining audit is still
-  intentionally incremental.
+  intentionally incremental. Dialog and permission panels now apply the same
+  bounded-width rule to their outer frame and inner action/content rows.
 - **Streaming markdown renderer design:** incremental block parser vs
   full-document reparse with damage hints — decide when glamour's limits are
   measured, not guessed.

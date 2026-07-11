@@ -1,9 +1,11 @@
 package permission
 
 import (
+	"strings"
 	"testing"
 
 	tea "charm.land/bubbletea/v2"
+	lipgloss "charm.land/lipgloss/v2"
 
 	"github.com/ishansain/gotui"
 	"github.com/ishansain/gotui/inspect"
@@ -128,5 +130,20 @@ func TestProvenanceAndSemanticChoice(t *testing.T) {
 func TestPermissionIsWidthBounded(t *testing.T) {
 	if got := newTestPrompt().SizeMode(); got != layout.SizeWidthBounded {
 		t.Fatalf("permission size mode = %d, want SizeWidthBounded", got)
+	}
+}
+
+func TestPermissionContentStaysWithinWidth(t *testing.T) {
+	p := newTestPrompt()
+	p.Title = "界界 permission"
+	p.Body = "説明 with wide content"
+	p.SetOptions("許可する", "常に許可", "キャンセル")
+	for width := 7; width <= 30; width++ {
+		p.SetSize(width, 12)
+		for lineNo, line := range strings.Split(p.View(), "\n") {
+			if got := lipgloss.Width(line); got != width {
+				t.Fatalf("width %d line %d rendered as %d: %q", width, lineNo+1, got, line)
+			}
+		}
 	}
 }

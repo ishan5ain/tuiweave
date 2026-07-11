@@ -13,6 +13,7 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 	lipgloss "charm.land/lipgloss/v2"
+	"github.com/charmbracelet/x/ansi"
 
 	"github.com/ishansain/gotui"
 	"github.com/ishansain/gotui/layout"
@@ -168,19 +169,19 @@ func (m Model) result(choice int) tea.Cmd {
 
 // View renders the bordered prompt with numbered options.
 func (m Model) View() string {
-	if m.width <= 4 || m.height <= 4 {
+	inner := m.width - 2 - 4 // border + horizontal padding
+	if inner <= 0 || m.height <= 4 {
 		return ""
 	}
-	inner := m.width - 2 - 4 // border + horizontal padding
 
 	rows := []string{
-		m.titleStyle.Width(inner).Render(m.Title),
+		bounded(m.titleStyle, m.Title, inner),
 	}
 	if m.Body != "" {
-		rows = append(rows, m.bodyStyle.Width(inner).Render(m.Body))
+		rows = append(rows, bounded(m.bodyStyle, m.Body, inner))
 	}
 	rows = append(rows, m.provenanceLines(inner)...)
-	rows = append(rows, m.bodyStyle.Width(inner).Render(""))
+	rows = append(rows, bounded(m.bodyStyle, "", inner))
 	for i, opt := range m.options {
 		label := fmt.Sprintf(" %s ", opt)
 		line := m.numStyle.Render(fmt.Sprintf(" %d ", i+1))
@@ -189,12 +190,15 @@ func (m Model) View() string {
 		} else {
 			line += m.optionStyle.Render(label)
 		}
+		if lipgloss.Width(line) > inner {
+			line = ansi.Truncate(line, inner, "")
+		}
 		if pad := inner - lipgloss.Width(line); pad > 0 {
 			line += m.bodyStyle.Render(strings.Repeat(" ", pad))
 		}
 		rows = append(rows, line)
 	}
-	return m.panelStyle.Width(m.width - 2).Render(strings.Join(rows, "\n"))
+	return m.panelStyle.Width(m.width).Render(strings.Join(rows, "\n"))
 }
 
 func (m Model) provenanceLines(width int) []string {
@@ -217,7 +221,21 @@ func (m Model) provenanceLines(width int) []string {
 		if field.value == "" {
 			continue
 		}
-		rows = append(rows, m.provenanceStyle.Width(width).Render(field.label+": "+field.value))
+		rows = append(rows, bounded(m.provenanceStyle, field.label+": "+field.value, width))
 	}
 	return rows
+}
+
+func bounded(style lipgloss.Style, text string, width int) string {
+	if width <= 0 {
+		return ""
+	}
+	rows := strings.Split(style.Width(width).Render(text), "\n")
+	for i, row := range rows {
+		if lipgloss.Width(row) > width {
+			row = ansi.Truncate(row, width, "")
+		}
+		rows[i] = row
+	}
+	return strings.Join(rows, "\n")
 }

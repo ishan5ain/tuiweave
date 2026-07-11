@@ -5,15 +5,15 @@
                          welcome: content line 3
                          welcome: content line 4
                          welcome: content line 5
-                     ╭────────────────────────────────────╮
-                     │                                    │
-                     │  Quit demo?                        │
-                     │  This closes the gotui Phase 2     │
-                     │  demo.                             │
-                     │                                    │
-                     │                    OK      Cancel  │
-                     │                                    │
-                     ╰────────────────────────────────────╯
+                    ╭──────────────────────────────────────╮
+                    │                                      │
+                    │  Quit demo?                          │
+                    │  This closes the gotui Phase 2       │
+                    │  demo.                               │
+                    │                                      │
+                    │                    OK      Cancel    │
+                    │                                      │
+                    ╰──────────────────────────────────────╯
                          welcome: content line 15
                          welcome: content line 16
                          welcome: content line 17

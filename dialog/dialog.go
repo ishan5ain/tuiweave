@@ -15,6 +15,7 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 	lipgloss "charm.land/lipgloss/v2"
+	"github.com/charmbracelet/x/ansi"
 
 	"github.com/ishansain/gotui"
 	"github.com/ishansain/gotui/layout"
@@ -123,10 +124,10 @@ func (m Model) result(ok bool) tea.Cmd {
 
 // View renders the bordered panel with title, body, and buttons.
 func (m Model) View() string {
-	if m.width <= 4 || m.height <= 4 {
+	inner := m.width - 2 - 4 // border + horizontal padding
+	if inner <= 0 || m.height <= 4 {
 		return ""
 	}
-	inner := m.width - 2 - 4 // border + horizontal padding
 
 	confirm := m.buttonStyle
 	cancel := m.selectedStyle
@@ -134,14 +135,31 @@ func (m Model) View() string {
 		confirm, cancel = m.selectedStyle, m.buttonStyle
 	}
 	buttons := confirm.Render(m.ConfirmLabel) + m.bodyStyle.Render("  ") + cancel.Render(m.CancelLabel)
+	if lipgloss.Width(buttons) > inner {
+		buttons = ansi.Truncate(buttons, inner, "")
+	}
 
 	sections := []string{
-		m.titleStyle.Width(inner).Render(m.Title),
-		m.bodyStyle.Width(inner).Render(m.Body),
+		bounded(m.titleStyle, m.Title, inner),
+		bounded(m.bodyStyle, m.Body, inner),
 		"",
 		lipgloss.PlaceHorizontal(inner, lipgloss.Right, buttons,
 			lipgloss.WithWhitespaceStyle(m.bodyStyle)),
 	}
 	content := strings.Join(sections, "\n")
-	return m.panelStyle.Width(m.width - 2).Render(content)
+	return m.panelStyle.Width(m.width).Render(content)
+}
+
+func bounded(style lipgloss.Style, text string, width int) string {
+	if width <= 0 {
+		return ""
+	}
+	rows := strings.Split(style.Width(width).Render(text), "\n")
+	for i, row := range rows {
+		if lipgloss.Width(row) > width {
+			row = ansi.Truncate(row, width, "")
+		}
+		rows[i] = row
+	}
+	return strings.Join(rows, "\n")
 }

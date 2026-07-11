@@ -1,9 +1,11 @@
 package dialog
 
 import (
+	"strings"
 	"testing"
 
 	tea "charm.land/bubbletea/v2"
+	lipgloss "charm.land/lipgloss/v2"
 
 	"github.com/ishansain/gotui"
 	"github.com/ishansain/gotui/layout"
@@ -94,5 +96,21 @@ func TestDialogTooSmallRendersNothing(t *testing.T) {
 func TestDialogIsWidthBounded(t *testing.T) {
 	if got := newTestDialog().SizeMode(); got != layout.SizeWidthBounded {
 		t.Fatalf("dialog size mode = %d, want SizeWidthBounded", got)
+	}
+}
+
+func TestDialogContentStaysWithinWidth(t *testing.T) {
+	d := newTestDialog()
+	d.Title = "界界 dialog"
+	d.Body = "説明 with wide content"
+	d.ConfirmLabel = "許可する"
+	d.CancelLabel = "キャンセル"
+	for width := 7; width <= 30; width++ {
+		d.SetSize(width, 10)
+		for lineNo, line := range strings.Split(d.View(), "\n") {
+			if got := lipgloss.Width(line); got != width {
+				t.Fatalf("width %d line %d rendered as %d: %q", width, lineNo+1, got, line)
+			}
+		}
 	}
 }

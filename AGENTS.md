@@ -661,6 +661,9 @@ case dialog.ResultMsg:
 if m.showDialog { base = overlay.Center(base, m.dlg.View()) }
 ```
 
+Dialog and permission content is clipped to the assigned outer width, including
+wide labels and narrow modal boxes; the app still owns visibility and routing.
+
 `overlay.Place/Center` composite in cell space — overlays cleanly replace
 what's beneath, styles included. Never splice overlay strings manually.
 

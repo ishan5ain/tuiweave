@@ -63,7 +63,7 @@ rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
 | `textarea` | Editing wrapped/multiline text | Logical-rune selection, cell-aware wrapping, bounded undo/redo, word movement/deletion, and a bounded kill/yank ring; Enter inserts a newline |
 | `help` | Showing key hints | Drops whole hints from the right when narrow |
 | `spinner` | Showing activity | Intrinsic-size; start with `Tick`, forward `TickMsg` |
-| `dialog` | Confirming or cancelling | App owns visibility; result arrives as `ResultMsg` |
+| `dialog` | Confirming or cancelling | App owns visibility; width-bounded titles, bodies, and buttons; result arrives as `ResultMsg` |
 | `tabs` | Navigating sibling views | `SetTabs`, `Focus`, `SelectedID`; left/right while focused |
 | `menu` | Choosing application-owned actions | `SetItems([]action.Item...)`, `Focus`, `SelectedMsg`; disabled entries are skipped |
 | `toolbar` | Rendering horizontal actions | `SetItems([]action.Item...)`, `Focus`, `SelectedMsg`; selected action stays visible when narrow |
@@ -83,7 +83,7 @@ rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
 | `agentic/chat` | Rendering a streaming transcript | Append cells, keep pointers, call `Invalidate()` after mutation; cells clip to the assigned cell width |
 | `agentic/toolcall` | Rendering tool status/output | `SetID`, `SetStatus`, `Retry`, `Cancel`; headers and output stay within the assigned width |
 | `agentic/diffview` | Rendering unified diffs | `Sprint` for cells; `Model` for scrollable panes |
-| `agentic/permission` | Requesting approval | Add `Provenance`; options answer with `ResultMsg` |
+| `agentic/permission` | Requesting approval | Add `Provenance`; width-bounded options/provenance; answers with `ResultMsg` |
 | `agentic/usagebar` | Showing model and usage | `SetStats`; context ≥80% warning, ≥95% danger |
 
 Canonical examples are under [`examples/`](examples/): `statusbar` is the
