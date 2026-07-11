@@ -356,7 +356,12 @@ daily use.
       when blurred, and `mouse.Position`/`InBounds` keep coordinate hit-testing
       app-owned. Browser scenario coverage proves a preview scrolls while the
       filter owns focus; clicks and motion remain application routing concerns.
-- [ ] Focus scopes and nested modal/focus routing utilities
+- [x] **Nested focus scopes and modal routing:** `focus.Stack` adds copy-safe
+      root-to-child focus layers with `Push`/`Pop`, retained parent indices,
+      `Depth`/`Index` routing state, and grouped `Apply` that blurs every
+      background layer. Applications still own visibility, message routing,
+      modal results, and side effects; `focus.Scope` remains the one-modal
+      convenience used by `examples/ops`.
 - [ ] Extend interaction scenarios across mouse input, focus scopes, nested
       modals, cancellation, and narrow-terminal behavior
 - [ ] Audit APIs and recipes for discoverability by a coding agent starting from

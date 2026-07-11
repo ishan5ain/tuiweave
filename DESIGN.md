@@ -65,7 +65,7 @@ framework, contradicting D2; (b) agents have deep training priors on bubbletea
 idioms and zero priors on a novel DSL — **familiar-verbose beats novel-terse**
 for agent-friendly code. Known MVU agent failure modes (forgetting to reassign
 the model after `Update`, dropping a `Cmd`, unwired focus) are addressed by
-opt-in glue utilities — a focus manager, layout helpers, delegation helpers —
+opt-in glue utilities — focus managers and scopes, layout helpers, delegation helpers —
 plus explicit rules in AGENTS.md, not by hiding the loop.
 
 "Pure MVU" applies to core components. Streaming transcript cells and
@@ -250,7 +250,10 @@ message-only behavior such as vertical wheel scrolling, including while it is
 blurred. The application remains responsible for mapping terminal coordinates
 to the layout rectangles it owns and for deciding what a click means. The small
 `mouse` package standardizes wheel deltas and half-open hit-testing without
-becoming a global event router.
+becoming a global event router. Focus follows the same rule: `focus.Scope` is
+the one-modal convenience, while `focus.Stack` retains each parent index for
+nested modal layers and only applies fresh component addresses supplied by the
+application.
 
 This is how gotui balances customization and consistency:
 

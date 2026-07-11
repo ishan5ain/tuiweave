@@ -1,4 +1,5 @@
-// Package focus provides a tab-order manager for interactive components.
+// Package focus provides tab-order managers and copy-safe focus scopes for
+// interactive components.
 //
 // It exists to close a known failure mode of hand-wired MVU apps: focus
 // state drifting across components (two things focused, or none).
@@ -12,6 +13,9 @@
 //	case "tab":
 //	    m.fm.Next()
 //	    m.fm.Apply(&m.list, &m.view, &m.input)
+//
+// For nested modals, use Stack. It stores one Manager per layer and callers
+// pass fresh component groups to Apply after every model update.
 package focus
 
 // Focusable is implemented by interactive gotui components.

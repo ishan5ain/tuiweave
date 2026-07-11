@@ -58,7 +58,7 @@ backend protocols, and session lifecycle.
 | `gotui/spinner` | Tick-driven activity indicator |
 | `gotui/dialog` | Modal confirm box answering via `ResultMsg` |
 | `gotui/overlay` | Cell-space compositing for modals/popovers (UV inside) |
-| `gotui/focus` | Copy-safe tab-order manager and modal focus scopes |
+| `gotui/focus` | Copy-safe tab order, modal scopes, and nested focus layers |
 | `agentic/markdown` | Theme-mapped markdown rendering behind a swappable `Renderer` interface (glamour v2 today) |
 | `agentic/chat` | Streaming transcript: user/assistant/tool cells, auto-follow |
 | `agentic/toolcall` | Status-aware collapsible tool-call block |

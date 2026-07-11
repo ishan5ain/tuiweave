@@ -720,6 +720,36 @@ m.paletteScope.Apply(&m.palette)
 - Route all messages to the active scope's components while the scope is open;
   visibility and modal results remain application-owned.
 
+For nested modals, use `focus.Stack` so each layer's index is retained while a
+child layer is open:
+
+```go
+m.focus = focus.NewStack(2) // root tab order
+m.focus.Push(1)             // palette layer
+m.focus.Push(2)             // confirmation layer
+m.focus.Apply(
+    focus.Group{&m.backgroundA, &m.backgroundB},
+    focus.Group{&m.palette},
+    focus.Group{&m.confirm, &m.cancel},
+)
+// close the top modal, then reapply all fresh addresses:
+m.focus.Pop()
+m.focus.Apply(
+    focus.Group{&m.backgroundA, &m.backgroundB},
+    focus.Group{&m.palette},
+    focus.Group{&m.confirm, &m.cancel},
+)
+```
+
+- `Stack.Depth()` identifies the active modal layer; use it to route keys to
+  the top layer before global keys and background delegation.
+- `Push` starts a child layer at index zero; `Pop` restores the previous layer's
+  index. `Stack` copies its internal manager slice before mutation, so value
+  copies cannot share mutable focus state.
+- `Stack.Apply` blurs every supplied non-active group. Pass one group per layer,
+  from the root outward, and keep visibility, results, and side effects in the
+  application.
+
 ### dialog + overlay (modals)
 
 The app owns visibility; the dialog answers via a `ResultMsg` command:

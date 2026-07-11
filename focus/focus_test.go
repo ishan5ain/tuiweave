@@ -121,6 +121,87 @@ func TestScopeSurvivesValueCopies(t *testing.T) {
 	exactlyOneFocused(t, []*fake{a, b}, 1)
 }
 
+func TestStackNestsAndRestoresFocusLayers(t *testing.T) {
+	background := []*fake{{}, {}, {}}
+	palette := []*fake{{}}
+	confirm := []*fake{{}, {}}
+	stack := NewStack(len(background))
+	stack.Set(2)
+	groups := func() []Group {
+		return []Group{
+			Group{background[0], background[1], background[2]},
+			Group{palette[0]},
+			Group{confirm[0], confirm[1]},
+		}
+	}
+
+	stack.Apply(groups()...)
+	exactlyOneFocused(t, background, 2)
+
+	stack.Push(1)
+	stack.Apply(groups()...)
+	if stack.Depth() != 1 || !stack.Active() {
+		t.Fatalf("after palette push: depth=%d active=%v", stack.Depth(), stack.Active())
+	}
+	exactlyOneFocused(t, palette, 0)
+	for i, item := range background {
+		if item.focused {
+			t.Fatalf("background item %d retained focus under palette", i)
+		}
+	}
+
+	stack.Push(2)
+	stack.Apply(groups()...)
+	if stack.Depth() != 2 || stack.Index() != 0 {
+		t.Fatalf("after confirmation push: depth=%d index=%d", stack.Depth(), stack.Index())
+	}
+	exactlyOneFocused(t, confirm, 0)
+	stack.Next()
+	stack.Apply(groups()...)
+	exactlyOneFocused(t, confirm, 1)
+
+	if !stack.Pop() {
+		t.Fatal("Pop() returned false for nested confirmation")
+	}
+	stack.Apply(groups()...)
+	if stack.Depth() != 1 || stack.Index() != 0 {
+		t.Fatalf("after confirmation pop: depth=%d index=%d", stack.Depth(), stack.Index())
+	}
+	exactlyOneFocused(t, palette, 0)
+	for i, item := range confirm {
+		if item.focused {
+			t.Fatalf("confirmation item %d retained focus after pop", i)
+		}
+	}
+
+	if !stack.Pop() {
+		t.Fatal("Pop() returned false for palette")
+	}
+	stack.Apply(groups()...)
+	if stack.Depth() != 0 || stack.Active() || stack.Index() != 2 {
+		t.Fatalf("after palette pop: depth=%d active=%v index=%d", stack.Depth(), stack.Active(), stack.Index())
+	}
+	exactlyOneFocused(t, background, 2)
+	if stack.Pop() {
+		t.Fatal("Pop() returned true at root")
+	}
+}
+
+func TestStackMutationsSurviveValueCopies(t *testing.T) {
+	original := NewStack(2)
+	original.Set(1)
+
+	copy := original
+	copy.Push(1)
+	copy.Next()
+	if original.Depth() != 0 || original.Index() != 1 {
+		t.Fatalf("original changed through copied stack: depth=%d index=%d", original.Depth(), original.Index())
+	}
+	if copy.Depth() != 1 || copy.Index() != 0 {
+		t.Fatalf("copy state: depth=%d index=%d, want depth 1 index 0", copy.Depth(), copy.Index())
+	}
+}
+
 func toFocusables(items []*fake) []Focusable {
 	result := make([]Focusable, len(items))
 	for i, item := range items {
