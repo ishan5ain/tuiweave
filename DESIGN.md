@@ -178,6 +178,10 @@ rendered **deterministically** — no pty, no event loop, no timing flake:
 - `-update` flag regenerates; failures print readable line diffs.
 - Doubles as the library's own regression suite.
 
+Overlay composition uses the same grapheme-preserving cell boundary as the
+snapshot harness, so modal content does not lose combining marks when it
+replaces padded base cells.
+
 Rejected as the core loop: `x/exp/teatest` — experimental dependency,
 whole-program granularity, ANSI-laden goldens agents can't usefully read.
 (Fine for occasional program-level smoke tests.) Live pty capture (vhs /

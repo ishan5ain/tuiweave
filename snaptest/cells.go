@@ -9,6 +9,8 @@ import (
 
 	uv "github.com/charmbracelet/ultraviolet"
 	"github.com/charmbracelet/x/ansi"
+
+	"github.com/ishansain/gotui/internal/grapheme"
 )
 
 // Option configures SnapCells.
@@ -85,7 +87,7 @@ func SnapCells(t *testing.T, view string, opts ...Option) {
 
 // renderToGrid parses a rendered ANSI string into a cell grid.
 func renderToGrid(view string) uv.ScreenBuffer {
-	protected, replacements := protectCombining(view)
+	protected, replacements := grapheme.Protect(view)
 	ss := uv.NewStyledString(protected)
 	bounds := ss.Bounds()
 	buf := uv.NewScreenBuffer(bounds.Dx(), bounds.Dy())
@@ -106,54 +108,6 @@ func renderToGrid(view string) uv.ScreenBuffer {
 		}
 	}
 	return buf
-}
-
-// protectCombining replaces an ASCII-leading grapheme followed by combining
-// marks with a private-use sentinel. ultraviolet's ASCII fast path otherwise
-// decodes the base rune first, then lets the following padding overwrite the
-// separate width-zero mark before SnapCells can describe it.
-func protectCombining(view string) (string, map[string]string) {
-	replacements := map[string]string{}
-	var b strings.Builder
-	b.Grow(len(view))
-	parser := ansi.GetParser()
-	defer ansi.PutParser(parser)
-
-	const firstMarker = rune('\ue000')
-	nextMarker := firstMarker
-	state := byte(0)
-	remaining := view
-	for len(remaining) > 0 {
-		seq, width, n, nextState := ansi.DecodeSequence(remaining, state, parser)
-		if n <= 0 {
-			b.WriteByte(remaining[0])
-			remaining = remaining[1:]
-			state = 0
-			continue
-		}
-
-		if width == 1 && n == 1 && remaining[0] < 0x80 {
-			cluster, _ := ansi.FirstGraphemeCluster(remaining, ansi.GraphemeWidth)
-			if len(cluster) > 1 && ansi.StringWidth(cluster) == 1 {
-				marker := string(nextMarker)
-				for strings.Contains(view, marker) || replacements[marker] != "" {
-					nextMarker++
-					marker = string(nextMarker)
-				}
-				replacements[marker] = cluster
-				b.WriteString(marker)
-				remaining = remaining[len(cluster):]
-				state = 0
-				nextMarker++
-				continue
-			}
-		}
-
-		b.WriteString(seq)
-		remaining = remaining[n:]
-		state = nextState
-	}
-	return b.String(), replacements
 }
 
 // run is a horizontal stretch of cells sharing one style.

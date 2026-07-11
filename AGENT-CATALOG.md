@@ -47,7 +47,7 @@ rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
 | `inspect` | Describing UI semantics for tests/tools/agents | `Inspect()`, `Bind`, `BindAt`, `Group`, `Marshal` |
 | `action` | Sharing selectable action definitions and semantic IDs | `Item{ID, Label, Description, Disabled}`; `SelectID`, `ParseSelectID` |
 | `focus` | Managing tab order and modal scopes across copied MVU models | `NewManager(n)` or `NewScope(n)`; apply fresh addresses after changes |
-| `overlay` | Compositing a modal or popover | `overlay.Center(base, over)` or `Place` |
+| `overlay` | Compositing a modal or popover | `overlay.Center(base, over)` or `Place`; preserves wide/combining graphemes |
 | `scrollbar` | Adding a standalone scroll indicator | `scrollbar.For(theme, component)` in a 1-cell layout segment |
 | `frame` | Composing reusable decoration around app-owned strings | `Panel(theme, content, width, PanelOptions{...})`; natural height, exact width |
 

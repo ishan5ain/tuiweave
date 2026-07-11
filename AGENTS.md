@@ -671,7 +671,9 @@ Dialog and permission content is clipped to the assigned outer width, including
 wide labels and narrow modal boxes; the app still owns visibility and routing.
 
 `overlay.Place/Center` composite in cell space — overlays cleanly replace
-what's beneath, styles included. Never splice overlay strings manually.
+what’s beneath, styles included. Never splice overlay strings manually.
+Overlay composition preserves wide and combining graphemes in the overlaid
+content, including when padding follows the grapheme.
 
 ### reference compositions
 

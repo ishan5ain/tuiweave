@@ -8,20 +8,38 @@ package overlay
 
 import (
 	uv "github.com/charmbracelet/ultraviolet"
+	"github.com/charmbracelet/x/ansi"
+
+	"github.com/ishansain/gotui/internal/grapheme"
 )
 
 // Place draws over on top of base with over's top-left corner at column x,
 // row y (cell coordinates, 0-based), and returns the composed view. The
 // result has base's dimensions; parts of over outside base are clipped.
 func Place(base, over string, x, y int) string {
+	protected, replacements := grapheme.ProtectMany(base, over)
+	base, over = protected[0], protected[1]
+
 	bs := uv.NewStyledString(base)
 	bounds := bs.Bounds()
 	buf := uv.NewScreenBuffer(bounds.Dx(), bounds.Dy())
+	buf.Method = ansi.GraphemeWidth
 	bs.Draw(buf, buf.Bounds())
 
 	os := uv.NewStyledString(over)
 	ob := os.Bounds()
 	os.Draw(buf, uv.Rect(x, y, ob.Dx(), ob.Dy()))
+	for row := range buf.Height() {
+		for col := range buf.Width() {
+			cell := buf.CellAt(col, row)
+			if cell == nil {
+				continue
+			}
+			if original, ok := replacements[cell.Content]; ok {
+				cell.Content = original
+			}
+		}
+	}
 
 	return buf.Render()
 }

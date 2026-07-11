@@ -341,6 +341,9 @@ daily use.
 - [x] **Cell-width audit (snapshot slice):** `SnapCells` now preserves
       ASCII-leading combining graphemes in style-run goldens instead of
       losing them through the cell decoder's width-zero path.
+- [x] **Cell-width audit (overlay slice):** modal/popover composition now
+      preserves combining graphemes in overlaid content and shares the
+      internal protection helper with `SnapCells`.
 - [ ] **Cell-width audit (remaining components):** review other text-bearing
       components and shared helpers for wide/combining-rune behavior.
 - [ ] Autocomplete and command-palette primitives

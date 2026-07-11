@@ -4,6 +4,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/charmbracelet/x/ansi"
+
 	"github.com/ishansain/gotui/snaptest"
 )
 
@@ -39,4 +41,14 @@ func TestOverlayPreservesStyles(t *testing.T) {
 	styledOver := "\x1b[1;34mBB\x1b[0m"
 	out := Place(styledBase, styledOver, 4, 0)
 	snaptest.SnapCells(t, out)
+}
+
+func TestOverlayPreservesCombiningGraphemes(t *testing.T) {
+	view := Place("        ", "e\u0301 ", 0, 0)
+	out := ansi.Strip(view)
+	if !strings.Contains(out, "e\u0301") {
+		t.Fatalf("overlay lost combining grapheme: %q", out)
+	}
+	snaptest.Snap(t, view)
+	snaptest.SnapCells(t, view)
 }
