@@ -8,8 +8,8 @@ import (
 	"github.com/ishansain/gotui/inspect"
 )
 
-// Actions reports stable local intents for textarea focus, selection, and
-// history.
+// Actions reports stable local intents for textarea focus, selection, history,
+// and killed-text insertion.
 func (m Model) Actions() []inspect.Action {
 	return []inspect.Action{
 		{ID: ActionFocus, Label: "Focus textarea", Enabled: !m.focused},
@@ -27,6 +27,9 @@ func (m Model) applyAction(msg tea.Msg) (Model, bool) {
 	action, ok := msg.(inspect.ActionMsg)
 	if !ok {
 		return m, false
+	}
+	if action.ID != ActionYank {
+		m.resetTransientEditing()
 	}
 	switch action.ID {
 	case ActionFocus:

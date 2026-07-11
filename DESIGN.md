@@ -442,8 +442,10 @@ theme API from growing per-component.
   geometry now uses grapheme clusters and terminal-cell widths for wide and
   combining characters. It also has whitespace-delimited word movement and a
   bounded model-owned kill/yank ring (`ctrl+w/u/k`, `alt+y`; `ctrl+y` remains
-  redo). Still open: kill-ring rotation/coalescing, richer editing commands,
-  IME, and a broader cell-width audit across text-bearing components.
+  redo). Consecutive kills coalesce in direction-aware order, and repeated
+  yanks rotate through older kills without duplicating the inserted text. Still
+  open: richer editing commands, IME, and a broader cell-width audit across
+  text-bearing components.
 - **Streaming markdown renderer design:** incremental block parser vs
   full-document reparse with damage hints — decide when glamour's limits are
   measured, not guessed.

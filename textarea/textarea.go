@@ -27,16 +27,22 @@ import (
 
 // Model is a textarea component. Create one with New.
 type Model struct {
-	width, height int
-	lines         [][]rune
-	row, col      int // cursor in logical coordinates (col in runes)
-	yoff          int // first visible visual row
-	focused       bool
-	anchor        position
-	hasAnchor     bool
-	undo          []editState
-	redo          []editState
-	killRing      []string
+	width, height     int
+	lines             [][]rune
+	row, col          int // cursor in logical coordinates (col in runes)
+	yoff              int // first visible visual row
+	focused           bool
+	anchor            position
+	hasAnchor         bool
+	undo              []editState
+	redo              []editState
+	killRing          []string
+	canCoalesceKill   bool
+	lastKillDirection killDirection
+	yankActive        bool
+	yankIndex         int
+	yankStart         position
+	yankEnd           position
 
 	// Prompt is rendered before the first visual row; continuation rows are
 	// indented to match. Default "> ".
@@ -104,7 +110,7 @@ func (m *Model) SetValue(s string) {
 	m.setValue(s)
 	m.hasAnchor = false
 	m.resetHistory()
-	m.killRing = nil
+	m.resetKillState()
 	m.ensureCursorVisible()
 }
 
@@ -124,7 +130,7 @@ func (m *Model) Reset() {
 	m.row, m.col, m.yoff = 0, 0, 0
 	m.hasAnchor = false
 	m.resetHistory()
-	m.killRing = nil
+	m.resetKillState()
 }
 
 // Empty reports whether the textarea holds no text.
@@ -138,6 +144,7 @@ func (m *Model) InsertString(s string) {
 	if s == "" {
 		return
 	}
+	m.resetTransientEditing()
 	m.applyEdit(func() { m.replaceSelection(s) })
 }
 
@@ -411,8 +418,18 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 		return m, nil
 	}
 
+	keyName := key.String()
+	isKill := keyName == "ctrl+u" || keyName == "ctrl+k" || keyName == "ctrl+w"
+	if keyName != "alt+y" && !isKill {
+		m.resetTransientEditing()
+	}
+	if isKill {
+		m.yankActive = false
+		m.yankIndex = 0
+	}
+
 	extend := key.Mod&tea.ModShift != 0
-	switch key.String() {
+	switch keyName {
 	case "enter":
 		m.applyEdit(func() { m.replaceSelection("\n") })
 	case "backspace":
@@ -460,17 +477,17 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 	case "ctrl+u":
 		m.applyEdit(func() {
 			if m.HasSelection() {
-				m.killSelection()
+				m.killSelection(killBackward)
 				return
 			}
 			start := position{row: m.row, col: 0}
 			m.setSelection(start, m.cursorPosition())
-			m.killSelection()
+			m.killSelection(killBackward)
 		})
 	case "ctrl+k":
 		m.applyEdit(func() {
 			if m.HasSelection() {
-				m.killSelection()
+				m.killSelection(killForward)
 				return
 			}
 			start := m.cursorPosition()
@@ -481,12 +498,12 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 				end = position{row: start.row + 1, col: 0}
 			}
 			m.setSelection(start, end)
-			m.killSelection()
+			m.killSelection(killForward)
 		})
 	case "ctrl+w":
 		m.applyEdit(func() {
 			if m.HasSelection() {
-				m.killSelection()
+				m.killSelection(killBackward)
 				return
 			}
 			start := m.cursorPosition()
@@ -504,7 +521,7 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 				start.col = i
 			}
 			m.setSelection(start, m.cursorPosition())
-			m.killSelection()
+			m.killSelection(killBackward)
 		})
 	default:
 		return m, nil

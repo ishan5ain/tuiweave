@@ -168,9 +168,10 @@ general-purpose composition work begins against a complete component set.
       bounded undo/redo, plus cell-aware display geometry for wide and
       combining characters. The initial editing-depth follow-up now adds
       whitespace-delimited word movement, Shift-word selection, and a bounded
-      kill/yank ring (`ctrl+w/u/k`, `alt+y`; `ctrl+y` remains redo). Deferred
-      follow-ups: kill-ring rotation/coalescing, richer editing commands, IME,
-      and a broader cell-width audit across text-bearing components.
+      kill/yank ring (`ctrl+w/u/k`, `alt+y`; repeated `alt+y` rotates and
+      consecutive kills coalesce; `ctrl+y` remains redo). Deferred follow-ups:
+      richer editing commands, IME, and a broader cell-width audit across
+      text-bearing components.
 - [x] **Example coverage gaps closed**: `examples/table` (mock git-status:
       table + diffview.Model + scrollbars on both panes, golden-tested);
       `examples/chat` input swapped to textarea (enter sends, alt+enter
@@ -313,8 +314,12 @@ daily use.
       delimited word-wise movement, Shift-word selection, and a bounded
       model-owned kill ring for `ctrl+w`, `ctrl+u`, and `ctrl+k`, with yank via
       `alt+y` or the semantic `yank` action. `ctrl+y` remains redo.
-- [ ] **Textarea tier 2 remaining follow-ups:** kill-ring rotation/coalescing,
-      richer editing commands, and IME behavior.
+- [x] **Textarea tier 2 remaining follow-ups (kill-ring slice):** consecutive
+      kills coalesce in direction-aware order, and repeated `alt+y` rotates
+      through older kills without appending duplicate text. `ctrl+y` remains
+      redo.
+- [ ] **Textarea tier 2 remaining follow-ups:** richer editing commands and
+      IME behavior.
 - [x] **Cell-width handling (initial textarea slice):** use grapheme clusters
       and terminal-cell widths for textarea wrapping, cursor columns, padding,
       placeholders, and exact-width rendering.

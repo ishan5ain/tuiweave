@@ -556,12 +556,14 @@ Grow a chat input with its content by re-splitting the layout after edits:
   selection changes themselves are not edits.
 - `ctrl+left/right` move by whitespace-delimited words; Shift variants select
   those words. `ctrl+w`, `ctrl+u`, and `ctrl+k` kill text into a bounded
-  20-entry ring; `alt+y` or the semantic `yank` action inserts the latest kill.
-  `ctrl+y` remains redo for compatibility with the history contract.
+  20-entry ring; consecutive kills coalesce in direction-aware order. `alt+y`
+  or the semantic `yank` action inserts the latest kill, and repeating it
+  rotates through older kills without appending duplicates. `ctrl+y` remains
+  redo for compatibility with the history contract.
 - Textarea display geometry is grapheme- and cell-aware for wide and combining
-  characters, while logical selection positions remain rune-based. Kill-ring
-  rotation/coalescing, richer editing commands, and IME behavior remain later
-  work; other text-bearing components still need a broader cell-width audit.
+  characters, while logical selection positions remain rune-based. Richer
+  editing commands and IME behavior remain later work; other text-bearing
+  components still need a broader cell-width audit.
 
 ### scrollbar
 

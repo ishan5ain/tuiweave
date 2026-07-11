@@ -372,6 +372,40 @@ func TestKillRingAndYank(t *testing.T) {
 	}
 }
 
+func TestKillRingCoalescesAndRotates(t *testing.T) {
+	ta := newFocused(24, 3)
+	ta.SetValue("one two three")
+	ta, _ = ta.Update(key("ctrl+w"))
+	ta, _ = ta.Update(key("ctrl+w"))
+	if got := ta.killRing[0]; got != "two three" {
+		t.Fatalf("backward kill coalescing = %q, want %q", got, "two three")
+	}
+
+	ta.SetValue("ab\ncd")
+	ta.row, ta.col = 0, 1
+	ta, _ = ta.Update(key("ctrl+k"))
+	ta, _ = ta.Update(key("ctrl+k"))
+	if got := ta.killRing[0]; got != "b\n" {
+		t.Fatalf("forward kill coalescing = %q, want %q", got, "b\n")
+	}
+
+	ta.SetValue("one two")
+	ta, _ = ta.Update(key("ctrl+w"))
+	ta, _ = ta.Update(key("left")) // break the consecutive-kill chain
+	ta, _ = ta.Update(key("ctrl+w"))
+	if len(ta.killRing) != 2 || ta.killRing[0] != "one" || ta.killRing[1] != "two" {
+		t.Fatalf("kill ring = %#v, want [one two]", ta.killRing)
+	}
+	ta, _ = ta.Update(key("alt+y"))
+	if got := ta.Value(); got != "one " {
+		t.Fatalf("first yank = %q, want %q", got, "one ")
+	}
+	ta, _ = ta.Update(key("alt+y"))
+	if got := ta.Value(); got != "two " {
+		t.Fatalf("rotated yank = %q, want %q", got, "two ")
+	}
+}
+
 func TestTextareaSemanticEditingActions(t *testing.T) {
 	ta := newFocused(20, 3)
 	ta.SetValue("abc")
@@ -424,7 +458,10 @@ func TestTextareaEditingDepthScenarioGolden(t *testing.T) {
 	m.textarea.SetValue("one two")
 	result := snaptest.RunScenario(m,
 		snaptest.ScenarioStep{Name: "kill previous word", Msg: key("ctrl+w")},
+		snaptest.ScenarioStep{Name: "break kill chain", Msg: key("left")},
+		snaptest.ScenarioStep{Name: "kill another word", Msg: key("ctrl+w")},
 		snaptest.ScenarioStep{Name: "yank", Msg: key("alt+y")},
+		snaptest.ScenarioStep{Name: "rotate yank", Msg: key("alt+y")},
 		snaptest.ScenarioStep{Name: "undo yank", Msg: key("ctrl+z")},
 	)
 	snaptest.SnapScenario(t, result)

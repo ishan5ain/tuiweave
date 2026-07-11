@@ -8,9 +8,24 @@ command: no
 > one
 
 
+## break kill chain
+command: no
+> one
+
+
+## kill another word
+command: no
+>
+
+
 ## yank
 command: no
-> one two
+> one
+
+
+## rotate yank
+command: no
+> two
 
 
 ## undo yank

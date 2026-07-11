@@ -66,6 +66,7 @@ func (m Model) SelectedText() string {
 // SelectAll selects the complete logical value and places the cursor at its
 // end. Selection changes do not create undo entries.
 func (m *Model) SelectAll() {
+	m.resetTransientEditing()
 	if m.Empty() {
 		m.ClearSelection()
 		return
@@ -78,7 +79,10 @@ func (m *Model) SelectAll() {
 }
 
 // ClearSelection removes the current selection without changing the cursor.
-func (m *Model) ClearSelection() { m.hasAnchor = false }
+func (m *Model) ClearSelection() {
+	m.hasAnchor = false
+	m.resetTransientEditing()
+}
 
 func (m Model) selectionContains(row, col int) bool {
 	start, end, ok := m.selectionRange()
@@ -217,6 +221,7 @@ func (m Model) CanRedo() bool { return len(m.redo) > 0 }
 
 // Undo restores the most recent edit state, if one exists.
 func (m *Model) Undo() {
+	m.resetTransientEditing()
 	if len(m.undo) == 0 {
 		return
 	}
@@ -233,6 +238,7 @@ func (m *Model) Undo() {
 
 // Redo reapplies the most recently undone edit state, if one exists.
 func (m *Model) Redo() {
+	m.resetTransientEditing()
 	if len(m.redo) == 0 {
 		return
 	}
