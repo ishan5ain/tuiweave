@@ -10,8 +10,8 @@
 //	layout.Vertical(layout.Fill(1), layout.Len(h)).Apply(...)
 //
 // Tier-2 editing adds logical-rune selections, select-all/replacement, bounded
-// undo/redo, word-wise movement, and a small model-owned kill ring. IME and
-// richer editing commands remain separate follow-up work.
+// undo/redo, word-wise movement, richer word deletion, and a small model-owned
+// kill ring. IME remains a separate follow-up work item.
 package textarea
 
 import (
@@ -325,13 +325,12 @@ func (m *Model) moveRight() {
 
 func wordSpace(r rune) bool { return unicode.IsSpace(r) }
 
-func (m *Model) moveWordLeft() {
+func (m Model) wordStartPosition() position {
 	if m.col == 0 {
-		if m.row > 0 {
-			m.row--
-			m.col = len(m.lines[m.row])
+		if m.row == 0 {
+			return position{}
 		}
-		return
+		return position{row: m.row - 1, col: len(m.lines[m.row-1])}
 	}
 	line := m.lines[m.row]
 	i := m.col
@@ -341,10 +340,10 @@ func (m *Model) moveWordLeft() {
 	for i > 0 && !wordSpace(line[i-1]) {
 		i--
 	}
-	m.col = i
+	return position{row: m.row, col: i}
 }
 
-func (m *Model) moveWordRight() {
+func (m Model) wordEndPosition() position {
 	line := m.lines[m.row]
 	i := m.col
 	for i < len(line) && !wordSpace(line[i]) {
@@ -354,11 +353,19 @@ func (m *Model) moveWordRight() {
 		i++
 	}
 	if i == len(line) && m.row < len(m.lines)-1 {
-		m.row++
-		m.col = 0
-		return
+		return position{row: m.row + 1}
 	}
-	m.col = i
+	return position{row: m.row, col: i}
+}
+
+func (m *Model) moveWordLeft() {
+	start := m.wordStartPosition()
+	m.row, m.col = start.row, start.col
+}
+
+func (m *Model) moveWordRight() {
+	end := m.wordEndPosition()
+	m.row, m.col = end.row, end.col
 }
 
 // moveVertical moves the cursor by one visual row, clamping the column.
@@ -419,7 +426,8 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 	}
 
 	keyName := key.String()
-	isKill := keyName == "ctrl+u" || keyName == "ctrl+k" || keyName == "ctrl+w"
+	isKill := keyName == "ctrl+u" || keyName == "ctrl+k" || keyName == "ctrl+w" ||
+		keyName == "ctrl+delete" || keyName == "alt+backspace"
 	if keyName != "alt+y" && !isKill {
 		m.resetTransientEditing()
 	}
@@ -447,6 +455,16 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 				return
 			}
 			m.deleteForward()
+		})
+	case "ctrl+delete":
+		m.applyEdit(func() {
+			if m.HasSelection() {
+				m.killSelection(killForward)
+				return
+			}
+			start := m.cursorPosition()
+			m.setSelection(start, m.wordEndPosition())
+			m.killSelection(killForward)
 		})
 	case "left", "shift+left":
 		m.moveWithSelection(extend, -1, m.moveLeft)
@@ -506,20 +524,17 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 				m.killSelection(killBackward)
 				return
 			}
-			start := m.cursorPosition()
-			if start.col == 0 && start.row > 0 {
-				start = position{row: start.row - 1, col: len(m.lines[start.row-1])}
-			} else {
-				line := m.lines[start.row]
-				i := start.col
-				for i > 0 && wordSpace(line[i-1]) {
-					i--
-				}
-				for i > 0 && !wordSpace(line[i-1]) {
-					i--
-				}
-				start.col = i
+			start := m.wordStartPosition()
+			m.setSelection(start, m.cursorPosition())
+			m.killSelection(killBackward)
+		})
+	case "alt+backspace":
+		m.applyEdit(func() {
+			if m.HasSelection() {
+				m.killSelection(killBackward)
+				return
 			}
+			start := m.wordStartPosition()
 			m.setSelection(start, m.cursorPosition())
 			m.killSelection(killBackward)
 		})

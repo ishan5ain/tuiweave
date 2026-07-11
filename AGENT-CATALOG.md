@@ -60,7 +60,7 @@ rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
 | `table` | Selecting rows with columns | Header and rule consume two rows |
 | `viewport` | Scrolling pre-rendered content | Mouse wheel works even when blurred |
 | `textinput` | Editing one line | Cell-aware prompt, placeholder, cursor, and horizontal window; Enter is not handled |
-| `textarea` | Editing wrapped/multiline text | Logical-rune selection, cell-aware wrapping, bounded undo/redo, word movement, and a bounded kill/yank ring; Enter inserts a newline |
+| `textarea` | Editing wrapped/multiline text | Logical-rune selection, cell-aware wrapping, bounded undo/redo, word movement/deletion, and a bounded kill/yank ring; Enter inserts a newline |
 | `help` | Showing key hints | Drops whole hints from the right when narrow |
 | `spinner` | Showing activity | Intrinsic-size; start with `Tick`, forward `TickMsg` |
 | `dialog` | Confirming or cancelling | App owns visibility; result arrives as `ResultMsg` |
@@ -80,8 +80,8 @@ rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
 | Package | Use when | Important behavior |
 |---|---|---|
 | `agentic/markdown` | Rendering assistant markdown | Depend on `Renderer`; `Sprint` degrades to raw source |
-| `agentic/chat` | Rendering a streaming transcript | Append cells, keep pointers, call `Invalidate()` after mutation |
-| `agentic/toolcall` | Rendering tool status/output | `SetID`, `SetStatus`, `Retry`, `Cancel`; output is capped when expanded |
+| `agentic/chat` | Rendering a streaming transcript | Append cells, keep pointers, call `Invalidate()` after mutation; cells clip to the assigned cell width |
+| `agentic/toolcall` | Rendering tool status/output | `SetID`, `SetStatus`, `Retry`, `Cancel`; headers and output stay within the assigned width |
 | `agentic/diffview` | Rendering unified diffs | `Sprint` for cells; `Model` for scrollable panes |
 | `agentic/permission` | Requesting approval | Add `Provenance`; options answer with `ResultMsg` |
 | `agentic/usagebar` | Showing model and usage | `SetStats`; context ≥80% warning, ≥95% danger |

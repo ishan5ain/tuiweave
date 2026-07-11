@@ -49,7 +49,7 @@ backend protocols, and session lifecycle.
 | `gotui/list` | Scrolling list with selection cursor and filtering (original-index selection) |
 | `gotui/viewport` | Scrollable window over pre-rendered content (keys + mouse wheel) |
 | `gotui/textinput` | Single-line input: cell-aware cursor, placeholder, and horizontal scroll |
-| `gotui/textarea` | Multi-line input: cell-aware soft wrap, visual-row cursor, logical-rune selection, word movement, bounded undo/redo and kill/yank, content-driven height |
+| `gotui/textarea` | Multi-line input: cell-aware soft wrap, visual-row cursor, logical-rune selection, word movement/deletion, bounded undo/redo and kill/yank, content-driven height |
 | `gotui/scrollbar` | One-column scroll indicator for any `Scrollable` component |
 | `gotui/table` | Fixed + flex columns, header, row selection |
 | `gotui/help` | One-line key-hint bar |

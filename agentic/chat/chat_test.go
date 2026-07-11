@@ -162,3 +162,21 @@ func TestCellFuncAdapter(t *testing.T) {
 		t.Error("CellFunc cell not rendered at transcript width")
 	}
 }
+
+func TestCellsStayWithinRenderWidth(t *testing.T) {
+	r := markdown.NewRenderer(gotui.Dark())
+	cells := []Cell{
+		NewUser(gotui.Dark(), "界 body"),
+		NewAssistant(gotui.Dark(), r),
+		NewText(gotui.Dark(), "界 note"),
+	}
+	for _, width := range []int{1, 2, 3, 5, 8, 12, 20} {
+		for _, cell := range cells {
+			for lineNo, line := range strings.Split(cell.Render(width), "\n") {
+				if got := ansi.StringWidth(line); got > width {
+					t.Fatalf("width %d line %d rendered as %d: %q", width, lineNo+1, got, line)
+				}
+			}
+		}
+	}
+}

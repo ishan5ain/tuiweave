@@ -34,6 +34,10 @@ func key(name string) tea.KeyPressMsg {
 		return tea.KeyPressMsg{Code: tea.KeyBackspace}
 	case "delete":
 		return tea.KeyPressMsg{Code: tea.KeyDelete}
+	case "ctrl+delete":
+		return tea.KeyPressMsg{Code: tea.KeyDelete, Mod: tea.ModCtrl}
+	case "alt+backspace":
+		return tea.KeyPressMsg{Code: tea.KeyBackspace, Mod: tea.ModAlt}
 	case "left":
 		return tea.KeyPressMsg{Code: tea.KeyLeft}
 	case "right":
@@ -406,6 +410,30 @@ func TestKillRingCoalescesAndRotates(t *testing.T) {
 	}
 }
 
+func TestRicherWordDeletionCommands(t *testing.T) {
+	ta := newFocused(24, 3)
+	ta.SetValue("one two three")
+	ta.row, ta.col = 0, 0
+	ta, _ = ta.Update(key("ctrl+delete"))
+	if got := ta.Value(); got != "two three" || ta.killRing[0] != "one " {
+		t.Fatalf("forward word kill = %q, ring=%q; want two three and one space", got, ta.killRing[0])
+	}
+	ta, _ = ta.Update(key("alt+y"))
+	if got := ta.Value(); got != "one two three" {
+		t.Fatalf("forward word yank = %q, want original value", got)
+	}
+
+	ta.SetValue("one two")
+	ta, _ = ta.Update(key("alt+backspace"))
+	if got := ta.Value(); got != "one " || ta.killRing[0] != "two" {
+		t.Fatalf("alt+backspace = %q, ring=%q; want one space and two", got, ta.killRing[0])
+	}
+	ta, _ = ta.Update(key("ctrl+z"))
+	if got := ta.Value(); got != "one two" {
+		t.Fatalf("undo word kill = %q, want original value", got)
+	}
+}
+
 func TestTextareaSemanticEditingActions(t *testing.T) {
 	ta := newFocused(20, 3)
 	ta.SetValue("abc")
@@ -463,6 +491,17 @@ func TestTextareaEditingDepthScenarioGolden(t *testing.T) {
 		snaptest.ScenarioStep{Name: "yank", Msg: key("alt+y")},
 		snaptest.ScenarioStep{Name: "rotate yank", Msg: key("alt+y")},
 		snaptest.ScenarioStep{Name: "undo yank", Msg: key("ctrl+z")},
+	)
+	snaptest.SnapScenario(t, result)
+}
+
+func TestTextareaWordDeletionScenarioGolden(t *testing.T) {
+	m := scenarioModel{textarea: newFocused(20, 3)}
+	m.textarea.SetValue("one two")
+	result := snaptest.RunScenario(m,
+		snaptest.ScenarioStep{Name: "move to start", Msg: key("home")},
+		snaptest.ScenarioStep{Name: "delete next word", Msg: key("ctrl+delete")},
+		snaptest.ScenarioStep{Name: "yank deleted word", Msg: key("alt+y")},
 	)
 	snaptest.SnapScenario(t, result)
 }

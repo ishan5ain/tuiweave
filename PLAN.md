@@ -318,14 +318,20 @@ daily use.
       kills coalesce in direction-aware order, and repeated `alt+y` rotates
       through older kills without appending duplicate text. `ctrl+y` remains
       redo.
-- [ ] **Textarea tier 2 remaining follow-ups:** richer editing commands and
-      IME behavior.
+- [x] **Textarea tier 2 richer editing slice:** `ctrl+delete` kills the next
+      whitespace-delimited word and `alt+backspace` aliases backward word kill;
+      both share the bounded kill ring and undo behavior.
+- [ ] **Textarea tier 2 remaining follow-ups:** IME behavior and any further
+      editor-specific commands that prove broadly reusable.
 - [x] **Cell-width handling (initial textarea slice):** use grapheme clusters
       and terminal-cell widths for textarea wrapping, cursor columns, padding,
       placeholders, and exact-width rendering.
 - [x] **Cell-width handling (textinput audit slice):** use visible cell widths
       for prompt and placeholder budgets, preserve grapheme clusters in the
       horizontal cursor window, and keep wide/combining content within bounds.
+- [x] **Cell-width audit (initial shared/agentic pass):** core text renderers
+      already use ANSI/lipgloss cell measurements; chat cells and tool-call
+      headers/output now clamp wide and narrow content to their assigned width.
 - [ ] **Cell-width audit (remaining components):** review other text-bearing
       components and shared helpers for wide/combining-rune behavior.
 - [ ] Autocomplete and command-palette primitives

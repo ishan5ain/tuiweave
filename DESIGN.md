@@ -444,10 +444,12 @@ theme API from growing per-component.
   bounded model-owned kill/yank ring (`ctrl+w/u/k`, `alt+y`; `ctrl+y` remains
   redo). Consecutive kills coalesce in direction-aware order, and repeated
   yanks rotate through older kills without duplicating the inserted text. Still
-  open: richer editing commands, IME, and a broader cell-width audit across
-  text-bearing components. `textinput` now has a corresponding initial audit
+  open: IME, further editor-specific commands, and a broader cell-width audit
+  across text-bearing components. `textinput` now has a corresponding initial audit
   slice for cell-aware prompt, placeholder, cursor, and horizontal-window
-  geometry; the remaining audit is still intentionally incremental.
+  geometry. The initial shared/agentic audit also clamps chat-cell headers and
+  tool-call output to their assigned width; the remaining audit is still
+  intentionally incremental.
 - **Streaming markdown renderer design:** incremental block parser vs
   full-document reparse with damage hints — decide when glamour's limits are
   measured, not guessed.

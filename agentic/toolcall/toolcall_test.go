@@ -4,6 +4,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/charmbracelet/x/ansi"
+
 	"github.com/ishansain/gotui"
 	"github.com/ishansain/gotui/agentic/chat"
 	"github.com/ishansain/gotui/inspect"
@@ -111,5 +113,18 @@ func TestTranscriptInspectionIncludesToolCallMetadata(t *testing.T) {
 	}
 	if len(child.Actions) != 2 {
 		t.Fatalf("tool actions = %+v", child.Actions)
+	}
+}
+
+func TestRenderStaysWithinWidth(t *testing.T) {
+	b := New(gotui.Dark(), "界工具", "执行 界界界")
+	b.Expanded = true
+	b.AppendOutput("界 output\nsecond line")
+	for _, width := range []int{1, 2, 3, 5, 8, 12, 20} {
+		for lineNo, line := range strings.Split(b.Render(width), "\n") {
+			if got := ansi.StringWidth(line); got > width {
+				t.Fatalf("width %d line %d rendered as %d: %q", width, lineNo+1, got, line)
+			}
+		}
 	}
 }

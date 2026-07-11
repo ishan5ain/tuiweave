@@ -143,18 +143,19 @@ func (b *Block) Render(width int) string {
 	if width <= 0 {
 		return ""
 	}
-	header := b.iconStyles[b.status].Render(icons[b.status]) + " " +
-		b.nameStyle.Render(b.Name)
-	if b.Summary != "" {
-		header += " " + b.summarySt.Render(
-			ansi.Truncate(b.Summary, max(0, width-ansi.StringWidth(b.Name)-2), "…"))
-	}
+	header := b.renderHeader(width)
 
 	if len(b.output) == 0 {
 		return header
 	}
 	if !b.Expanded {
-		return header + " " + b.hintStyle.Render(fmt.Sprintf("(%d output lines)", len(b.output)))
+		hint := fmt.Sprintf("(%d output lines)", len(b.output))
+		remaining := width - ansi.StringWidth(header)
+		if remaining <= 1 {
+			return header
+		}
+		hint = ansi.Truncate(hint, remaining-1, "…")
+		return header + " " + b.hintStyle.Render(hint)
 	}
 
 	shown := b.output
@@ -166,12 +167,34 @@ func (b *Block) Render(width int) string {
 	rows := make([]string, 0, len(shown)+2)
 	rows = append(rows, header)
 	for _, line := range shown {
-		line = ansi.Truncate(line, width-4, "…")
-		pad := strings.Repeat(" ", max(0, width-4-ansi.StringWidth(line)))
-		rows = append(rows, "  "+b.outputStyle.Render(" "+line+pad+" "))
+		rows = append(rows, b.renderOutputLine(line, width))
 	}
 	if hidden > 0 {
-		rows = append(rows, "  "+b.hintStyle.Render(fmt.Sprintf("… +%d more lines", hidden)))
+		hint := "  " + b.hintStyle.Render(fmt.Sprintf("… +%d more lines", hidden))
+		rows = append(rows, ansi.Truncate(hint, width, ""))
 	}
 	return strings.Join(rows, "\n")
+}
+
+func (b *Block) renderHeader(width int) string {
+	icon := icons[b.status]
+	iconPrefix := b.iconStyles[b.status].Render(icon) + " "
+	used := ansi.StringWidth(icon) + 1
+	name := ansi.Truncate(b.Name, max(0, width-used), "…")
+	header := iconPrefix + b.nameStyle.Render(name)
+	used += ansi.StringWidth(name)
+	if b.Summary != "" && used+1 < width {
+		summary := ansi.Truncate(b.Summary, width-used-1, "…")
+		header += " " + b.summarySt.Render(summary)
+	}
+	return ansi.Truncate(header, width, "")
+}
+
+func (b *Block) renderOutputLine(line string, width int) string {
+	if width < 4 {
+		return b.outputStyle.Render(ansi.Truncate(line, width, "…"))
+	}
+	line = ansi.Truncate(line, width-4, "…")
+	pad := strings.Repeat(" ", max(0, width-4-ansi.StringWidth(line)))
+	return "  " + b.outputStyle.Render(" "+line+pad+" ")
 }

@@ -1,11 +1,53 @@
 package chat
 
 import (
+	"strings"
+
 	lipgloss "charm.land/lipgloss/v2"
+	"github.com/charmbracelet/x/ansi"
 
 	"github.com/ishansain/gotui"
 	"github.com/ishansain/gotui/agentic/markdown"
 )
+
+func fitHeader(style lipgloss.Style, text string, width int) string {
+	if width <= 0 {
+		return ""
+	}
+	return style.Render(ansi.Truncate(text, width, ""))
+}
+
+func fitCell(view string, width int) string {
+	if width <= 0 {
+		return ""
+	}
+	rows := strings.Split(view, "\n")
+	for i, row := range rows {
+		rows[i] = ansi.Truncate(row, width, "")
+	}
+	return strings.Join(rows, "\n")
+}
+
+func fitPaddedBody(style lipgloss.Style, text string, width int) string {
+	if width <= 0 {
+		return ""
+	}
+	padding := min(2, width)
+	contentWidth := width - padding
+	if contentWidth == 0 {
+		return strings.Repeat(" ", padding)
+	}
+	rendered := style.PaddingLeft(padding).Width(contentWidth).Render(text)
+	rows := strings.Split(rendered, "\n")
+	for i, row := range rows {
+		row = ansi.Truncate(row, width, "")
+		if pad := width - ansi.StringWidth(row); pad > 0 {
+			row += strings.Repeat(" ", pad)
+		}
+		rows[i] = row
+	}
+	return strings.Join(rows, "\n")
+}
 
 // User is a user-message cell: an accent "❯ you" header over plain text.
 type User struct {
@@ -38,8 +80,8 @@ func (u *User) Lifecycle() State { return StateComplete }
 
 // Render implements Cell.
 func (u *User) Render(width int) string {
-	return u.headerStyle.Render("❯ you") + "\n" +
-		u.bodyStyle.Width(width).Render(u.text)
+	return fitCell(fitHeader(u.headerStyle, "❯ you", width)+"\n"+
+		fitPaddedBody(u.bodyStyle, u.text, width), width)
 }
 
 // Assistant is a streaming assistant-message cell: markdown-rendered text
@@ -110,7 +152,7 @@ func (a *Assistant) Render(width int) string {
 		a.cached = markdown.Sprint(a.renderer, a.source, width)
 		a.cachedWidth, a.cachedRevision, a.cachedValid = width, a.sourceRevision, true
 	}
-	return a.headerStyle.Render("✦ assistant") + "\n" + a.cached
+	return fitCell(fitHeader(a.headerStyle, "✦ assistant", width)+"\n"+a.cached, width)
 }
 
 // Text is a plain one-off cell for session notes ("compacted history",
@@ -143,5 +185,5 @@ func (t *Text) Lifecycle() State { return StateComplete }
 
 // Render implements Cell.
 func (t *Text) Render(width int) string {
-	return t.style.Width(width).Render(t.text)
+	return fitCell(t.style.Width(width).Render(t.text), width)
 }

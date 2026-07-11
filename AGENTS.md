@@ -564,6 +564,8 @@ Grow a chat input with its content by re-splitting the layout after edits:
   or the semantic `yank` action inserts the latest kill, and repeating it
   rotates through older kills without appending duplicates. `ctrl+y` remains
   redo for compatibility with the history contract.
+- `ctrl+delete` kills the next whitespace-delimited word; `alt+backspace` is
+  the backward-word-kill alias. Both share the kill ring and undo behavior.
 - Textarea display geometry is grapheme- and cell-aware for wide and combining
   characters, while logical selection positions remain rune-based. Richer
   editing commands and IME behavior remain later work; other text-bearing
@@ -745,6 +747,8 @@ a.Append(delta); c.Invalidate()
   or the continuation renders above it.
 - Adapt anything to a cell with `chat.CellFunc(func(w int) string {...})`
   — e.g. `diffview.Sprint(theme, diff, w)`.
+- Built-in user, assistant, note, and tool-call cells keep headers, padding,
+  and output within the assigned terminal-cell width, including narrow widths.
 - Identified cells can be found or replaced with `c.Cell(id)` and
   `c.Replace(id, cell)`. Assistant cells expose lifecycle state; tool-call
   blocks support `SetID`, `Retry`, and `Cancel`. Keep IDs stable across retries
