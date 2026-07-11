@@ -7,13 +7,13 @@ import (
 	tea "charm.land/bubbletea/v2"
 	lipgloss "charm.land/lipgloss/v2"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/inspect"
-	"github.com/ishansain/gotui/snaptest"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/inspect"
+	"github.com/ishan5ain/tuiweave/snaptest"
 )
 
 func newTestAutocomplete(width, height int) Model {
-	m := New(gotui.Dark())
+	m := New(tuiweave.Dark())
 	m.SetItems(
 		Item{ID: "git-checkout", Value: "git checkout ", Label: "git checkout", Description: "switch branch"},
 		Item{ID: "git-status", Value: "git status", Label: "git status", Description: "show changes"},
@@ -36,7 +36,7 @@ func keyPress(key string) tea.KeyPressMsg {
 func TestAutocompleteGolden(t *testing.T) {
 	m := newTestAutocomplete(38, 3)
 	snaptest.Snap(t, m.View())
-	snaptest.SnapCells(t, m.View(), snaptest.WithRoles(gotui.Dark()))
+	snaptest.SnapCells(t, m.View(), snaptest.WithRoles(tuiweave.Dark()))
 }
 
 func TestAutocompleteNavigationAndActivation(t *testing.T) {
@@ -95,7 +95,7 @@ func TestAutocompleteFilteringAndEmptyState(t *testing.T) {
 
 func TestAutocompleteWideAndNarrowContentStaysWithinBox(t *testing.T) {
 	for width := 1; width <= 40; width++ {
-		m := New(gotui.Dark())
+		m := New(tuiweave.Dark())
 		m.SetItems(
 			Item{ID: "wide", Value: "界界", Label: "界界 e\u0301", Description: "説明"},
 			Item{ID: "plain", Value: "plain", Label: "plain", Description: "text"},

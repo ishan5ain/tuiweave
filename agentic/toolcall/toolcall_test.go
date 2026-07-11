@@ -6,16 +6,16 @@ import (
 
 	"github.com/charmbracelet/x/ansi"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/agentic/chat"
-	"github.com/ishansain/gotui/inspect"
-	"github.com/ishansain/gotui/snaptest"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/agentic/chat"
+	"github.com/ishan5ain/tuiweave/inspect"
+	"github.com/ishan5ain/tuiweave/snaptest"
 )
 
 func newTestBlock() *Block {
-	b := New(gotui.Dark(), "Bash", "go test ./...")
+	b := New(tuiweave.Dark(), "Bash", "go test ./...")
 	b.SetStatus(StatusSuccess)
-	b.AppendOutput("ok  \tgotui/layout\t0.3s\nok  \tgotui/snaptest\t0.2s")
+	b.AppendOutput("ok  \ttuiweave/layout\t0.3s\nok  \ttuiweave/snaptest\t0.2s")
 	return b
 }
 
@@ -25,18 +25,18 @@ func TestCollapsedGolden(t *testing.T) {
 	if !strings.Contains(view, "(2 output lines)") {
 		t.Errorf("collapsed block missing line-count hint: %q", view)
 	}
-	snaptest.SnapCells(t, view, snaptest.WithRoles(gotui.Dark()))
+	snaptest.SnapCells(t, view, snaptest.WithRoles(tuiweave.Dark()))
 }
 
 func TestExpandedGolden(t *testing.T) {
 	b := newTestBlock()
 	b.Expanded = true
 	snaptest.Snap(t, b.Render(50))
-	snaptest.SnapCells(t, b.Render(50), snaptest.WithRoles(gotui.Dark()))
+	snaptest.SnapCells(t, b.Render(50), snaptest.WithRoles(tuiweave.Dark()))
 }
 
 func TestOutputCapAndHiddenCount(t *testing.T) {
-	b := New(gotui.Dark(), "Read", "main.go")
+	b := New(tuiweave.Dark(), "Read", "main.go")
 	b.MaxOutputLines = 3
 	b.Expanded = true
 	b.AppendOutput("l1\nl2\nl3\nl4\nl5")
@@ -50,7 +50,7 @@ func TestOutputCapAndHiddenCount(t *testing.T) {
 }
 
 func TestStatusIcons(t *testing.T) {
-	b := New(gotui.Dark(), "Bash", "")
+	b := New(tuiweave.Dark(), "Bash", "")
 	for status, icon := range icons {
 		b.SetStatus(status)
 		if !strings.Contains(b.Render(30), icon) {
@@ -60,14 +60,14 @@ func TestStatusIcons(t *testing.T) {
 }
 
 func TestNoOutputNoHint(t *testing.T) {
-	b := New(gotui.Dark(), "Bash", "ls")
+	b := New(tuiweave.Dark(), "Bash", "ls")
 	if view := b.Render(30); strings.Contains(view, "output lines") {
 		t.Errorf("block without output shows hint: %q", view)
 	}
 }
 
 func TestIdentityLifecycleCancelAndRetry(t *testing.T) {
-	b := New(gotui.Dark(), "Bash", "go test ./...")
+	b := New(tuiweave.Dark(), "Bash", "go test ./...")
 	b.SetID("tool-1")
 	b.SetStatus(StatusRunning)
 	b.AppendOutput("partial output")
@@ -97,9 +97,9 @@ func TestIdentityLifecycleCancelAndRetry(t *testing.T) {
 }
 
 func TestTranscriptInspectionIncludesToolCallMetadata(t *testing.T) {
-	c := chat.New(gotui.Dark())
+	c := chat.New(tuiweave.Dark())
 	c.SetSize(40, 5)
-	b := New(gotui.Dark(), "Bash", "go test ./...")
+	b := New(tuiweave.Dark(), "Bash", "go test ./...")
 	b.SetID("tool-1")
 	c.Append(b)
 
@@ -117,7 +117,7 @@ func TestTranscriptInspectionIncludesToolCallMetadata(t *testing.T) {
 }
 
 func TestRenderStaysWithinWidth(t *testing.T) {
-	b := New(gotui.Dark(), "界工具", "执行 界界界")
+	b := New(tuiweave.Dark(), "界工具", "执行 界界界")
 	b.Expanded = true
 	b.AppendOutput("界 output\nsecond line")
 	for _, width := range []int{1, 2, 3, 5, 8, 12, 20} {

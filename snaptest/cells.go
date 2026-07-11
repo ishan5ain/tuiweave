@@ -10,7 +10,7 @@ import (
 	uv "github.com/charmbracelet/ultraviolet"
 	"github.com/charmbracelet/x/ansi"
 
-	"github.com/ishansain/gotui/internal/grapheme"
+	"github.com/ishan5ain/tuiweave/internal/grapheme"
 )
 
 // Option configures SnapCells.
@@ -30,7 +30,7 @@ func colorKey(c color.Color) rgba {
 
 // WithRoles labels colors in the cells golden with the names of matching
 // color.Color fields from the given struct, instead of hex values. Pass a
-// theme (e.g. gotui.Dark()) so runs read like [fg=Accent bold] rather than
+// theme (e.g. tuiweave.Dark()) so runs read like [fg=Accent bold] rather than
 // [fg=#7aa2f7 bold].
 func WithRoles(theme any) Option {
 	return func(cfg *config) {

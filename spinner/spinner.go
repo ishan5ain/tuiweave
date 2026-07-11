@@ -13,8 +13,8 @@ import (
 	tea "charm.land/bubbletea/v2"
 	lipgloss "charm.land/lipgloss/v2"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/layout"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/layout"
 )
 
 var lastID atomic.Int64
@@ -39,7 +39,7 @@ type Model struct {
 
 // New returns a spinner styled with the theme's Accent role, animating the
 // classic braille-dots frames at 12 FPS.
-func New(theme gotui.Theme) Model {
+func New(theme tuiweave.Theme) Model {
 	return Model{
 		frames: []string{"⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"},
 		fps:    time.Second / 12,

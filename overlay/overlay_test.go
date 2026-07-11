@@ -6,7 +6,7 @@ import (
 
 	"github.com/charmbracelet/x/ansi"
 
-	"github.com/ishansain/gotui/snaptest"
+	"github.com/ishan5ain/tuiweave/snaptest"
 )
 
 func base() string {

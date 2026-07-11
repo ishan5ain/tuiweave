@@ -15,29 +15,29 @@ import (
 	tea "charm.land/bubbletea/v2"
 	lipgloss "charm.land/lipgloss/v2"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/action"
-	"github.com/ishansain/gotui/button"
-	"github.com/ishansain/gotui/dialog"
-	"github.com/ishansain/gotui/focus"
-	"github.com/ishansain/gotui/frame"
-	"github.com/ishansain/gotui/inspect"
-	"github.com/ishansain/gotui/layout"
-	"github.com/ishansain/gotui/line"
-	"github.com/ishansain/gotui/menu"
-	"github.com/ishansain/gotui/overlay"
-	"github.com/ishansain/gotui/palette"
-	"github.com/ishansain/gotui/progress"
-	"github.com/ishansain/gotui/splitpane"
-	"github.com/ishansain/gotui/stack"
-	"github.com/ishansain/gotui/statusbar"
-	"github.com/ishansain/gotui/table"
-	"github.com/ishansain/gotui/tabs"
-	"github.com/ishansain/gotui/toggle"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/action"
+	"github.com/ishan5ain/tuiweave/button"
+	"github.com/ishan5ain/tuiweave/dialog"
+	"github.com/ishan5ain/tuiweave/focus"
+	"github.com/ishan5ain/tuiweave/frame"
+	"github.com/ishan5ain/tuiweave/inspect"
+	"github.com/ishan5ain/tuiweave/layout"
+	"github.com/ishan5ain/tuiweave/line"
+	"github.com/ishan5ain/tuiweave/menu"
+	"github.com/ishan5ain/tuiweave/overlay"
+	"github.com/ishan5ain/tuiweave/palette"
+	"github.com/ishan5ain/tuiweave/progress"
+	"github.com/ishan5ain/tuiweave/splitpane"
+	"github.com/ishan5ain/tuiweave/stack"
+	"github.com/ishan5ain/tuiweave/statusbar"
+	"github.com/ishan5ain/tuiweave/table"
+	"github.com/ishan5ain/tuiweave/tabs"
+	"github.com/ishan5ain/tuiweave/toggle"
 )
 
 type model struct {
-	theme         gotui.Theme
+	theme         tuiweave.Theme
 	width, height int
 
 	tabs        tabs.Model
@@ -57,7 +57,7 @@ type model struct {
 }
 
 func newModel() model {
-	theme := gotui.Dark()
+	theme := tuiweave.Dark()
 	m := model{
 		theme:       theme,
 		tabs:        tabs.New(theme),

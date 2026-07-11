@@ -1,4 +1,4 @@
-// Package snaptest is gotui's snapshot test harness: it renders component
+// Package snaptest is tuiweave's snapshot test harness: it renders component
 // views to golden files and compares them on subsequent runs, giving agents
 // (and humans) a deterministic, readable way to verify what a TUI renders
 // without a terminal.
@@ -16,7 +16,7 @@
 // Typical usage:
 //
 //	func TestStatusbarDefault(t *testing.T) {
-//		sb := statusbar.New(gotui.Dark())
+//		sb := statusbar.New(tuiweave.Dark())
 //		sb.SetSize(80, 1)
 //		snaptest.Snap(t, sb.View())
 //	}

@@ -7,7 +7,7 @@ import (
 	lipgloss "charm.land/lipgloss/v2"
 	"github.com/charmbracelet/x/ansi"
 
-	"github.com/ishansain/gotui/snaptest"
+	"github.com/ishan5ain/tuiweave/snaptest"
 )
 
 func TestLineHelpersGolden(t *testing.T) {

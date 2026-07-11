@@ -8,25 +8,25 @@ import (
 	tea "charm.land/bubbletea/v2"
 	"github.com/charmbracelet/x/ansi"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/agentic/markdown"
-	"github.com/ishansain/gotui/inspect"
-	"github.com/ishansain/gotui/snaptest"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/agentic/markdown"
+	"github.com/ishan5ain/tuiweave/inspect"
+	"github.com/ishan5ain/tuiweave/snaptest"
 )
 
 func newTranscript(w, h int) Model {
-	c := New(gotui.Dark())
+	c := New(tuiweave.Dark())
 	c.SetSize(w, h)
 	return c
 }
 
 func TestTranscriptGolden(t *testing.T) {
 	c := newTranscript(44, 14)
-	r := markdown.NewRenderer(gotui.Dark())
+	r := markdown.NewRenderer(tuiweave.Dark())
 
-	c.Append(NewText(gotui.Dark(), "session started"))
-	c.Append(NewUser(gotui.Dark(), "explain the layout package"))
-	a := NewAssistant(gotui.Dark(), r)
+	c.Append(NewText(tuiweave.Dark(), "session started"))
+	c.Append(NewUser(tuiweave.Dark(), "explain the layout package"))
+	a := NewAssistant(tuiweave.Dark(), r)
 	a.Append("The **layout** package splits space with:\n\n- `Len` fixed\n- `Fill` grow\n")
 	c.Append(a)
 	c.Invalidate()
@@ -36,8 +36,8 @@ func TestTranscriptGolden(t *testing.T) {
 
 func TestAutoFollowStreaming(t *testing.T) {
 	c := newTranscript(30, 4)
-	r := markdown.NewRenderer(gotui.Dark())
-	a := NewAssistant(gotui.Dark(), r)
+	r := markdown.NewRenderer(tuiweave.Dark())
+	a := NewAssistant(tuiweave.Dark(), r)
 	c.Append(a)
 
 	for i := range 20 {
@@ -55,7 +55,7 @@ func TestAutoFollowStreaming(t *testing.T) {
 func TestScrollUpUnsticksScrollBottomResticks(t *testing.T) {
 	c := newTranscript(30, 4)
 	for i := range 20 {
-		c.Append(NewText(gotui.Dark(), fmt.Sprintf("note %d", i)))
+		c.Append(NewText(tuiweave.Dark(), fmt.Sprintf("note %d", i)))
 	}
 	c.Focus()
 
@@ -64,7 +64,7 @@ func TestScrollUpUnsticksScrollBottomResticks(t *testing.T) {
 		t.Fatal("scrolling up did not unstick auto-follow")
 	}
 	frozen := c.View()
-	c.Append(NewText(gotui.Dark(), "newest"))
+	c.Append(NewText(tuiweave.Dark(), "newest"))
 	if strings.Contains(ansi.Strip(c.View()), "newest") {
 		t.Error("unstuck transcript jumped to bottom on new content")
 	}
@@ -82,8 +82,8 @@ func TestScrollUpUnsticksScrollBottomResticks(t *testing.T) {
 }
 
 func TestAssistantRenderCache(t *testing.T) {
-	r := markdown.NewRenderer(gotui.Dark())
-	a := NewAssistant(gotui.Dark(), r)
+	r := markdown.NewRenderer(tuiweave.Dark())
+	a := NewAssistant(tuiweave.Dark(), r)
 	a.Append("hello **world**")
 
 	first := a.Render(30)
@@ -108,7 +108,7 @@ func (r *countingRenderer) Render(source string, _ int) (string, error) {
 
 func TestAssistantSetSourceRefreshesSameLengthContent(t *testing.T) {
 	r := &countingRenderer{}
-	a := NewAssistant(gotui.Dark(), r)
+	a := NewAssistant(tuiweave.Dark(), r)
 	a.SetSource("one")
 	a.Render(20)
 	a.SetSource("two")
@@ -120,7 +120,7 @@ func TestAssistantSetSourceRefreshesSameLengthContent(t *testing.T) {
 
 func TestCellIdentityLookupAndReplace(t *testing.T) {
 	c := newTranscript(30, 4)
-	a := NewAssistant(gotui.Dark(), markdown.NewRenderer(gotui.Dark()))
+	a := NewAssistant(tuiweave.Dark(), markdown.NewRenderer(tuiweave.Dark()))
 	a.SetID("assistant-1")
 	c.Append(a)
 
@@ -128,7 +128,7 @@ func TestCellIdentityLookupAndReplace(t *testing.T) {
 	if !ok || found != a {
 		t.Fatalf("Cell lookup = (%v, %v), want assistant-1", found, ok)
 	}
-	replacement := NewText(gotui.Dark(), "replayed")
+	replacement := NewText(tuiweave.Dark(), "replayed")
 	replacement.SetID("assistant-1")
 	if !c.Replace("assistant-1", replacement) {
 		t.Fatal("Replace did not find assistant-1")
@@ -141,7 +141,7 @@ func TestCellIdentityLookupAndReplace(t *testing.T) {
 
 func TestInspectIncludesIdentifiedLifecycleChildren(t *testing.T) {
 	c := newTranscript(30, 4)
-	a := NewAssistant(gotui.Dark(), markdown.NewRenderer(gotui.Dark()))
+	a := NewAssistant(tuiweave.Dark(), markdown.NewRenderer(tuiweave.Dark()))
 	a.SetID("assistant-1")
 	c.Append(a)
 	node := c.Inspect()
@@ -164,11 +164,11 @@ func TestCellFuncAdapter(t *testing.T) {
 }
 
 func TestCellsStayWithinRenderWidth(t *testing.T) {
-	r := markdown.NewRenderer(gotui.Dark())
+	r := markdown.NewRenderer(tuiweave.Dark())
 	cells := []Cell{
-		NewUser(gotui.Dark(), "界 body"),
-		NewAssistant(gotui.Dark(), r),
-		NewText(gotui.Dark(), "界 note"),
+		NewUser(tuiweave.Dark(), "界 body"),
+		NewAssistant(tuiweave.Dark(), r),
+		NewText(tuiweave.Dark(), "界 note"),
 	}
 	for _, width := range []int{1, 2, 3, 5, 8, 12, 20} {
 		for _, cell := range cells {

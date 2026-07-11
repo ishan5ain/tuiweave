@@ -6,7 +6,7 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 
-	"github.com/ishansain/gotui/inspect"
+	"github.com/ishan5ain/tuiweave/inspect"
 )
 
 // Actions reports stable local intents for table navigation and focus.

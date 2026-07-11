@@ -6,7 +6,7 @@ mock session — responses are scripted
 ✦ assistant   │  command.                                │
 Good question!│  Tool: Bash                              │th
 constraints:  │  Operation: execute                      │
-              │  Target: gotui workspace                 │
+              │  Target: tuiweave workspace              │
 • Len(n) — fix│  Scope: repository                       │
 • Fill(w) — gr│  Detail: go test ./...                   │
               │  Impact: runs the repository test suite  │

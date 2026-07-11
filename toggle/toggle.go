@@ -10,8 +10,8 @@ import (
 	lipgloss "charm.land/lipgloss/v2"
 	"github.com/charmbracelet/x/ansi"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/inspect"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/inspect"
 )
 
 const (
@@ -55,7 +55,7 @@ type Model struct {
 }
 
 // New returns an unchecked toggle styled from the theme's semantic roles.
-func New(theme gotui.Theme) Model {
+func New(theme tuiweave.Theme) Model {
 	base := lipgloss.NewStyle().Background(theme.SurfaceRaised)
 	return Model{
 		labelStyle:         base.Foreground(theme.Text),

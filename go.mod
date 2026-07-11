@@ -1,6 +1,6 @@
-module github.com/ishansain/gotui
+module github.com/ishan5ain/tuiweave
 
-go 1.26.2
+go 1.25.8
 
 require (
 	charm.land/bubbletea/v2 v2.0.8
@@ -28,7 +28,7 @@ require (
 	github.com/muesli/cancelreader v0.2.2 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e // indirect
-	github.com/yuin/goldmark v1.7.8 // indirect
+	github.com/yuin/goldmark v1.7.17 // indirect
 	github.com/yuin/goldmark-emoji v1.0.5 // indirect
 	golang.org/x/net v0.39.0 // indirect
 	golang.org/x/sync v0.21.0 // indirect

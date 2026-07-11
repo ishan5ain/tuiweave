@@ -6,12 +6,12 @@ import (
 
 	"github.com/charmbracelet/x/ansi"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/snaptest"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/snaptest"
 )
 
 func TestUsagebarGolden(t *testing.T) {
-	u := New(gotui.Dark())
+	u := New(tuiweave.Dark())
 	u.SetSize(60, 1)
 	u.SetStats(Stats{
 		Model:       "pi-large",
@@ -21,11 +21,11 @@ func TestUsagebarGolden(t *testing.T) {
 		ContextUsed: 0.37,
 	})
 	snaptest.Snap(t, u.View())
-	snaptest.SnapCells(t, u.View(), snaptest.WithRoles(gotui.Dark()))
+	snaptest.SnapCells(t, u.View(), snaptest.WithRoles(tuiweave.Dark()))
 }
 
 func TestContextWarnsByThreshold(t *testing.T) {
-	u := New(gotui.Dark())
+	u := New(tuiweave.Dark())
 	u.SetSize(60, 1)
 
 	u.SetStats(Stats{Model: "pi", ContextUsed: 0.85})

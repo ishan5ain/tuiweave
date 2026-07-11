@@ -8,12 +8,12 @@ import (
 	tea "charm.land/bubbletea/v2"
 	lipgloss "charm.land/lipgloss/v2"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/snaptest"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/snaptest"
 )
 
 func newTestTable(w, h, rows int) Model {
-	tb := New(gotui.Dark())
+	tb := New(tuiweave.Dark())
 	tb.SetSize(w, h)
 	tb.SetColumns(
 		Column{Title: "ID", Width: 4},
@@ -45,7 +45,7 @@ func TestTableGolden(t *testing.T) {
 		t.Fatalf("rendered %d lines, want 6", got)
 	}
 	snaptest.Snap(t, view)
-	snaptest.SnapCells(t, view, snaptest.WithRoles(gotui.Dark()))
+	snaptest.SnapCells(t, view, snaptest.WithRoles(tuiweave.Dark()))
 }
 
 func TestTableWindowScrollsToSelection(t *testing.T) {
@@ -71,7 +71,7 @@ func TestTableFlexColumnFillsWidth(t *testing.T) {
 }
 
 func TestTableEmpty(t *testing.T) {
-	tb := New(gotui.Dark())
+	tb := New(tuiweave.Dark())
 	tb.SetSize(20, 4)
 	if got := tb.View(); got != "" {
 		t.Errorf("no-columns View() = %q, want empty", got)
@@ -87,7 +87,7 @@ func TestTableEmpty(t *testing.T) {
 
 func TestTableNarrowWideContentStaysWithinBox(t *testing.T) {
 	for width := 1; width <= 32; width++ {
-		tb := New(gotui.Dark())
+		tb := New(tuiweave.Dark())
 		tb.SetSize(width, 5)
 		tb.SetColumns(
 			Column{Title: "識別子", Width: 8},
@@ -107,7 +107,7 @@ func TestTableNarrowWideContentStaysWithinBox(t *testing.T) {
 		}
 	}
 
-	tb := New(gotui.Dark())
+	tb := New(tuiweave.Dark())
 	tb.SetSize(8, 5)
 	tb.SetColumns(
 		Column{Title: "識別子", Width: 8},
@@ -120,5 +120,5 @@ func TestTableNarrowWideContentStaysWithinBox(t *testing.T) {
 		[]string{"é", "combining text", "ready", "ok"},
 	)
 	snaptest.Snap(t, tb.View())
-	snaptest.SnapCells(t, tb.View(), snaptest.WithRoles(gotui.Dark()))
+	snaptest.SnapCells(t, tb.View(), snaptest.WithRoles(tuiweave.Dark()))
 }

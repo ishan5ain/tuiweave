@@ -5,15 +5,15 @@ import (
 
 	lipgloss "charm.land/lipgloss/v2"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/snaptest"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/snaptest"
 )
 
 func newTestBar(width int) Model {
-	sb := New(gotui.Dark())
+	sb := New(tuiweave.Dark())
 	sb.SetSize(width, 1)
 	sb.SetLeft(
-		Segment{Text: "gotui", Kind: KindAccent},
+		Segment{Text: "tuiweave", Kind: KindAccent},
 		Segment{Text: "main.go", Kind: KindNormal},
 	)
 	sb.SetRight(
@@ -31,7 +31,7 @@ func TestStatusbarSegments(t *testing.T) {
 		t.Fatalf("rendered width = %d, want 60", got)
 	}
 	snaptest.Snap(t, view)
-	snaptest.SnapCells(t, view, snaptest.WithRoles(gotui.Dark()))
+	snaptest.SnapCells(t, view, snaptest.WithRoles(tuiweave.Dark()))
 }
 
 func TestStatusbarDropsRightWhenTight(t *testing.T) {
@@ -45,7 +45,7 @@ func TestStatusbarDropsRightWhenTight(t *testing.T) {
 }
 
 func TestStatusbarTruncatesLeft(t *testing.T) {
-	sb := New(gotui.Dark())
+	sb := New(tuiweave.Dark())
 	sb.SetSize(12, 1)
 	sb.SetLeft(Segment{Text: "a very long segment", Kind: KindNormal})
 	view := sb.View()
@@ -57,7 +57,7 @@ func TestStatusbarTruncatesLeft(t *testing.T) {
 }
 
 func TestStatusbarZeroSizeRendersNothing(t *testing.T) {
-	sb := New(gotui.Dark())
+	sb := New(tuiweave.Dark())
 	if got := sb.View(); got != "" {
 		t.Errorf("zero-size View() = %q, want empty", got)
 	}
@@ -68,9 +68,9 @@ func TestStatusbarZeroSizeRendersNothing(t *testing.T) {
 }
 
 func TestStatusbarLightTheme(t *testing.T) {
-	sb := New(gotui.Light())
+	sb := New(tuiweave.Light())
 	sb.SetSize(40, 1)
 	sb.SetLeft(Segment{Text: "light", Kind: KindAccent})
 	sb.SetRight(Segment{Text: "warn", Kind: KindWarning})
-	snaptest.SnapCells(t, sb.View(), snaptest.WithRoles(gotui.Light()))
+	snaptest.SnapCells(t, sb.View(), snaptest.WithRoles(tuiweave.Light()))
 }

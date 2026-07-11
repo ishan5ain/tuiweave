@@ -9,7 +9,7 @@ import (
 	lipgloss "charm.land/lipgloss/v2"
 	"github.com/charmbracelet/x/ansi"
 
-	"github.com/ishansain/gotui"
+	"github.com/ishan5ain/tuiweave"
 )
 
 // Column describes one table column. Width 0 marks a flexible column:
@@ -44,7 +44,7 @@ const (
 )
 
 // New returns an empty table styled from the theme's roles.
-func New(theme gotui.Theme) Model {
+func New(theme tuiweave.Theme) Model {
 	return Model{
 		headerStyle: lipgloss.NewStyle().Foreground(theme.TextMuted).Bold(true),
 		ruleStyle:   lipgloss.NewStyle().Foreground(theme.BorderMuted),

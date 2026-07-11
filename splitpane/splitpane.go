@@ -8,8 +8,8 @@ import (
 
 	lipgloss "charm.land/lipgloss/v2"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/layout"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/layout"
 )
 
 // View renders one pane for the width supplied by Horizontal.
@@ -30,7 +30,7 @@ type Options struct {
 // at its assigned width, aligns them to the taller natural height, and joins
 // them with a BorderMuted divider. It returns an empty string when the width
 // cannot provide at least one cell for both panes.
-func Horizontal(theme gotui.Theme, width int, opts Options, left, right View) string {
+func Horizontal(theme tuiweave.Theme, width int, opts Options, left, right View) string {
 	if width <= 0 || left == nil || right == nil {
 		return ""
 	}
@@ -80,7 +80,7 @@ func fit(view string, width, height int) string {
 	return lipgloss.NewStyle().Width(width).Height(height).Render(view)
 }
 
-func divider(theme gotui.Theme, gap, height int) string {
+func divider(theme tuiweave.Theme, gap, height int) string {
 	if gap <= 0 || height <= 0 {
 		return ""
 	}

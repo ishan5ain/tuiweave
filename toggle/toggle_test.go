@@ -6,13 +6,13 @@ import (
 	tea "charm.land/bubbletea/v2"
 	lipgloss "charm.land/lipgloss/v2"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/inspect"
-	"github.com/ishansain/gotui/snaptest"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/inspect"
+	"github.com/ishan5ain/tuiweave/snaptest"
 )
 
 func newTestToggle(width int) Model {
-	m := New(gotui.Dark())
+	m := New(tuiweave.Dark())
 	m.ID = "auto-refresh"
 	m.SetLabel("Auto-refresh")
 	m.SetSize(width, 1)
@@ -29,7 +29,7 @@ func keyPress(key string) tea.KeyPressMsg {
 func TestToggleDefaultGolden(t *testing.T) {
 	m := newTestToggle(28)
 	snaptest.Snap(t, m.View())
-	snaptest.SnapCells(t, m.View(), snaptest.WithRoles(gotui.Dark()))
+	snaptest.SnapCells(t, m.View(), snaptest.WithRoles(tuiweave.Dark()))
 }
 
 func TestToggleFocusedGolden(t *testing.T) {
@@ -37,7 +37,7 @@ func TestToggleFocusedGolden(t *testing.T) {
 	m.Focus()
 	m.SetChecked(true)
 	snaptest.Snap(t, m.View())
-	snaptest.SnapCells(t, m.View(), snaptest.WithRoles(gotui.Dark()))
+	snaptest.SnapCells(t, m.View(), snaptest.WithRoles(tuiweave.Dark()))
 }
 
 func TestToggleChangesAndEmitsMessage(t *testing.T) {

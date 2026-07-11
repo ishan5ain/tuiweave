@@ -5,8 +5,8 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 
-	"github.com/ishansain/gotui/palette"
-	"github.com/ishansain/gotui/snaptest"
+	"github.com/ishan5ain/tuiweave/palette"
+	"github.com/ishan5ain/tuiweave/snaptest"
 )
 
 func sized(t *testing.T) model {

@@ -3,7 +3,7 @@ package progress
 import (
 	"strconv"
 
-	"github.com/ishansain/gotui/inspect"
+	"github.com/ishan5ain/tuiweave/inspect"
 )
 
 // Inspect reports the stable, app-independent state of the indicator.

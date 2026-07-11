@@ -6,8 +6,8 @@ import (
 
 	"github.com/charmbracelet/x/ansi"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/snaptest"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/snaptest"
 )
 
 const sample = `# Title
@@ -23,17 +23,17 @@ Some **bold** and *italic* text with ` + "`inline code`" + ` and a [link](https:
 `
 
 func TestRenderGolden(t *testing.T) {
-	r := NewRenderer(gotui.Dark())
+	r := NewRenderer(tuiweave.Dark())
 	out, err := r.Render(sample, 40)
 	if err != nil {
 		t.Fatalf("Render: %v", err)
 	}
 	snaptest.Snap(t, out)
-	snaptest.SnapCells(t, out, snaptest.WithRoles(gotui.Dark()))
+	snaptest.SnapCells(t, out, snaptest.WithRoles(tuiweave.Dark()))
 }
 
 func TestRenderWrapsToWidth(t *testing.T) {
-	r := NewRenderer(gotui.Dark())
+	r := NewRenderer(tuiweave.Dark())
 	out, err := r.Render(strings.Repeat("word ", 30), 24)
 	if err != nil {
 		t.Fatalf("Render: %v", err)
@@ -46,7 +46,7 @@ func TestRenderWrapsToWidth(t *testing.T) {
 }
 
 func TestRenderDeterministic(t *testing.T) {
-	r := NewRenderer(gotui.Dark())
+	r := NewRenderer(tuiweave.Dark())
 	a, _ := r.Render(sample, 40)
 	b, _ := r.Render(sample, 40)
 	if a != b {
@@ -55,7 +55,7 @@ func TestRenderDeterministic(t *testing.T) {
 }
 
 func TestRendererCachePerWidth(t *testing.T) {
-	r := NewRenderer(gotui.Dark()).(*glamourRenderer)
+	r := NewRenderer(tuiweave.Dark()).(*glamourRenderer)
 	if _, err := r.Render("hi", 40); err != nil {
 		t.Fatal(err)
 	}
@@ -71,14 +71,14 @@ func TestRendererCachePerWidth(t *testing.T) {
 }
 
 func TestSprintFallsBackOnError(t *testing.T) {
-	r := NewRenderer(gotui.Dark())
+	r := NewRenderer(tuiweave.Dark())
 	if got := Sprint(r, "plain", 0); got != "plain" { // width 0 errors
 		t.Errorf("Sprint fallback = %q, want raw source", got)
 	}
 }
 
 func TestRenderInvalidWidth(t *testing.T) {
-	r := NewRenderer(gotui.Dark())
+	r := NewRenderer(tuiweave.Dark())
 	if _, err := r.Render("x", 0); err == nil {
 		t.Error("Render(width=0) returned nil error")
 	}

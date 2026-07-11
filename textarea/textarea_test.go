@@ -7,13 +7,13 @@ import (
 	tea "charm.land/bubbletea/v2"
 	"github.com/charmbracelet/x/ansi"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/inspect"
-	"github.com/ishansain/gotui/snaptest"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/inspect"
+	"github.com/ishan5ain/tuiweave/snaptest"
 )
 
 func newFocused(w, h int) Model {
-	ta := New(gotui.Dark())
+	ta := New(tuiweave.Dark())
 	ta.SetSize(w, h)
 	ta.Focus()
 	return ta
@@ -178,12 +178,12 @@ func TestCursorPositionAndReplaceRange(t *testing.T) {
 		t.Fatalf("cursor at end = %#v, want row 0 column 11", got)
 	}
 
-	ta.ReplaceRange(Position{Row: 0, Column: 6}, Position{Row: 0, Column: 11}, "gotui")
-	if got := ta.Value(); got != "hello gotui" {
-		t.Fatalf("middle replacement = %q, want %q", got, "hello gotui")
+	ta.ReplaceRange(Position{Row: 0, Column: 6}, Position{Row: 0, Column: 11}, "tuiweave")
+	if got := ta.Value(); got != "hello tuiweave" {
+		t.Fatalf("middle replacement = %q, want %q", got, "hello tuiweave")
 	}
-	if got := ta.CursorPosition(); got != (Position{Row: 0, Column: 11}) {
-		t.Fatalf("cursor after replacement = %#v, want row 0 column 11", got)
+	if got := ta.CursorPosition(); got != (Position{Row: 0, Column: 14}) {
+		t.Fatalf("cursor after replacement = %#v, want row 0 column 14", got)
 	}
 	if !ta.CanUndo() {
 		t.Fatal("replacement did not create an undo entry")
@@ -223,7 +223,7 @@ func TestReplaceRangeNarrowGolden(t *testing.T) {
 	ta.SetValue("abcdef")
 	ta.ReplaceRange(Position{Row: 0, Column: 3}, Position{Row: 0, Column: 6}, "界g")
 	snaptest.Snap(t, ta.View())
-	snaptest.SnapCells(t, ta.View(), snaptest.WithRoles(gotui.Dark()))
+	snaptest.SnapCells(t, ta.View(), snaptest.WithRoles(tuiweave.Dark()))
 }
 
 func TestBackspaceJoinsLines(t *testing.T) {
@@ -313,7 +313,7 @@ func TestSelectionAcrossLinesAndReplacement(t *testing.T) {
 		t.Fatalf("selection = %q, has=%v; want o\\nworld", ta.SelectedText(), ta.HasSelection())
 	}
 	snaptest.Snap(t, ta.View())
-	snaptest.SnapCells(t, ta.View(), snaptest.WithRoles(gotui.Dark()))
+	snaptest.SnapCells(t, ta.View(), snaptest.WithRoles(tuiweave.Dark()))
 
 	ta, _ = ta.Update(tea.KeyPressMsg{Text: "there"})
 	if got := ta.Value(); got != "hellthere" {
@@ -596,14 +596,14 @@ func TestGrowthAndScrollKeepsCursorVisible(t *testing.T) {
 }
 
 func TestPlaceholderGolden(t *testing.T) {
-	ta := New(gotui.Dark())
+	ta := New(tuiweave.Dark())
 	ta.SetSize(24, 2)
 	ta.Placeholder = "ask anything…"
-	snaptest.SnapCells(t, ta.View(), snaptest.WithRoles(gotui.Dark()))
+	snaptest.SnapCells(t, ta.View(), snaptest.WithRoles(tuiweave.Dark()))
 }
 
 func TestBlurredIgnoresKeys(t *testing.T) {
-	ta := New(gotui.Dark())
+	ta := New(tuiweave.Dark())
 	ta.SetSize(20, 3)
 	ta = typeString(ta, "ignored")
 	if !ta.Empty() {
@@ -655,7 +655,7 @@ func TestTextareaReplaceRangeScenarioGolden(t *testing.T) {
 			Msg: replaceRangeMsg{
 				start: Position{Row: 0, Column: 6},
 				end:   Position{Row: 0, Column: 11},
-				value: "gotui",
+				value: "tuiweave",
 			},
 		},
 		snaptest.ScenarioStep{

@@ -18,7 +18,7 @@
 // pass fresh component groups to Apply after every model update.
 package focus
 
-// Focusable is implemented by interactive gotui components.
+// Focusable is implemented by interactive tuiweave components.
 type Focusable interface {
 	Focus()
 	Blur()

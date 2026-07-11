@@ -5,7 +5,7 @@ command: no
 ╭ Files ───────────────────────╮ ╭ Preview ───────────────────────────────────────────╮
 │                              │ │                                                    │
 │ > filter files               │ │ package main                                       │┃
-│ ▎ cmd/gotui/main.go          │ │                                                    │┃
+│ ▎ cmd/tuiweave/main.go       │ │                                                    │┃
 │   layout/layout.go           │ │ import (                                           │┃
 │   list/list.go               │ │     "fmt"                                          │┃
 │   examples/browser/main.go   │ │     "os"                                           │┃
@@ -32,7 +32,7 @@ command: no
 ╭ Files ───────────────────────╮ ╭ Preview ───────────────────────────────────────────╮
 │                              │ │                                                    │
 │ > filter files               │ │ package main                                       │┃
-│ ▎ cmd/gotui/main.go          │ │                                                    │┃
+│ ▎ cmd/tuiweave/main.go       │ │                                                    │┃
 │   layout/layout.go           │ │ import (                                           │┃
 │   list/list.go               │ │     "fmt"                                          │┃
 │   examples/browser/main.go   │ │     "os"                                           │┃
@@ -59,7 +59,7 @@ command: no
 ╭ Files ───────────────────────╮ ╭ Preview ───────────────────────────────────────────╮
 │                              │ │                                                    │
 │ > m                          │ │ package main                                       │┃
-│ ▎ cmd/gotui/main.go          │ │                                                    │┃
+│ ▎ cmd/tuiweave/main.go       │ │                                                    │┃
 │   examples/browser/main.go   │ │ import (                                           │┃
 │   examples/frame/main.go     │ │     "fmt"                                          │┃
 │                              │ │     "os"                                           │┃
@@ -86,7 +86,7 @@ command: no
 ╭ Files ───────────────────────╮ ╭ Preview ───────────────────────────────────────────╮
 │                              │ │                                                    │
 │ > m                          │ │     "fmt"                                          ││
-│ ▎ cmd/gotui/main.go          │ │     "os"                                           ││
+│ ▎ cmd/tuiweave/main.go       │ │     "os"                                           ││
 │   examples/browser/main.go   │ │ )                                                  │┃
 │   examples/frame/main.go     │ │                                                    │┃
 │                              │ │ func main() {                                      │┃
@@ -113,7 +113,7 @@ command: no
 ╭ Files ───────────────────────╮ ╭ Preview ───────────────────────────────────────────╮
 │                              │ │                                                    │
 │ > m                          │ │     "fmt"                                          ││
-│ ▌ cmd/gotui/main.go          │ │     "os"                                           ││
+│ ▌ cmd/tuiweave/main.go       │ │     "os"                                           ││
 │   examples/browser/main.go   │ │ )                                                  │┃
 │   examples/frame/main.go     │ │                                                    │┃
 │                              │ │ func main() {                                      │┃
@@ -140,7 +140,7 @@ command: no
 ╭ Files ───────────────────────╮ ╭ Preview ───────────────────────────────────────────╮
 │                              │ │                                                    │
 │ > m                          │ │     "fmt"                                          ││
-│ ▎ cmd/gotui/main.go          │ │     "os"                                           ││
+│ ▎ cmd/tuiweave/main.go       │ │     "os"                                           ││
 │   examples/browser/main.go   │ │ )                                                  │┃
 │   examples/frame/main.go     │ │                                                    │┃
 │                              │ │ func main() {                                      │┃
@@ -167,7 +167,7 @@ command: no
 ╭ Files ───────────────────────╮ ╭ Preview ───────────────────────────────────────────╮
 │                              │ │                                                    │
 │ > m                          │ │         fmt.Fprintln(os.Stderr, err)               ││
-│ ▎ cmd/gotui/main.go          │ │         os.Exit(1)                                 ││
+│ ▎ cmd/tuiweave/main.go       │ │         os.Exit(1)                                 ││
 │   examples/browser/main.go   │ │     }                                              ││
 │   examples/frame/main.go     │ │ }                                                  ││
 │                              │ │                                                    ││

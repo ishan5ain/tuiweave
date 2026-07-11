@@ -22,7 +22,7 @@ import (
 	lipgloss "charm.land/lipgloss/v2"
 	"github.com/charmbracelet/x/ansi"
 
-	"github.com/ishansain/gotui"
+	"github.com/ishan5ain/tuiweave"
 )
 
 // Model is a textarea component. Create one with New.
@@ -79,7 +79,7 @@ const (
 )
 
 // New returns an empty textarea styled from the theme's roles.
-func New(theme gotui.Theme) Model {
+func New(theme tuiweave.Theme) Model {
 	return Model{
 		lines:            [][]rune{{}},
 		Prompt:           "> ",
@@ -250,6 +250,29 @@ func (m Model) cursorVisual(rows []vrow) (idx, vcol int) {
 // current width — use it to grow the input's layout slot.
 func (m Model) ContentHeight() int {
 	return max(1, len(m.visualRows()))
+}
+
+// Cursor returns the logical cursor position (row, col in runes).
+func (m Model) Cursor() (row, col int) {
+	return m.row, m.col
+}
+
+// SetCursor sets the logical cursor position. Used primarily in tests.
+func (m *Model) SetCursor(row, col int) {
+	if row < 0 {
+		row = 0
+	}
+	if row >= len(m.lines) {
+		row = len(m.lines) - 1
+	}
+	if col < 0 {
+		col = 0
+	}
+	if col > len(m.lines[row]) {
+		col = len(m.lines[row])
+	}
+	m.row = row
+	m.col = col
 }
 
 func (m *Model) ensureCursorVisible() {

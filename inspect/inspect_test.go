@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ishansain/gotui/layout"
+	"github.com/ishan5ain/tuiweave/layout"
 )
 
 type fakeComponent struct{}

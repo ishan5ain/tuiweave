@@ -6,22 +6,22 @@ import (
 
 	lipgloss "charm.land/lipgloss/v2"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/snaptest"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/snaptest"
 )
 
 func TestProgressGolden(t *testing.T) {
-	m := New(gotui.Dark())
+	m := New(tuiweave.Dark())
 	m.SetSize(40, 1)
 	m.SetLabel("Indexing")
 	m.SetPercent(0.72)
 	m.SetStatus(StatusInfo)
 	snaptest.Snap(t, m.View())
-	snaptest.SnapCells(t, m.View(), snaptest.WithRoles(gotui.Dark()))
+	snaptest.SnapCells(t, m.View(), snaptest.WithRoles(tuiweave.Dark()))
 }
 
 func TestProgressStatusAndClamping(t *testing.T) {
-	m := New(gotui.Dark())
+	m := New(tuiweave.Dark())
 	m.SetSize(20, 1)
 
 	for _, test := range []struct {
@@ -53,7 +53,7 @@ func TestProgressStatusAndClamping(t *testing.T) {
 
 func TestProgressExactWidthAndNarrowStates(t *testing.T) {
 	for width := 1; width <= 48; width++ {
-		m := New(gotui.Dark())
+		m := New(tuiweave.Dark())
 		m.SetSize(width, 1)
 		m.SetLabel("A long task label")
 		m.SetPercent(0.37)
@@ -62,7 +62,7 @@ func TestProgressExactWidthAndNarrowStates(t *testing.T) {
 		}
 	}
 
-	m := New(gotui.Dark())
+	m := New(tuiweave.Dark())
 	m.SetSize(10, 0)
 	if got := m.View(); got != "" {
 		t.Fatalf("zero-height view = %q, want empty", got)
@@ -74,7 +74,7 @@ func TestProgressExactWidthAndNarrowStates(t *testing.T) {
 }
 
 func TestProgressInspection(t *testing.T) {
-	m := New(gotui.Dark())
+	m := New(tuiweave.Dark())
 	m.SetSize(24, 1)
 	m.SetLabel("Sync")
 	m.SetPercent(0.625)

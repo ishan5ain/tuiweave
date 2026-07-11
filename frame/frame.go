@@ -1,5 +1,5 @@
 // Package frame provides small, domain-neutral decoration helpers for
-// composing gotui views. The helpers return styled strings; applications still
+// composing tuiweave views. The helpers return styled strings; applications still
 // own layout, state, and message routing.
 package frame
 
@@ -9,8 +9,8 @@ import (
 	lipgloss "charm.land/lipgloss/v2"
 	"github.com/charmbracelet/x/ansi"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/layout"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/layout"
 )
 
 // BadgeKind selects the semantic roles used by Badge.
@@ -61,7 +61,7 @@ func PanelContentRect(area layout.Rect, opts PanelOptions) layout.Rect {
 //
 // Content may already contain ANSI styling. The panel supplies the surface
 // and default text roles while preserving nested styles.
-func Panel(theme gotui.Theme, content string, width int, opts PanelOptions) string {
+func Panel(theme tuiweave.Theme, content string, width int, opts PanelOptions) string {
 	if width < 2 {
 		return ""
 	}
@@ -104,7 +104,7 @@ func panelPadding(width int, opts PanelOptions) int {
 	return min(max(0, opts.Padding), innerWidth/2)
 }
 
-func renderTop(theme gotui.Theme, border lipgloss.Style, opts PanelOptions, innerWidth int) string {
+func renderTop(theme tuiweave.Theme, border lipgloss.Style, opts PanelOptions, innerWidth int) string {
 	rounded := lipgloss.RoundedBorder()
 	if opts.Title == "" || innerWidth < 3 {
 		return border.Render(string(rounded.TopLeft) + strings.Repeat(rounded.Top, innerWidth) + rounded.TopRight)
@@ -127,7 +127,7 @@ func renderTop(theme gotui.Theme, border lipgloss.Style, opts PanelOptions, inne
 }
 
 // Divider returns a width-aware subtle horizontal separator.
-func Divider(theme gotui.Theme, width int) string {
+func Divider(theme tuiweave.Theme, width int) string {
 	if width <= 0 {
 		return ""
 	}
@@ -135,7 +135,7 @@ func Divider(theme gotui.Theme, width int) string {
 }
 
 // Badge returns a compact, padded label styled from semantic theme roles.
-func Badge(theme gotui.Theme, text string, kind BadgeKind) string {
+func Badge(theme tuiweave.Theme, text string, kind BadgeKind) string {
 	background := theme.Accent
 	foreground := theme.TextInverted
 	switch kind {

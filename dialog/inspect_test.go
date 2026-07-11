@@ -3,12 +3,12 @@ package dialog
 import (
 	"testing"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/inspect"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/inspect"
 )
 
 func TestSemanticCancelProducesResultCommand(t *testing.T) {
-	m := New(gotui.Dark())
+	m := New(tuiweave.Dark())
 	m.ID = "quit"
 	next, cmd := m.Update(inspect.Invoke(ActionCancel))
 	if next.Title != m.Title {

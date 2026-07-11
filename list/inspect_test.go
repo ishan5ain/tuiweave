@@ -3,12 +3,12 @@ package list
 import (
 	"testing"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/inspect"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/inspect"
 )
 
 func TestSemanticActionNextMovesSelection(t *testing.T) {
-	m := New(gotui.Dark())
+	m := New(tuiweave.Dark())
 	m.SetSize(20, 3)
 	m.SetItems("one", "two", "three")
 	m.Focus()
@@ -23,7 +23,7 @@ func TestSemanticActionNextMovesSelection(t *testing.T) {
 }
 
 func TestSemanticActionsExposeQualifiedIDsWhenBound(t *testing.T) {
-	m := New(gotui.Dark())
+	m := New(tuiweave.Dark())
 	m.SetItems("one", "two")
 	node := inspect.Bind("files", m)
 	for _, action := range node.Actions {

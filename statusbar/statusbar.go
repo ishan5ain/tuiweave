@@ -12,7 +12,7 @@ import (
 	lipgloss "charm.land/lipgloss/v2"
 	"github.com/charmbracelet/x/ansi"
 
-	"github.com/ishansain/gotui"
+	"github.com/ishan5ain/tuiweave"
 )
 
 // Kind selects which theme roles style a segment.
@@ -51,7 +51,7 @@ type Model struct {
 }
 
 // New returns a statusbar styled from the theme's roles.
-func New(theme gotui.Theme) Model {
+func New(theme tuiweave.Theme) Model {
 	base := lipgloss.NewStyle().Background(theme.SurfaceRaised)
 	return Model{
 		bar: base,
@@ -86,7 +86,7 @@ func (m *Model) SetRight(segments ...Segment) {
 	m.right = segments
 }
 
-// Update implements the gotui component contract. The statusbar handles no
+// Update implements the tuiweave component contract. The statusbar handles no
 // messages.
 func (m Model) Update(_ tea.Msg) (Model, tea.Cmd) {
 	return m, nil

@@ -1,5 +1,5 @@
 // Package inspect defines an optional, data-only semantic representation of a
-// gotui interface. It does not own component routing, layout, or rendering.
+// tuiweave interface. It does not own component routing, layout, or rendering.
 // Applications assemble a tree from component reports and may expose it to
 // tests, debugging tools, or agents.
 package inspect
@@ -8,7 +8,7 @@ import (
 	"bytes"
 	"encoding/json"
 
-	"github.com/ishansain/gotui/layout"
+	"github.com/ishan5ain/tuiweave/layout"
 )
 
 // Bounds is a component's terminal rectangle in cell coordinates.
@@ -19,7 +19,7 @@ type Bounds struct {
 	Height int `json:"height"`
 }
 
-// FromRect converts a gotui layout rectangle to inspection bounds.
+// FromRect converts a tuiweave layout rectangle to inspection bounds.
 func FromRect(r layout.Rect) Bounds {
 	return Bounds{X: r.Min.X, Y: r.Min.Y, Width: r.Dx(), Height: r.Dy()}
 }

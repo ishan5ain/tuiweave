@@ -4,13 +4,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/layout"
-	"github.com/ishansain/gotui/snaptest"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/layout"
+	"github.com/ishan5ain/tuiweave/snaptest"
 )
 
 func TestSpinnerAdvancesOnOwnTick(t *testing.T) {
-	s := New(gotui.Dark())
+	s := New(tuiweave.Dark())
 	first := s.View()
 
 	s, cmd := s.Update(TickMsg{Time: time.Now(), id: s.id, tag: s.tag})
@@ -23,7 +23,7 @@ func TestSpinnerAdvancesOnOwnTick(t *testing.T) {
 }
 
 func TestSpinnerIgnoresForeignAndStaleTicks(t *testing.T) {
-	s := New(gotui.Dark())
+	s := New(tuiweave.Dark())
 	first := s.View()
 
 	s2, cmd := s.Update(TickMsg{Time: time.Now(), id: s.id + 99, tag: s.tag})
@@ -37,12 +37,12 @@ func TestSpinnerIgnoresForeignAndStaleTicks(t *testing.T) {
 }
 
 func TestSpinnerGolden(t *testing.T) {
-	s := New(gotui.Dark())
-	snaptest.SnapCells(t, s.View(), snaptest.WithRoles(gotui.Dark()))
+	s := New(tuiweave.Dark())
+	snaptest.SnapCells(t, s.View(), snaptest.WithRoles(tuiweave.Dark()))
 }
 
 func TestSetFrames(t *testing.T) {
-	s := New(gotui.Dark())
+	s := New(tuiweave.Dark())
 	s.SetFrames("-", "\\", "|", "/")
 	if got := s.View(); got == "" || len([]rune(got)) == 0 {
 		t.Fatal("empty view after SetFrames")
@@ -54,7 +54,7 @@ func TestSetFrames(t *testing.T) {
 }
 
 func TestSpinnerIsIntrinsic(t *testing.T) {
-	if got := New(gotui.Dark()).SizeMode(); got != layout.SizeIntrinsic {
+	if got := New(tuiweave.Dark()).SizeMode(); got != layout.SizeIntrinsic {
 		t.Fatalf("spinner size mode = %d, want SizeIntrinsic", got)
 	}
 }

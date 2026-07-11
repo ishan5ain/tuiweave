@@ -3,7 +3,7 @@
 ╭ Files ────────╮ ╭ Preview ──────────────────╮
 │               │ │                           │
 │ > filter file │ │ package main              │┃
-│ ▎ cmd/gotui/… │ │                           ││
+│ ▎ cmd/tuiwea… │ │                           ││
 │   layout/lay… │ │ import (                  ││
 │   list/list.… │ │     "fmt"                 ││
 │   examples/b… │ │     "os"                  ││

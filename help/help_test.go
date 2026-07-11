@@ -6,12 +6,12 @@ import (
 
 	lipgloss "charm.land/lipgloss/v2"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/snaptest"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/snaptest"
 )
 
 func newTestHelp(width int) Model {
-	h := New(gotui.Dark())
+	h := New(tuiweave.Dark())
 	h.SetSize(width, 1)
 	h.SetBindings(
 		Binding{Key: "tab", Desc: "focus"},
@@ -24,7 +24,7 @@ func newTestHelp(width int) Model {
 func TestHelpGolden(t *testing.T) {
 	h := newTestHelp(60)
 	snaptest.Snap(t, h.View())
-	snaptest.SnapCells(t, h.View(), snaptest.WithRoles(gotui.Dark()))
+	snaptest.SnapCells(t, h.View(), snaptest.WithRoles(tuiweave.Dark()))
 }
 
 func TestHelpDropsWholeHintsWhenNarrow(t *testing.T) {
@@ -40,7 +40,7 @@ func TestHelpDropsWholeHintsWhenNarrow(t *testing.T) {
 }
 
 func TestHelpEmpty(t *testing.T) {
-	h := New(gotui.Dark())
+	h := New(tuiweave.Dark())
 	h.SetSize(40, 1)
 	if got := h.View(); got != "" {
 		t.Errorf("empty help View() = %q, want empty", got)

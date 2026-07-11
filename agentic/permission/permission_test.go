@@ -7,14 +7,14 @@ import (
 	tea "charm.land/bubbletea/v2"
 	lipgloss "charm.land/lipgloss/v2"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/inspect"
-	"github.com/ishansain/gotui/layout"
-	"github.com/ishansain/gotui/snaptest"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/inspect"
+	"github.com/ishan5ain/tuiweave/layout"
+	"github.com/ishan5ain/tuiweave/snaptest"
 )
 
 func newTestPrompt() Model {
-	p := New(gotui.Dark())
+	p := New(tuiweave.Dark())
 	p.ID = "bash"
 	p.Title = `Run "go test ./..."?`
 	p.Body = "The agent wants to run a shell command."
@@ -52,7 +52,7 @@ func resultOf(t *testing.T, cmd tea.Cmd) ResultMsg {
 func TestPromptGolden(t *testing.T) {
 	p := newTestPrompt()
 	snaptest.Snap(t, p.View())
-	snaptest.SnapCells(t, p.View(), snaptest.WithRoles(gotui.Dark()))
+	snaptest.SnapCells(t, p.View(), snaptest.WithRoles(tuiweave.Dark()))
 }
 
 func TestNavigateAndConfirm(t *testing.T) {

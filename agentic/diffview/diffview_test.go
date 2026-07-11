@@ -6,8 +6,8 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/snaptest"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/snaptest"
 )
 
 const sample = `diff --git a/main.go b/main.go
@@ -22,13 +22,13 @@ index 1111111..2222222 100644
 `
 
 func TestSprintGolden(t *testing.T) {
-	out := Sprint(gotui.Dark(), sample, 40)
+	out := Sprint(tuiweave.Dark(), sample, 40)
 	snaptest.Snap(t, out)
-	snaptest.SnapCells(t, out, snaptest.WithRoles(gotui.Dark()))
+	snaptest.SnapCells(t, out, snaptest.WithRoles(tuiweave.Dark()))
 }
 
 func TestModelScrolls(t *testing.T) {
-	m := New(gotui.Dark())
+	m := New(tuiweave.Dark())
 	m.SetSize(40, 4)
 	m.SetDiff(sample)
 	m.Focus()
@@ -45,7 +45,7 @@ func TestModelScrolls(t *testing.T) {
 
 func TestSprintTruncates(t *testing.T) {
 	long := "+" + strings.Repeat("x", 100)
-	out := Sprint(gotui.Dark(), long, 20)
+	out := Sprint(tuiweave.Dark(), long, 20)
 	for _, line := range strings.Split(out, "\n") {
 		stripped := line
 		if got := len([]rune(stripAnsi(stripped))); got > 20 {

@@ -1,4 +1,4 @@
-# gotui — Design
+# tuiweave — Design
 
 A modular, customizable TUI component library for Go, built on **bubbletea v2**,
 **lipgloss v2**, and **ultraviolet**, for building beautiful, consistent
@@ -6,13 +6,13 @@ terminal frontends — designed so that humans and coding agents can compose
 them reliably.
 
 This document records the architectural decisions, the rationale behind each,
-and the conventions that follow from them. [PLAN.md](PLAN.md) is the execution
+and the conventions that follow from them. [ROADMAP.md](ROADMAP.md) summarizes
 roadmap; [AGENTS.md](AGENTS.md) is the distilled rulebook agents load when
 writing code with the library.
 
 The north star is a small, composable Go vocabulary for terminal interfaces:
 make layout, appearance, interaction, and verification predictable for humans
-and coding agents. Applications own orchestration and domain state; gotui owns
+and coding agents. Applications own orchestration and domain state; tuiweave owns
 reusable primitives and optional domain kits. Agentic UIs are a demanding
 proving ground, but they do not define the core API.
 
@@ -93,7 +93,7 @@ derive their lipgloss styles exclusively from roles and never touch raw colors.
   Radix, shadcn saturate their training data) — "destructive actions use
   `Danger`" is far more reliable than choosing among 40 color fields.
 
-Roles live in the root `gotui` package (see §3). Component-level overrides,
+Roles live in the root `tuiweave` package (see §3). Component-level overrides,
 if ever needed, arrive later as an escape hatch (`WithStyle(fn)`), not as the
 primary API.
 
@@ -117,18 +117,18 @@ Key facts that shaped the decision:
   `Len/Min/Max/Percent/Ratio/Fill` constraints plus CSS-`justify-content`-like
   `Flex` strategies. **The layout engine we planned to build already exists.**
 
-Therefore: `gotui/layout` wraps `uv/layout` as the flexbox-like container
+Therefore: `tuiweave/layout` wraps `uv/layout` as the flexbox-like container
 system — geometry only in the public API. The current wrapper is intentionally
 thin and uses public type aliases; this keeps call sites simple but means the
 Ultraviolet type identity is not a perfectly sealed compatibility boundary.
 UV cell buffers are reserved as a
 **library-internal** tool for overlay/modal/z-order compositing (Phase 2),
 where lipgloss string-splicing is genuinely bad. The "agents don't know novel
-APIs" argument does not apply internally — agents consuming gotui never see UV.
+APIs" argument does not apply internally — agents consuming tuiweave never see UV.
 
 Since ultraviolet is v0.x and bubbletea v2 is beta, the thinner our direct UV
 surface, the cheaper every upgrade. `layout.Rect` aliases `uv.Rectangle`
-(which is `image.Rectangle`). Consumers import `gotui/layout`, but the aliases
+(which is `image.Rectangle`). Consumers import `tuiweave/layout`, but the aliases
 mean Ultraviolet type identity can still affect compatibility during upgrades.
 
 ### D7 — Markdown: glamour now, custom later
@@ -154,7 +154,7 @@ streaming is a useful optimization, not a hidden correctness requirement.
 
 Generic primitives (`list`, `textinput`, `viewport`, `dialog`, …) live in
 top-level packages. Domain components such as chat transcripts, tool-call
-blocks, diff viewers, and permission prompts live in `gotui/agentic/...` and
+blocks, diff viewers, and permission prompts live in `tuiweave/agentic/...` and
 are built on those primitives.
 
 Agentic components are reusable because they consume plain Go types, not
@@ -164,7 +164,7 @@ Backend clients, persistence, and application workflows live in app repos.
 
 ### D9 — Verification: snapshot harness first, capture later
 
-`gotui/snaptest` is a first-class deliverable built in Phase 0, because
+`tuiweave/snaptest` is a first-class deliverable built in Phase 0, because
 components are string-rendering with explicit sizes and can therefore be
 rendered **deterministically** — no pty, no event loop, no timing flake:
 
@@ -172,7 +172,7 @@ rendered **deterministically** — no pty, no event loop, no timing flake:
   legible in a git diff, the feedback format agents thrive on.
 - `SnapCells` (since Phase 1): the rendered view parsed into a UV cell grid
   and dumped as role-labeled style runs, e.g.
-  `" gotui " [fg=TextInverted bg=Accent bold]` — the artifact for asserting
+  `" tuiweave " [fg=TextInverted bg=Accent bold]` — the artifact for asserting
   *which role* styles what. Combining graphemes are preserved in the dump;
   `WithRoles(theme)` maps colors back to role names.
 - `SnapStyled`: raw-ANSI golden for byte-exact styling regressions.
@@ -208,9 +208,9 @@ without forcing every task to load the entire conventions file.
 
 A custom Go TUI for the Pi coding agent is the first demanding consumer using
 Pi's JSON-RPC interface. It should drive real API improvements, but the app and
-its protocol remain outside gotui. Other applications, including non-agentic
+its protocol remain outside tuiweave. Other applications, including non-agentic
 tools, are equally important validation targets; gaps found while building any
-of them flow back as gotui issues.
+of them flow back as tuiweave issues.
 
 ### D12 — Generality through layered scope
 
@@ -232,7 +232,7 @@ when it represents a recurring terminal interaction pattern, not merely because
 one application currently needs it.
 
 The initial Phase 4 framing slice is deliberately a pure composition utility,
-not a component-tree abstraction: `gotui/frame` accepts a theme, content, and
+not a component-tree abstraction: `tuiweave/frame` accepts a theme, content, and
 available width, then returns strings for the application to compose. Panels
 have natural height and exact requested width; the app remains responsible for
 height allocation, state, and event routing. This keeps decoration reusable
@@ -256,7 +256,7 @@ the one-modal convenience, while `focus.Stack` retains each parent index for
 nested modal layers and only applies fresh component addresses supplied by the
 application.
 
-This is how gotui balances customization and consistency:
+This is how tuiweave balances customization and consistency:
 
 - **Consistency comes from contracts and shared semantics**, not from forcing
   every application into one visual arrangement.
@@ -293,7 +293,7 @@ The next layer should therefore provide optional, framework-free capabilities:
 
 These capabilities should be interfaces or small utility packages, not a
 component tree or application event loop. MCP, JSON-RPC, or a particular coding
-agent can adapt to them at the application boundary. Core gotui should expose
+agent can adapt to them at the application boundary. Core tuiweave should expose
 the vocabulary without owning the transport or backend protocol.
 
 The first scenario implementation deliberately stays smaller than the full
@@ -304,7 +304,7 @@ I/O, batching, and command-to-message policies belong in the application test
 where they can be made deterministic. This gives the library a useful replay
 boundary without pretending that an opaque `tea.Cmd` has a stable identity.
 
-The initial inspection slice is similarly data-only: `gotui/inspect.Node`
+The initial inspection slice is similarly data-only: `tuiweave/inspect.Node`
 represents IDs, bounds, focus, status, selection, scrolling, attributes, and
 children; component reports provide local state while the application assembles
 and positions the tree. Inspection intentionally omits raw input values and
@@ -314,22 +314,22 @@ and disclosure decisions.
 Action metadata follows the same ownership boundary. Components advertise local
 IDs and accept `inspect.ActionMsg`; `inspect.Bind` qualifies reported IDs with
 the application-owned node ID. Tree-level dispatch remains application-owned,
-so gotui does not invent a router or a global focus model.
+so tuiweave does not invent a router or a global focus model.
 
 ### D15 — API truth and portable agent workflow
 
 Gotui's repository remains the source of truth for component contracts, design
 rules, compatibility, examples, and snapshots. `AGENT-CONTRACT.md` distills
 the workflow for agents without duplicating the rulebook. The separate
-`gotui-agent-kit` repository packages greenfield, migration, and review
+`tuiweave-agent-kit` repository packages greenfield, migration, and review
 playbooks, portable templates, a standard Agent Skills skill, host installation
 instructions, and a read-only audit.
 
 The workflow deliberately separates reusable library behavior from application
-orchestration. An app agent may identify a candidate gotui API gap, but it must
+orchestration. An app agent may identify a candidate tuiweave API gap, but it must
 report the gap with a focused example and acceptance test instead of inventing
-a local fork; changes to gotui require explicit authorization. Kit releases
-record the gotui revision they were validated against, and applications pin a
+a local fork; changes to tuiweave require explicit authorization. Kit releases
+record the tuiweave revision they were validated against, and applications pin a
 tag or commit rather than relying on moving `@latest` instructions.
 
 ---
@@ -345,8 +345,8 @@ a way to catch violations (D9→D10). Each choice load-bears for the others.
 ## 3. Package architecture
 
 ```
-github.com/ishansain/gotui
-├── gotui            (root) Theme roles, Dark/Light defaults
+github.com/ishan5ain/tuiweave
+├── tuiweave            (root) Theme roles, Dark/Light defaults
 ├── layout/          facade over ultraviolet/layout: Rect, constraints,
 │                    Vertical/Horizontal, Sizable, Apply
 ├── mouse/           normalized wheel deltas and app-owned hit-testing helpers
@@ -391,17 +391,17 @@ github.com/ishansain/gotui
 ├── .github/workflows/ci.yml   build + vet + test + tidy check
 ├── AGENTS.md        the agent-facing rulebook
 ├── DESIGN.md        this document
-└── PLAN.md          phased roadmap
+└── ROADMAP.md       public roadmap
 ```
 
-Naming follows the flat-per-component charm convention (`gotui/list`, not
-`gotui/components/list`) because it is what agents expect from `bubbles`.
+Naming follows the flat-per-component charm convention (`tuiweave/list`, not
+`tuiweave/components/list`) because it is what agents expect from `bubbles`.
 
 ## 4. Component contract
 
-Every gotui component:
+Every tuiweave component:
 
-1. Is a plain value type with a `New(...)` constructor taking `gotui.Theme`
+1. Is a plain value type with a `New(...)` constructor taking `tuiweave.Theme`
    (plus component-specific config).
 2. Implements MVU: `Update(tea.Msg) (Self, tea.Cmd)` returning its own
    concrete type (not `tea.Model`), and `View() string`.
@@ -416,7 +416,7 @@ Every gotui component:
 6. Ships with golden tests (snaptest), coverage in a runnable example app,
    and an AGENTS.md recipe entry.
 
-The root app model composes components, splits its area with `gotui/layout`
+The root app model composes components, splits its area with `tuiweave/layout`
 on `tea.WindowSizeMsg`, delegates messages, and wraps the final composed
 string in `tea.NewView` — standard bubbletea v2, nothing hidden.
 
@@ -439,7 +439,7 @@ components — no `Update`, no focus. Anything can adapt in via `CellFunc`.
 
 ## 5. Theme roles
 
-Defined in the root package (`gotui.Theme`), all fields `image/color.Color`
+Defined in the root package (`tuiweave.Theme`), all fields `image/color.Color`
 (lipgloss v2's native currency). Role semantics:
 
 | Group | Roles | Used for |
@@ -468,9 +468,9 @@ theme API from growing per-component.
 
 ## 7. Open questions
 
-- **Module path / publication:** currently `github.com/ishansain/gotui`,
-  private-by-circumstance. License (MIT recommended) and publication decision
-  before any external consumer.
+The canonical module is `github.com/ishan5ain/tuiweave`. The project is
+published under the MIT License; released module paths and versions are
+immutable.
 - **Text editing depth:** `textarea` now has an initial tier-2 slice for
   logical-rune selections, select-all/replacement, and bounded undo/redo on top
   of tier-1 soft wrap, visual-row movement, line joins, and paste. Its display
@@ -491,7 +491,7 @@ theme API from growing per-component.
   full-document reparse with damage hints — decide when glamour's limits are
   measured, not guessed.
 - **Inspection/action schema hardening:** evolve the initial data-only schema
-  without turning gotui into a framework; preserve stable IDs as APIs mature.
+  without turning tuiweave into a framework; preserve stable IDs as APIs mature.
 - **Scenario format expansion:** the initial Go-native plain golden is in place;
   decide whether a separate machine-readable event format is needed for richer
   command outcomes and replay.

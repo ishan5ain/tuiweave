@@ -4,20 +4,51 @@ on:
   push:
     branches: [main]
   pull_request:
+  schedule:
+    - cron: "23 8 * * 1"
+
+permissions:
+  contents: read
 
 jobs:
   test:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            go: stable
+          - os: macos-latest
+            go: stable
+          - os: windows-latest
+            go: stable
+          - os: ubuntu-latest
+            go: 1.25.8
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32 # v5.0.2
+        with:
+          go-version: ${{ matrix.go }}
+          check-latest: true
+          cache: true
+      - run: go mod verify
+      - run: go build ./...
+      - run: go vet ./...
+      - run: go test ./...
+
+  quality:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32 # v5.0.2
         with:
           go-version: stable
-      - name: Build (includes examples)
-        run: go build ./...
-      - name: Vet
-        run: go vet ./...
-      - name: Test
-        run: go test ./...
-      - name: Verify go.mod is tidy
-        run: go mod tidy -diff
+          check-latest: true
+          cache: true
+      - name: Formatting
+        run: test -z "$(gofmt -l .)"
+      - run: go mod tidy -diff
+      - run: go test -race ./...
+      - name: Vulnerability scan
+        run: go run golang.org/x/vuln/cmd/govulncheck@v1.1.4 ./...

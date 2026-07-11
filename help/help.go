@@ -10,7 +10,7 @@ import (
 	lipgloss "charm.land/lipgloss/v2"
 	"github.com/charmbracelet/x/ansi"
 
-	"github.com/ishansain/gotui"
+	"github.com/ishan5ain/tuiweave"
 )
 
 // Binding is one key hint.
@@ -30,7 +30,7 @@ type Model struct {
 }
 
 // New returns a help bar styled from the theme's roles.
-func New(theme gotui.Theme) Model {
+func New(theme tuiweave.Theme) Model {
 	return Model{
 		keyStyle:  lipgloss.NewStyle().Foreground(theme.TextMuted).Bold(true),
 		descStyle: lipgloss.NewStyle().Foreground(theme.TextFaint),

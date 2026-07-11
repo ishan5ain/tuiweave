@@ -2,7 +2,7 @@
  Workspace  ▸Recent   Pinned
 ╭ Files ───────────────────────╮ ╭ Preview ───────────────────────────────────────────╮
 │                              │ │                                                    │
-│ > filter files               │ │ # gotui                                            ││
+│ > filter files               │ │ # tuiweave                                         ││
 │ ▎ README.md                  │ │                                                    ││
 │   AGENTS.md                  │ │ A small, agent-friendly TUI toolkit.               ││
 │   examples/ops/main.go       │ │                                                    ││

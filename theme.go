@@ -1,4 +1,4 @@
-package gotui
+package tuiweave
 
 import (
 	"image/color"
@@ -6,7 +6,7 @@ import (
 	lipgloss "charm.land/lipgloss/v2"
 )
 
-// Theme is the set of semantic color roles that every gotui component
+// Theme is the set of semantic color roles that every tuiweave component
 // consumes. Components derive their styles exclusively from these roles and
 // never use color literals, so swapping the Theme restyles an entire app
 // consistently.

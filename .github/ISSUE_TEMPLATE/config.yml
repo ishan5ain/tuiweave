@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Usage and design discussions
+    url: https://github.com/ishan5ain/tuiweave/discussions
+    about: Ask questions and discuss ideas.
+  - name: Security report
+    url: https://github.com/ishan5ain/tuiweave/security/advisories/new
+    about: Report vulnerabilities privately.

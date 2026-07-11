@@ -17,8 +17,8 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/viewport"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/viewport"
 )
 
 // Cell is one unit of transcript content, rendered at the transcript width.
@@ -48,7 +48,7 @@ type Model struct {
 }
 
 // New returns an empty transcript that auto-follows new content.
-func New(theme gotui.Theme) Model {
+func New(theme tuiweave.Theme) Model {
 	return Model{vp: viewport.New(theme), follow: true}
 }
 

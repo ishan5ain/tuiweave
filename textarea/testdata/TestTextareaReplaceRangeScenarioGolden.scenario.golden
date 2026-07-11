@@ -6,7 +6,7 @@ command: no
 
 ## replace completion range
 command: no
-> hello gotui
+> hello tuiweave
   next
 
 
@@ -18,6 +18,6 @@ command: no
 
 ## undo range edit
 command: no
-> hello gotui
+> hello tuiweave
   next
 

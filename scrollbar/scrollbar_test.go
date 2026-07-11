@@ -6,13 +6,13 @@ import (
 
 	"github.com/charmbracelet/x/ansi"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/snaptest"
-	"github.com/ishansain/gotui/viewport"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/snaptest"
+	"github.com/ishan5ain/tuiweave/viewport"
 )
 
 func bar(height, total, visible, offset int) string {
-	return ansi.Strip(Vertical(gotui.Dark(), height, total, visible, offset))
+	return ansi.Strip(Vertical(tuiweave.Dark(), height, total, visible, offset))
 }
 
 func TestThumbPositionAndSize(t *testing.T) {
@@ -49,20 +49,20 @@ func TestOffsetClamped(t *testing.T) {
 }
 
 func TestZeroHeight(t *testing.T) {
-	if got := Vertical(gotui.Dark(), 0, 10, 5, 0); got != "" {
+	if got := Vertical(tuiweave.Dark(), 0, 10, 5, 0); got != "" {
 		t.Errorf("height 0 rendered %q", got)
 	}
 }
 
 func TestForViewportGolden(t *testing.T) {
-	vp := viewport.New(gotui.Dark())
+	vp := viewport.New(tuiweave.Dark())
 	vp.SetSize(10, 6)
 	vp.SetContent(strings.Repeat("line\n", 30))
 	vp.ScrollTo(12) // mid-way
 
-	b := For(gotui.Dark(), &vp)
+	b := For(tuiweave.Dark(), &vp)
 	if got := len(strings.Split(b, "\n")); got != 6 {
 		t.Fatalf("bar height = %d, want 6 (match viewport)", got)
 	}
-	snaptest.SnapCells(t, b, snaptest.WithRoles(gotui.Dark()))
+	snaptest.SnapCells(t, b, snaptest.WithRoles(tuiweave.Dark()))
 }
