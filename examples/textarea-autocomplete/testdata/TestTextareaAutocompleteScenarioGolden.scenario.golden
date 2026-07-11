@@ -1,0 +1,77 @@
+## initial
+command: no
+╭ Textarea completion ─────────────────────────────────────────────────╮
+│                                                                      │
+│ > type a command fragment                                            │
+│ ▸ git status  show changes                                           │
+│   git log --oneline  show commits                                    │
+│   go test ./...  run tests                                           │
+│                                                                      │
+│                                                                      │
+│                                                                      │
+│                                                                      │
+│                                                                      │
+│                                                                      │
+╰──────────────────────────────────────────────────────────────────────╯
+ textarea  git-status                3 matches  ↑↓ choose  enter accept
+
+## type command fragment
+command: no
+╭ Textarea completion ─────────────────────────────────────────────────╮
+│                                                                      │
+│ > g                                                                  │
+│ ▸ git status  show changes                                           │
+│   git log --oneline  show commits                                    │
+│   go test ./...  run tests                                           │
+│                                                                      │
+│                                                                      │
+│                                                                      │
+│                                                                      │
+│                                                                      │
+│                                                                      │
+╰──────────────────────────────────────────────────────────────────────╯
+ textarea  git-status                3 matches  ↑↓ choose  enter accept
+
+## type command prefix
+command: no
+╭ Textarea completion ─────────────────────────────────────────────────╮
+│                                                                      │
+│ > gi                                                                 │
+│ ▸ git status  show changes                                           │
+│   git log --oneline  show commits                                    │
+│                                                                      │
+│                                                                      │
+│                                                                      │
+│                                                                      │
+│                                                                      │
+│                                                                      │
+│                                                                      │
+╰──────────────────────────────────────────────────────────────────────╯
+ textarea  git-status                2 matches  ↑↓ choose  enter accept
+
+## accept completion
+command: yes
+╭ Textarea completion ─────────────────────────────────────────────────╮
+│                                                                      │
+│ > gi                                                                 │
+│ ▸ git status  show changes                                           │
+│   git log --oneline  show commits                                    │
+│                                                                      │
+│                                                                      │
+│                                                                      │
+│                                                                      │
+│                                                                      │
+│                                                                      │
+│                                                                      │
+╰──────────────────────────────────────────────────────────────────────╯
+ textarea  git-status                2 matches  ↑↓ choose  enter accept
+
+## deliver completion
+command: no
+╭ Textarea completion ─────────────────────────────────────────────────╮
+│                                                                      │
+│ > git status                                                         │
+│                                                                      │
+│                                                                      │
+╰──────────────────────────────────────────────────────────────────────╯
+ textarea  none                      0 matches  ↑↓ choose  enter accept

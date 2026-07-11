@@ -1,7 +1,8 @@
 # gotui — Agent Catalog
 
 Use this file to route a task quickly. Read [AGENTS.md](AGENTS.md) for hard
-rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
+rules and recipes, [AGENT-CONTRACT.md](AGENT-CONTRACT.md) for the portable
+workflow, [DESIGN.md](DESIGN.md) for architectural rationale, and
 [PLAN.md](PLAN.md) for unfinished work.
 
 ## Agent workflow
@@ -16,11 +17,22 @@ rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
    transition, explicitly delivering command-produced messages when needed.
 5. Run the validation loop and read any golden diff before handoff.
 
+For a greenfield app, inspect dependency versions, choose the closest example,
+map components/layout/focus/state ownership, and build a smallest working
+shell before adding product behavior. For an existing-TUI migration, inventory
+the current behavior and split work into vertically usable tasks with explicit
+file ownership; do not parallelize shared model/render/update edits without
+isolated worktrees. For a review, use the compatibility notes and common
+failure modes below as an audit checklist.
+
 ## Fast routing
 
 | Task | Start here |
 |---|---|
 | Build an app shell | `layout`, then `focus`, `statusbar`, `help` |
+| Start a greenfield app workflow | [AGENT-CONTRACT.md](AGENT-CONTRACT.md), then the closest runnable example |
+| Plan an existing-TUI migration | [AGENT-CONTRACT.md](AGENT-CONTRACT.md) migration contract and `gotui-agent-kit` playbooks |
+| Review an app or migration | Theme, layout, MVU, focus, mouse, modal, narrow, and snapshot audit |
 | Build a file browser | `examples/browser`; compose `textinput`, `list`, `viewport`, `tabs`, and `focus` |
 | Compose a multi-pane reference app | `examples/ops` or `examples/browser`; follow the recipes in `AGENTS.md` |
 | Route a nested modal | `focus.Stack`; apply root-to-top `focus.Group` layers and route keys to the top layer |
@@ -44,6 +56,7 @@ rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
 | Show long content | `viewport`; forward mouse wheels; add `scrollbar.For` |
 | Accept one line | `textinput`; the app owns Enter/submit |
 | Accept chat-style text | `textarea`; app owns Enter/send and optional Alt+Enter newline; word movement and kill/yank are built in |
+| Complete text in a multiline buffer | `textarea.CursorPosition` + `textarea.ReplaceRange` with `autocomplete`; coordinates are logical runes |
 | Render markdown | `agentic/markdown`; depend on the `Renderer` interface and degrade to raw source |
 | Show model usage | `agentic/usagebar`; thresholds map context usage to semantic roles |
 | Confirm or gate an action | `dialog` or `agentic/permission` + `overlay` |
@@ -79,7 +92,7 @@ rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
 | `table` | Selecting rows with columns | Header and rule consume two rows; fixed/flex columns remain within the assigned width |
 | `viewport` | Scrolling pre-rendered content | Mouse wheel works even when blurred |
 | `textinput` | Editing one line | Cell-aware prompt, placeholder, cursor, and horizontal window; Enter is not handled |
-| `textarea` | Editing wrapped/multiline text | Logical-rune selection, cell-aware wrapping, bounded undo/redo, word movement/deletion, and a bounded kill/yank ring; Enter inserts a newline |
+| `textarea` | Editing wrapped/multiline text | Logical-rune selection, cell-aware wrapping, bounded undo/redo, word movement/deletion, bounded kill/yank, `CursorPosition`, and one-edit `ReplaceRange`; Enter inserts a newline |
 | `help` | Showing key hints | Drops whole hints from the right when narrow |
 | `spinner` | Showing activity | Intrinsic-size; start with `Tick`, forward `TickMsg` |
 | `dialog` | Confirming or cancelling | App owns visibility; width-bounded titles, bodies, and buttons; result arrives as `ResultMsg` |
@@ -110,7 +123,8 @@ Canonical examples are under [`examples/`](examples/): `statusbar` is the
 smallest component wiring example, `frame` demonstrates pure composition,
 `demo` composes general primitives, `table` combines selection/diff/scrolling,
 `palette` demonstrates filtered command discovery and activation, `autocomplete`
-pairs an app-owned input with suggestions, `ops` is the non-agentic composition
+pairs an app-owned input with suggestions, `textarea-autocomplete` shows
+logical-rune completion replacement, `ops` is the non-agentic composition
 pressure test with nested modal routing, `browser` is a filterable file-list and
 scrollable-preview reference, and `chat` exercises streaming,
 permission, toolcall, diff, markdown, usage, and textarea behavior.
@@ -204,6 +218,34 @@ that behavior is part of the scenario.
 - Reusing a logical chat/tool ID for a different operation; keep IDs stable for
   retries, not for unrelated events.
 - Regenerating goldens without reading the diff and confirming the visual change.
+- Assuming APIs from another TUI: gotui uses `autocomplete.SetItems` and
+  `SetQuery`, `dialog.ResultMsg`, and `scrollbar.For(theme, component)`; there
+  is no `SetSuggestions`, `dialog.Message`, `scrollbar.Model`, or
+  `scrollbar.ForViewport`.
+- Delegating `/` to `tabs.Update` instead of keeping global focus/search keys
+  application-owned.
+- Synchronizing a textarea completion buffer from `Value()` without
+  `CursorPosition`; use `ReplaceRange` for middle-of-buffer edits.
+- Treating `textarea` coordinates as display cells; `Position` is logical
+  row/rune-column and the component owns wrapping and cursor visibility.
+
+## API compatibility notes
+
+- `dialog` and `agentic/permission` are width-bounded and answer with a typed
+  `ResultMsg`; the application owns visibility and modal routing. There is no
+  `dialog.Message`.
+- `autocomplete` is a suggestion window beside an app-owned input. Call
+  `SetItems` and `SetQuery`; accept with `SelectedMsg` and apply insertion in
+  the app. It does not expose `SetSuggestions`.
+- `scrollbar.For(theme, component)` is the standalone renderer for scrolling
+  components. There is no `scrollbar.Model` or `scrollbar.ForViewport`.
+- `focus.Manager`, `focus.Scope`, and `focus.Stack` store indices/state, not
+  component pointers. Apply fresh addresses after copied model updates.
+- `textarea.Position` is logical rune space. `CursorPosition` reports the
+  cursor, and `ReplaceRange` clamps/normalizes a range, records one undoable
+  edit, and moves the cursor to the inserted value's end.
+- `layout` owns geometry through `layout.Rect`; applications call `SetSize`
+  from their `WindowSizeMsg` layout pass and do not import Ultraviolet.
 
 ## Validation loop
 

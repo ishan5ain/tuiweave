@@ -1,0 +1,23 @@
+## initial
+command: no
+> hello world
+  next
+
+
+## replace completion range
+command: no
+> hello gotui
+  next
+
+
+## replace across lines
+command: no
+> hello agent
+  kitxt
+
+
+## undo range edit
+command: no
+> hello gotui
+  next
+

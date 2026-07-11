@@ -1,0 +1,3 @@
+1: "> " [fg=Accent] | "abc界g" [fg=Text]
+2: "  " | " " [fg=Text reverse]
+3: 

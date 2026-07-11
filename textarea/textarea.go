@@ -57,6 +57,16 @@ type Model struct {
 	cursorStyle      lipgloss.Style
 }
 
+// Position identifies a logical rune position in the textarea.
+//
+// Row and Column are zero-based. Column counts runes in a logical line, not
+// terminal cells; applications should use CursorPosition and ReplaceRange
+// when integrating completion or other app-owned editing behavior.
+type Position struct {
+	Row    int
+	Column int
+}
+
 const (
 	ActionFocus          = "focus"
 	ActionBlur           = "blur"

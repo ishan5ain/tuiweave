@@ -1,0 +1,14 @@
+╭ Textarea completion ─────────────────────────────────────────────────╮
+│                                                                      │
+│ > type a command fragment                                            │
+│ ▸ git status  show changes                                           │
+│   git log --oneline  show commits                                    │
+│   go test ./...  run tests                                           │
+│                                                                      │
+│                                                                      │
+│                                                                      │
+│                                                                      │
+│                                                                      │
+│                                                                      │
+╰──────────────────────────────────────────────────────────────────────╯
+ textarea  git-status                3 matches  ↑↓ choose  enter accept

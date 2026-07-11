@@ -171,6 +171,61 @@ func TestPasteWithNewlines(t *testing.T) {
 	}
 }
 
+func TestCursorPositionAndReplaceRange(t *testing.T) {
+	ta := newFocused(20, 4)
+	ta.SetValue("hello world")
+	if got := ta.CursorPosition(); got != (Position{Row: 0, Column: 11}) {
+		t.Fatalf("cursor at end = %#v, want row 0 column 11", got)
+	}
+
+	ta.ReplaceRange(Position{Row: 0, Column: 6}, Position{Row: 0, Column: 11}, "gotui")
+	if got := ta.Value(); got != "hello gotui" {
+		t.Fatalf("middle replacement = %q, want %q", got, "hello gotui")
+	}
+	if got := ta.CursorPosition(); got != (Position{Row: 0, Column: 11}) {
+		t.Fatalf("cursor after replacement = %#v, want row 0 column 11", got)
+	}
+	if !ta.CanUndo() {
+		t.Fatal("replacement did not create an undo entry")
+	}
+	ta.Undo()
+	if got := ta.Value(); got != "hello world" {
+		t.Fatalf("undo replacement = %q, want %q", got, "hello world")
+	}
+	if got := ta.CursorPosition(); got != (Position{Row: 0, Column: 11}) {
+		t.Fatalf("cursor after undo = %#v, want row 0 column 11", got)
+	}
+}
+
+func TestReplaceRangeMultilineAndNormalizesPositions(t *testing.T) {
+	ta := newFocused(20, 4)
+	ta.SetValue("one\ntwo\nthree")
+	ta.ReplaceRange(Position{Row: 2, Column: 2}, Position{Row: 0, Column: 1}, "X\nY")
+	if got := ta.Value(); got != "oX\nYree" {
+		t.Fatalf("multiline replacement = %q, want %q", got, "oX\nYree")
+	}
+	if got := ta.CursorPosition(); got != (Position{Row: 1, Column: 1}) {
+		t.Fatalf("cursor after multiline replacement = %#v, want row 1 column 1", got)
+	}
+
+	ta.SetValue("ab\ncd")
+	ta.ReplaceRange(Position{Row: 99, Column: 99}, Position{Row: -1, Column: -1}, "X")
+	if got := ta.Value(); got != "X" {
+		t.Fatalf("clamped normalized replacement = %q, want %q", got, "X")
+	}
+	if got := ta.CursorPosition(); got != (Position{Row: 0, Column: 1}) {
+		t.Fatalf("cursor after clamped replacement = %#v, want row 0 column 1", got)
+	}
+}
+
+func TestReplaceRangeNarrowGolden(t *testing.T) {
+	ta := newFocused(8, 3) // wrap width 6 after the prompt
+	ta.SetValue("abcdef")
+	ta.ReplaceRange(Position{Row: 0, Column: 3}, Position{Row: 0, Column: 6}, "界g")
+	snaptest.Snap(t, ta.View())
+	snaptest.SnapCells(t, ta.View(), snaptest.WithRoles(gotui.Dark()))
+}
+
 func TestBackspaceJoinsLines(t *testing.T) {
 	ta := newFocused(20, 4)
 	ta = typeString(ta, "ab")
@@ -572,12 +627,46 @@ type scenarioModel struct {
 	textarea Model
 }
 
+type replaceRangeMsg struct {
+	start, end Position
+	value      string
+}
+
 func (m scenarioModel) Init() tea.Cmd { return nil }
 
 func (m scenarioModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	if replacement, ok := msg.(replaceRangeMsg); ok {
+		m.textarea.ReplaceRange(replacement.start, replacement.end, replacement.value)
+		return m, nil
+	}
 	var cmd tea.Cmd
 	m.textarea, cmd = m.textarea.Update(msg)
 	return m, cmd
 }
 
 func (m scenarioModel) View() tea.View { return tea.NewView(m.textarea.View()) }
+
+func TestTextareaReplaceRangeScenarioGolden(t *testing.T) {
+	m := scenarioModel{textarea: newFocused(20, 4)}
+	m.textarea.SetValue("hello world\nnext")
+	result := snaptest.RunScenario(m,
+		snaptest.ScenarioStep{
+			Name: "replace completion range",
+			Msg: replaceRangeMsg{
+				start: Position{Row: 0, Column: 6},
+				end:   Position{Row: 0, Column: 11},
+				value: "gotui",
+			},
+		},
+		snaptest.ScenarioStep{
+			Name: "replace across lines",
+			Msg: replaceRangeMsg{
+				start: Position{Row: 0, Column: 6},
+				end:   Position{Row: 1, Column: 2},
+				value: "agent\nkit",
+			},
+		},
+		snaptest.ScenarioStep{Name: "undo range edit", Msg: key("ctrl+z")},
+	)
+	snaptest.SnapScenario(t, result)
+}
