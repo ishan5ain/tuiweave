@@ -1,7 +1,7 @@
 // Command table is a mock git-status app: a table of changed files beside a
 // scrollable diff of the selected row, with scrollbars on both panes. It
 // exercises the two components no other example does — table and
-// diffview.Model — plus gotui/scrollbar.
+// diffview.Model — plus tuiweave/scrollbar.
 //
 //	go run ./examples/table
 //
@@ -16,13 +16,13 @@ import (
 	tea "charm.land/bubbletea/v2"
 	lipgloss "charm.land/lipgloss/v2"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/agentic/diffview"
-	"github.com/ishansain/gotui/focus"
-	"github.com/ishansain/gotui/layout"
-	"github.com/ishansain/gotui/scrollbar"
-	"github.com/ishansain/gotui/statusbar"
-	"github.com/ishansain/gotui/table"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/agentic/diffview"
+	"github.com/ishan5ain/tuiweave/focus"
+	"github.com/ishan5ain/tuiweave/layout"
+	"github.com/ishan5ain/tuiweave/scrollbar"
+	"github.com/ishan5ain/tuiweave/statusbar"
+	"github.com/ishan5ain/tuiweave/table"
 )
 
 type change struct {
@@ -62,7 +62,7 @@ func diffFor(c change) string {
 }
 
 type model struct {
-	theme         gotui.Theme
+	theme         tuiweave.Theme
 	width, height int
 
 	files  table.Model
@@ -72,7 +72,7 @@ type model struct {
 }
 
 func newModel() model {
-	theme := gotui.Dark()
+	theme := tuiweave.Dark()
 	m := model{
 		theme:  theme,
 		files:  table.New(theme),

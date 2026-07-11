@@ -7,15 +7,15 @@ import (
 	tea "charm.land/bubbletea/v2"
 	lipgloss "charm.land/lipgloss/v2"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/layout"
-	"github.com/ishansain/gotui/snaptest"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/layout"
+	"github.com/ishan5ain/tuiweave/snaptest"
 )
 
 func newTestDialog() Model {
-	d := New(gotui.Dark())
+	d := New(tuiweave.Dark())
 	d.ID = "quit"
-	d.Title = "Quit gotui?"
+	d.Title = "Quit tuiweave?"
 	d.Body = "Unsaved changes will be lost."
 	d.SetSize(36, 10)
 	return d
@@ -38,13 +38,13 @@ func key(name string) tea.KeyPressMsg {
 func TestDialogGolden(t *testing.T) {
 	d := newTestDialog()
 	snaptest.Snap(t, d.View())
-	snaptest.SnapCells(t, d.View(), snaptest.WithRoles(gotui.Dark()))
+	snaptest.SnapCells(t, d.View(), snaptest.WithRoles(tuiweave.Dark()))
 }
 
 func TestDialogButtonNavigationGolden(t *testing.T) {
 	d := newTestDialog()
 	d, _ = d.Update(key("tab")) // select Cancel
-	snaptest.SnapCells(t, d.View(), snaptest.WithRoles(gotui.Dark()))
+	snaptest.SnapCells(t, d.View(), snaptest.WithRoles(tuiweave.Dark()))
 }
 
 func resultOf(t *testing.T, cmd tea.Cmd) ResultMsg {

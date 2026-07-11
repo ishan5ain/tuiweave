@@ -10,9 +10,9 @@ import (
 	lipgloss "charm.land/lipgloss/v2"
 	"github.com/charmbracelet/x/ansi"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/action"
-	"github.com/ishansain/gotui/inspect"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/action"
+	"github.com/ishan5ain/tuiweave/inspect"
 )
 
 const (
@@ -56,7 +56,7 @@ type Model struct {
 }
 
 // New returns an empty tab strip styled from the theme's roles.
-func New(theme gotui.Theme) Model {
+func New(theme tuiweave.Theme) Model {
 	bar := lipgloss.NewStyle().Background(theme.SurfaceRaised)
 	return Model{
 		selected: -1,

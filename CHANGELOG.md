@@ -1,0 +1,22 @@
+# Changelog
+
+All notable changes are documented here. The project follows Semantic Versioning;
+before v1, a minor release may contain breaking changes when clearly called out.
+
+## [Unreleased]
+
+## [0.1.0] - 2026-07-11
+
+Initial public release, including semantic themes; constraint layout; frames,
+stacks, split panes, tabs, menus, toolbars, palettes, buttons, toggles, progress,
+status bars, help, and spinners; scrollable viewports, lists, and tables; text
+input, textarea editing/history/selection/completion APIs, and autocomplete;
+mouse, focus, overlays, dialogs, inspection/actions, and snapshot/scenario test
+helpers; optional markdown, chat, tool-call, diff, permission, and usage packages;
+and runnable general-purpose and agentic examples.
+
+Known limitations: pre-v1 API evolution, incomplete IME behavior, Bubble Tea v2
+coupling, and internal reliance on a pre-v1 Ultraviolet dependency.
+
+[Unreleased]: https://github.com/ishan5ain/tuiweave/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/ishan5ain/tuiweave/releases/tag/v0.1.0

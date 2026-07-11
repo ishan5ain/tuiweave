@@ -15,19 +15,19 @@ import (
 	tea "charm.land/bubbletea/v2"
 	lipgloss "charm.land/lipgloss/v2"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/focus"
-	"github.com/ishansain/gotui/frame"
-	"github.com/ishansain/gotui/inspect"
-	"github.com/ishansain/gotui/layout"
-	"github.com/ishansain/gotui/line"
-	"github.com/ishansain/gotui/list"
-	"github.com/ishansain/gotui/scrollbar"
-	"github.com/ishansain/gotui/stack"
-	"github.com/ishansain/gotui/statusbar"
-	"github.com/ishansain/gotui/tabs"
-	"github.com/ishansain/gotui/textinput"
-	"github.com/ishansain/gotui/viewport"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/focus"
+	"github.com/ishan5ain/tuiweave/frame"
+	"github.com/ishan5ain/tuiweave/inspect"
+	"github.com/ishan5ain/tuiweave/layout"
+	"github.com/ishan5ain/tuiweave/line"
+	"github.com/ishan5ain/tuiweave/list"
+	"github.com/ishan5ain/tuiweave/scrollbar"
+	"github.com/ishan5ain/tuiweave/stack"
+	"github.com/ishan5ain/tuiweave/statusbar"
+	"github.com/ishan5ain/tuiweave/tabs"
+	"github.com/ishan5ain/tuiweave/textinput"
+	"github.com/ishan5ain/tuiweave/viewport"
 )
 
 type fileEntry struct {
@@ -71,7 +71,7 @@ func entriesFor(tabID string) []fileEntry {
 	switch tabID {
 	case "recent":
 		return []fileEntry{
-			{path: "README.md", content: "# gotui\n\nA small, agent-friendly TUI toolkit.\n\nStart with the layout and component contracts."},
+			{path: "README.md", content: "# tuiweave\n\nA small, agent-friendly TUI toolkit.\n\nStart with the layout and component contracts."},
 			{path: "AGENTS.md", content: "# Agent Conventions\n\nUse theme roles, SetSize, MVU updates, and snapshot tests.\n\nCompose from the existing vocabulary first."},
 			{path: "examples/ops/main.go", content: "// Command ops is a reference operations console.\n\nIt composes tabs, actions, tables, controls, and a command palette."},
 			{path: "action/action.go", content: "package action\n\n// Item is one selectable application action.\ntype Item struct {\n\tID string\n\tLabel string\n}"},
@@ -79,12 +79,12 @@ func entriesFor(tabID string) []fileEntry {
 	case "pinned":
 		return []fileEntry{
 			{path: "DESIGN.md", content: "# Design\n\nThe core remains domain-neutral.\n\nComposition stays explicit so applications own routing and state."},
-			{path: "PLAN.md", content: "# Plan\n\nPhase 4 expands general-purpose composition.\n\nReference applications expose the next reusable gaps."},
-			{path: "go.mod", content: "module github.com/ishansain/gotui\n\ngo 1.23\n\nrequire charm.land/bubbletea/v2"},
+			{path: "ROADMAP.md", content: "# Roadmap\n\nHarden the public component vocabulary through real application use."},
+			{path: "go.mod", content: "module github.com/ishan5ain/tuiweave\n\ngo 1.23\n\nrequire charm.land/bubbletea/v2"},
 		}
 	default:
 		return []fileEntry{
-			{path: "cmd/gotui/main.go", content: mainPreview()},
+			{path: "cmd/tuiweave/main.go", content: mainPreview()},
 			{path: "layout/layout.go", content: "package layout\n\n// Rect is a terminal-space rectangle.\ntype Rect struct {\n\tX, Y, W, H int\n}"},
 			{path: "list/list.go", content: "package list\n\n// Model is a filterable, focusable list.\ntype Model struct {\n\titems []string\n}"},
 			{path: "examples/browser/main.go", content: "// Command browser is a mock file-browser reference app.\n\n// It exercises filtering, preview scrolling, focus, and inspection."},
@@ -96,7 +96,7 @@ func entriesFor(tabID string) []fileEntry {
 }
 
 type model struct {
-	theme         gotui.Theme
+	theme         tuiweave.Theme
 	width, height int
 
 	tabs    tabs.Model
@@ -110,7 +110,7 @@ type model struct {
 }
 
 func newModel() model {
-	theme := gotui.Dark()
+	theme := tuiweave.Dark()
 	m := model{
 		theme:   theme,
 		tabs:    tabs.New(theme),

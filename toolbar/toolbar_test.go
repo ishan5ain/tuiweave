@@ -8,13 +8,13 @@ import (
 	lipgloss "charm.land/lipgloss/v2"
 	"github.com/charmbracelet/x/ansi"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/inspect"
-	"github.com/ishansain/gotui/snaptest"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/inspect"
+	"github.com/ishan5ain/tuiweave/snaptest"
 )
 
 func newTestToolbar(width int) Model {
-	m := New(gotui.Dark())
+	m := New(tuiweave.Dark())
 	m.SetSize(width, 1)
 	m.SetItems(
 		Item{ID: "refresh", Label: "Refresh", Description: "Reload data"},
@@ -37,14 +37,14 @@ func TestToolbarFocused(t *testing.T) {
 	m.Focus()
 	m.Select(1)
 	snaptest.Snap(t, m.View())
-	snaptest.SnapCells(t, m.View(), snaptest.WithRoles(gotui.Dark()))
+	snaptest.SnapCells(t, m.View(), snaptest.WithRoles(tuiweave.Dark()))
 }
 
 func TestToolbarBlurred(t *testing.T) {
 	m := newTestToolbar(36)
 	m.Select(1)
 	snaptest.Snap(t, m.View())
-	snaptest.SnapCells(t, m.View(), snaptest.WithRoles(gotui.Dark()))
+	snaptest.SnapCells(t, m.View(), snaptest.WithRoles(tuiweave.Dark()))
 }
 
 func TestToolbarSkipsDisabledAndKeepsSelectionVisible(t *testing.T) {
@@ -110,7 +110,7 @@ func TestToolbarWidthAndEmptyStates(t *testing.T) {
 		if got := lipgloss.Width(m.View()); got != width {
 			t.Fatalf("width %d rendered as %d", width, got)
 		}
-		empty := New(gotui.Dark())
+		empty := New(tuiweave.Dark())
 		empty.SetSize(width, 1)
 		if got := lipgloss.Width(empty.View()); got != width {
 			t.Fatalf("empty width %d rendered as %d", width, got)

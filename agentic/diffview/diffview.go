@@ -12,8 +12,8 @@ import (
 	lipgloss "charm.land/lipgloss/v2"
 	"github.com/charmbracelet/x/ansi"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/viewport"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/viewport"
 )
 
 type styles struct {
@@ -25,7 +25,7 @@ type styles struct {
 	meta    lipgloss.Style
 }
 
-func newStyles(theme gotui.Theme) styles {
+func newStyles(theme tuiweave.Theme) styles {
 	return styles{
 		file:    lipgloss.NewStyle().Foreground(theme.Text).Bold(true),
 		hunk:    lipgloss.NewStyle().Foreground(theme.Info),
@@ -66,7 +66,7 @@ func render(st styles, diff string, width int) string {
 }
 
 // Sprint styles a unified diff at the given width for inline rendering.
-func Sprint(theme gotui.Theme, diff string, width int) string {
+func Sprint(theme tuiweave.Theme, diff string, width int) string {
 	return render(newStyles(theme), diff, width)
 }
 
@@ -79,7 +79,7 @@ type Model struct {
 }
 
 // New returns an empty diff pane styled from the theme's roles.
-func New(theme gotui.Theme) Model {
+func New(theme tuiweave.Theme) Model {
 	return Model{vp: viewport.New(theme), st: newStyles(theme)}
 }
 

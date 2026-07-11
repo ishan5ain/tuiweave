@@ -9,7 +9,7 @@ import (
 	lipgloss "charm.land/lipgloss/v2"
 	"github.com/charmbracelet/x/ansi"
 
-	"github.com/ishansain/gotui"
+	"github.com/ishan5ain/tuiweave"
 )
 
 // Model is a text input component. Create one with New.
@@ -37,7 +37,7 @@ const (
 )
 
 // New returns an empty text input styled from the theme's roles.
-func New(theme gotui.Theme) Model {
+func New(theme tuiweave.Theme) Model {
 	return Model{
 		Prompt:           "> ",
 		promptStyle:      lipgloss.NewStyle().Foreground(theme.Accent),

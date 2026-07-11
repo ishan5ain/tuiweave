@@ -1,20 +1,20 @@
-# gotui Agent Contract
+# tuiweave Agent Contract
 
 This is the short workflow contract for agents building applications with
-gotui. The library's API and design truth live in the gotui repository:
+tuiweave. The library's API and design truth live in the tuiweave repository:
 [`AGENTS.md`](AGENTS.md), [`AGENT-CATALOG.md`](AGENT-CATALOG.md),
 [`DESIGN.md`](DESIGN.md), and the runnable examples. Do not copy or fork that
 rulebook into an application.
 
 ## Before editing
 
-- Inspect the repository, `go.mod`, current tests, and the closest gotui
-  example. Record the gotui version or commit being used.
+- Inspect the repository, `go.mod`, current tests, and the closest tuiweave
+  example. Record the tuiweave version or commit being used.
 - For a greenfield app, map components, layout rectangles, focus order, and
   application-owned state before writing the shell.
 - For a migration, inventory rendering, input, scrolling, focus, and domain
-  behavior. Classify each concern as reusable gotui behavior, application
-  behavior, or a candidate gotui API gap.
+  behavior. Classify each concern as reusable tuiweave behavior, application
+  behavior, or a candidate tuiweave API gap.
 - For a review, verify theme roles, `SetSize`/layout ownership, MVU model and
   command handling, focus reapplication, mouse bounds, modal results, narrow
   rendering, and snapshot/scenario coverage.
@@ -25,7 +25,7 @@ Every implementation task states:
 
 ```text
 Goal:
-Reference gotui example:
+Reference tuiweave example:
 Components:
 Application-owned state:
 Files allowed:
@@ -42,7 +42,7 @@ changing visuals, and review every golden diff.
 
 ## Compatibility and gaps
 
-Use the actual API names and contracts from the pinned gotui revision:
+Use the actual API names and contracts from the pinned tuiweave revision:
 
 - `dialog` answers with `dialog.ResultMsg`; there is no `dialog.Message`.
 - `autocomplete` uses `SetItems`, `SetQuery`, and `SelectedMsg`; there is no
@@ -59,7 +59,7 @@ Use the actual API names and contracts from the pinned gotui revision:
 
 Do not invent local forks or guessed compatibility wrappers. If a reusable
 application need cannot be expressed by the pinned API, report it as a
-candidate gotui API gap with a focused example and acceptance test. A gotui
+candidate tuiweave API gap with a focused example and acceptance test. A tuiweave
 change requires explicit authorization; a local `replace` directive is only
 for development and must not replace the pinned dependency in committed app
 configuration.
@@ -68,6 +68,6 @@ configuration.
 
 Run the app's build, vet, tests, snapshot update when intentionally changing
 rendering, and the read-only audit from
-[`gotui-agent-kit`](https://github.com/ishansain/gotui-agent-kit). Read the
+[`tuiweave-agent-kit`](https://github.com/ishan5ain/tuiweave-agent-kit). Read the
 golden diff before handoff. Include failures, deferred gaps, and the exact
-gotui revision in the result.
+tuiweave revision in the result.

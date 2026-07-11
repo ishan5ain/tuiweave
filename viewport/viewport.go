@@ -11,8 +11,8 @@ import (
 	tea "charm.land/bubbletea/v2"
 	"github.com/charmbracelet/x/ansi"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/mouse"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/mouse"
 )
 
 // Model is a viewport component. Create one with New.
@@ -25,7 +25,7 @@ type Model struct {
 
 // New returns an empty viewport. The theme parameter is part of the
 // component contract (future chrome like scrollbars will use it).
-func New(_ gotui.Theme) Model {
+func New(_ tuiweave.Theme) Model {
 	return Model{}
 }
 

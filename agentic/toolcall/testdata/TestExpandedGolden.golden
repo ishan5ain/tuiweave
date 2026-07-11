@@ -1,3 +1,3 @@
 ✓ Bash go test ./...
-   ok      gotui/layout    0.3s
-   ok      gotui/snaptest    0.2s
+   ok      tuiweave/layout    0.3s
+   ok      tuiweave/snaptest    0.2s

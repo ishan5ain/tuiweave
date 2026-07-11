@@ -7,9 +7,9 @@ import (
 	tea "charm.land/bubbletea/v2"
 
 	"github.com/charmbracelet/x/ansi"
-	"github.com/ishansain/gotui/inspect"
-	"github.com/ishansain/gotui/mouse"
-	"github.com/ishansain/gotui/snaptest"
+	"github.com/ishan5ain/tuiweave/inspect"
+	"github.com/ishan5ain/tuiweave/mouse"
+	"github.com/ishan5ain/tuiweave/snaptest"
 )
 
 func sized(t *testing.T, width, height int) model {
@@ -48,8 +48,8 @@ func TestBrowserFilterAndPreview(t *testing.T) {
 	for _, r := range "main" {
 		m, _ = update(t, m, key(r))
 	}
-	if m.files.FilteredLen() == 0 || m.files.SelectedItem() != "cmd/gotui/main.go" {
-		t.Fatalf("filtered selection = %q, matches = %d; want cmd/gotui/main.go", m.files.SelectedItem(), m.files.FilteredLen())
+	if m.files.FilteredLen() == 0 || m.files.SelectedItem() != "cmd/tuiweave/main.go" {
+		t.Fatalf("filtered selection = %q, matches = %d; want cmd/tuiweave/main.go", m.files.SelectedItem(), m.files.FilteredLen())
 	}
 	if !strings.Contains(ansi.Strip(m.preview.View()), "loadConfig") {
 		t.Fatalf("preview does not follow filtered selection: %q", ansi.Strip(m.preview.View()))

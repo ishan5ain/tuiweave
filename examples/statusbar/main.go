@@ -1,4 +1,4 @@
-// Command statusbar demonstrates the gotui statusbar component and the
+// Command statusbar demonstrates the tuiweave statusbar component and the
 // canonical app wiring pattern: window size → layout split → SetSize →
 // composed string view.
 //
@@ -16,9 +16,9 @@ import (
 	tea "charm.land/bubbletea/v2"
 	lipgloss "charm.land/lipgloss/v2"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/layout"
-	"github.com/ishansain/gotui/statusbar"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/layout"
+	"github.com/ishan5ain/tuiweave/statusbar"
 )
 
 type model struct {
@@ -34,11 +34,11 @@ func newModel() model {
 	return m
 }
 
-func (m model) theme() gotui.Theme {
+func (m model) theme() tuiweave.Theme {
 	if m.dark {
-		return gotui.Dark()
+		return tuiweave.Dark()
 	}
-	return gotui.Light()
+	return tuiweave.Light()
 }
 
 // rebuildStatusbar recreates the bar from the current theme and state.
@@ -48,7 +48,7 @@ func (m *model) rebuildStatusbar() {
 	sb := statusbar.New(m.theme())
 	sb.SetSize(m.width, 1)
 	sb.SetLeft(
-		statusbar.Segment{Text: "gotui", Kind: statusbar.KindAccent},
+		statusbar.Segment{Text: "tuiweave", Kind: statusbar.KindAccent},
 		statusbar.Segment{Text: "examples/statusbar", Kind: statusbar.KindNormal},
 	)
 	themeName := "light"
@@ -95,7 +95,7 @@ func (m model) View() tea.View {
 		Padding(1, 2).
 		Background(theme.Surface).
 		Foreground(theme.Text).
-		Render("gotui statusbar demo\n\nPress t to toggle the theme, q to quit.")
+		Render("tuiweave statusbar demo\n\nPress t to toggle the theme, q to quit.")
 	v := tea.NewView(lipgloss.JoinVertical(lipgloss.Left, body, m.status.View()))
 	v.AltScreen = true
 	return v

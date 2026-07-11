@@ -8,8 +8,8 @@ import (
 
 	lipgloss "charm.land/lipgloss/v2"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/frame"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/frame"
 )
 
 // View renders one section for the width supplied by Vertical.
@@ -29,7 +29,7 @@ type Options struct {
 // line to that width, and joins them from top to bottom. Empty or nil sections
 // are omitted, which lets applications conditionally include a header or
 // footer without manual newline handling.
-func Vertical(theme gotui.Theme, width int, opts Options, views ...View) string {
+func Vertical(theme tuiweave.Theme, width int, opts Options, views ...View) string {
 	if width <= 0 {
 		return ""
 	}

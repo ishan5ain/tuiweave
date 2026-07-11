@@ -1,5 +1,5 @@
 // Package layout partitions terminal space into rectangles using flexbox-like
-// constraints, and sizes gotui components from the result.
+// constraints, and sizes tuiweave components from the result.
 //
 // It is a thin facade over ultraviolet's constraint solver: consumers depend
 // on this package, never on ultraviolet directly. The typical pattern, run on
@@ -99,7 +99,7 @@ func (s Splitted) Assign(areas ...*Rect) {
 	uvlayout.Splitted(s).Assign(areas...)
 }
 
-// Sizable is implemented by every gotui component: SetSize supplies the box
+// Sizable is implemented by every tuiweave component: SetSize supplies the box
 // for bounded components and the available constraints for documented
 // intrinsic or width-bounded components.
 type Sizable interface {

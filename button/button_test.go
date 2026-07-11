@@ -6,13 +6,13 @@ import (
 	tea "charm.land/bubbletea/v2"
 	lipgloss "charm.land/lipgloss/v2"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/inspect"
-	"github.com/ishansain/gotui/snaptest"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/inspect"
+	"github.com/ishan5ain/tuiweave/snaptest"
 )
 
 func newTestButton(width int) Model {
-	m := New(gotui.Dark())
+	m := New(tuiweave.Dark())
 	m.ID = "open"
 	m.SetLabel("Open workspace")
 	m.SetSize(width, 1)
@@ -29,14 +29,14 @@ func keyPress(key string) tea.KeyPressMsg {
 func TestButtonDefaultGolden(t *testing.T) {
 	m := newTestButton(28)
 	snaptest.Snap(t, m.View())
-	snaptest.SnapCells(t, m.View(), snaptest.WithRoles(gotui.Dark()))
+	snaptest.SnapCells(t, m.View(), snaptest.WithRoles(tuiweave.Dark()))
 }
 
 func TestButtonFocusedGolden(t *testing.T) {
 	m := newTestButton(28)
 	m.Focus()
 	snaptest.Snap(t, m.View())
-	snaptest.SnapCells(t, m.View(), snaptest.WithRoles(gotui.Dark()))
+	snaptest.SnapCells(t, m.View(), snaptest.WithRoles(tuiweave.Dark()))
 }
 
 func TestButtonActivation(t *testing.T) {

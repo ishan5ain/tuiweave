@@ -1,9 +1,9 @@
-# gotui — Agent Catalog
+# tuiweave — Agent Catalog
 
 Use this file to route a task quickly. Read [AGENTS.md](AGENTS.md) for hard
 rules and recipes, [AGENT-CONTRACT.md](AGENT-CONTRACT.md) for the portable
 workflow, [DESIGN.md](DESIGN.md) for architectural rationale, and
-[PLAN.md](PLAN.md) for unfinished work.
+[ROADMAP.md](ROADMAP.md) for unfinished work.
 
 ## Agent workflow
 
@@ -31,7 +31,7 @@ failure modes below as an audit checklist.
 |---|---|
 | Build an app shell | `layout`, then `focus`, `statusbar`, `help` |
 | Start a greenfield app workflow | [AGENT-CONTRACT.md](AGENT-CONTRACT.md), then the closest runnable example |
-| Plan an existing-TUI migration | [AGENT-CONTRACT.md](AGENT-CONTRACT.md) migration contract and `gotui-agent-kit` playbooks |
+| Plan an existing-TUI migration | [AGENT-CONTRACT.md](AGENT-CONTRACT.md) migration contract and `tuiweave-agent-kit` playbooks |
 | Review an app or migration | Theme, layout, MVU, focus, mouse, modal, narrow, and snapshot audit |
 | Build a file browser | `examples/browser`; compose `textinput`, `list`, `viewport`, `tabs`, and `focus` |
 | Compose a multi-pane reference app | `examples/ops` or `examples/browser`; follow the recipes in `AGENTS.md` |
@@ -72,7 +72,7 @@ failure modes below as an audit checklist.
 
 | Package | Use when | First API / contract |
 |---|---|---|
-| `gotui` | Choosing semantic colors | `gotui.Dark()` or `gotui.Light()`; never raw colors |
+| `tuiweave` | Choosing semantic colors | `tuiweave.Dark()` or `tuiweave.Light()`; never raw colors |
 | `layout` | Converting window space to component boxes | `layout.Vertical(...).Apply(area, &components...)`; `SizeModeOf` for sizing exceptions |
 | `mouse` | Normalizing wheel input or hit-testing app-owned bounds | `WheelDelta`, `Position`, `InBounds`; no global router |
 | `snaptest` | Verifying rendering or interactions | `Snap`, grapheme-preserving `SnapCells`, `RunScenario`, `SnapScenario` |
@@ -193,7 +193,7 @@ that behavior is part of the scenario.
 
 ## Common failure modes
 
-- Using a raw hex color instead of a `gotui.Theme` role.
+- Using a raw hex color instead of a `tuiweave.Theme` role.
 - Importing Ultraviolet outside its three library-internal packages.
 - Measuring the terminal or rendering outside the component's assigned box.
 - Dropping the model returned by `Update` or its `tea.Cmd`.
@@ -218,7 +218,7 @@ that behavior is part of the scenario.
 - Reusing a logical chat/tool ID for a different operation; keep IDs stable for
   retries, not for unrelated events.
 - Regenerating goldens without reading the diff and confirming the visual change.
-- Assuming APIs from another TUI: gotui uses `autocomplete.SetItems` and
+- Assuming APIs from another TUI: tuiweave uses `autocomplete.SetItems` and
   `SetQuery`, `dialog.ResultMsg`, and `scrollbar.For(theme, component)`; there
   is no `SetSuggestions`, `dialog.Message`, `scrollbar.Model`, or
   `scrollbar.ForViewport`.

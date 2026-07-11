@@ -1,0 +1,19 @@
+name: Component or API proposal
+description: Discuss a new component or public API before implementation.
+title: "proposal: "
+labels: [proposal]
+body:
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Use case
+      description: What application behavior cannot be expressed cleanly today?
+    validations:
+      required: true
+  - type: textarea
+    id: design
+    attributes:
+      label: Proposed contract
+      description: Include ownership, sizing, focus, messages, and alternatives.
+    validations:
+      required: true

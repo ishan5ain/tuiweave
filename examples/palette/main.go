@@ -13,22 +13,22 @@ import (
 	tea "charm.land/bubbletea/v2"
 	lipgloss "charm.land/lipgloss/v2"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/frame"
-	"github.com/ishansain/gotui/layout"
-	"github.com/ishansain/gotui/palette"
-	"github.com/ishansain/gotui/statusbar"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/frame"
+	"github.com/ishan5ain/tuiweave/layout"
+	"github.com/ishan5ain/tuiweave/palette"
+	"github.com/ishan5ain/tuiweave/statusbar"
 )
 
 type model struct {
-	theme         gotui.Theme
+	theme         tuiweave.Theme
 	width, height int
 	commands      palette.Model
 	status        statusbar.Model
 }
 
 func newModel() model {
-	theme := gotui.Dark()
+	theme := tuiweave.Dark()
 	commands := palette.New(theme)
 	commands.SetItems(
 		palette.Item{ID: "open", Label: "Open workspace", Description: "Choose a workspace"},

@@ -17,8 +17,8 @@ import (
 	lipgloss "charm.land/lipgloss/v2"
 	"github.com/charmbracelet/x/ansi"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/layout"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/layout"
 )
 
 // ResultMsg is emitted (as a command) when the user confirms or dismisses
@@ -59,7 +59,7 @@ const (
 )
 
 // New returns a dialog styled from the theme's roles.
-func New(theme gotui.Theme) Model {
+func New(theme tuiweave.Theme) Model {
 	return Model{
 		ConfirmLabel: "OK",
 		CancelLabel:  "Cancel",

@@ -3,7 +3,7 @@ package viewport
 import (
 	tea "charm.land/bubbletea/v2"
 
-	"github.com/ishansain/gotui/inspect"
+	"github.com/ishan5ain/tuiweave/inspect"
 )
 
 const (

@@ -3,8 +3,8 @@ package palette
 import (
 	"strconv"
 
-	"github.com/ishansain/gotui/action"
-	"github.com/ishansain/gotui/inspect"
+	"github.com/ishan5ain/tuiweave/action"
+	"github.com/ishan5ain/tuiweave/inspect"
 )
 
 // Actions reports stable local intents for palette focus, filtering,

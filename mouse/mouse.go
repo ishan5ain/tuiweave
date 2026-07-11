@@ -16,7 +16,7 @@ const WheelLines = 3
 
 // WheelDelta returns the standard vertical scroll delta for msg. A negative
 // value means scroll up; a positive value means scroll down. Horizontal wheel
-// events are left to the application because the generic gotui scrollable
+// events are left to the application because the generic tuiweave scrollable
 // contract is vertical.
 func WheelDelta(msg tea.Msg) (delta int, ok bool) {
 	event, ok := msg.(tea.MouseWheelMsg)

@@ -6,13 +6,13 @@ import (
 	tea "charm.land/bubbletea/v2"
 	lipgloss "charm.land/lipgloss/v2"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/inspect"
-	"github.com/ishansain/gotui/snaptest"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/inspect"
+	"github.com/ishan5ain/tuiweave/snaptest"
 )
 
 func newTestTabs(width int) Model {
-	m := New(gotui.Dark())
+	m := New(tuiweave.Dark())
 	m.SetSize(width, 1)
 	m.SetTabs(
 		Tab{ID: "overview", Label: "Overview"},
@@ -34,18 +34,18 @@ func TestTabsFocused(t *testing.T) {
 	m.Focus()
 	m.Select(1)
 	snaptest.Snap(t, m.View())
-	snaptest.SnapCells(t, m.View(), snaptest.WithRoles(gotui.Dark()))
+	snaptest.SnapCells(t, m.View(), snaptest.WithRoles(tuiweave.Dark()))
 }
 
 func TestTabsBlurred(t *testing.T) {
 	m := newTestTabs(30)
 	m.Select(1)
 	snaptest.Snap(t, m.View())
-	snaptest.SnapCells(t, m.View(), snaptest.WithRoles(gotui.Dark()))
+	snaptest.SnapCells(t, m.View(), snaptest.WithRoles(tuiweave.Dark()))
 }
 
 func TestTabsOverflowKeepsSelectionVisible(t *testing.T) {
-	m := New(gotui.Dark())
+	m := New(tuiweave.Dark())
 	m.SetSize(16, 1)
 	m.SetTabs(
 		Tab{ID: "one", Label: "Overview"},
@@ -67,7 +67,7 @@ func TestTabsWidthAndEmptyStates(t *testing.T) {
 		if got := lipgloss.Width(m.View()); got != width {
 			t.Fatalf("width %d rendered as %d", width, got)
 		}
-		empty := New(gotui.Dark())
+		empty := New(tuiweave.Dark())
 		empty.SetSize(width, 1)
 		if got := lipgloss.Width(empty.View()); got != width {
 			t.Fatalf("empty width %d rendered as %d", width, got)

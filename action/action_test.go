@@ -3,7 +3,7 @@ package action_test
 import (
 	"testing"
 
-	"github.com/ishansain/gotui/action"
+	"github.com/ishan5ain/tuiweave/action"
 )
 
 func TestItemHelpers(t *testing.T) {

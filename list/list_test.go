@@ -8,12 +8,12 @@ import (
 	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/snaptest"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/snaptest"
 )
 
 func newTestList(w, h, n int) Model {
-	l := New(gotui.Dark())
+	l := New(tuiweave.Dark())
 	l.SetSize(w, h)
 	items := make([]string, n)
 	for i := range items {
@@ -35,13 +35,13 @@ func TestListGoldenFocused(t *testing.T) {
 	l.Focus()
 	l.Select(1)
 	snaptest.Snap(t, l.View())
-	snaptest.SnapCells(t, l.View(), snaptest.WithRoles(gotui.Dark()))
+	snaptest.SnapCells(t, l.View(), snaptest.WithRoles(tuiweave.Dark()))
 }
 
 func TestListGoldenBlurred(t *testing.T) {
 	l := newTestList(14, 4, 8)
 	l.Select(1)
-	snaptest.SnapCells(t, l.View(), snaptest.WithRoles(gotui.Dark()))
+	snaptest.SnapCells(t, l.View(), snaptest.WithRoles(tuiweave.Dark()))
 }
 
 func TestListNavigationAndWindowing(t *testing.T) {
@@ -67,7 +67,7 @@ func TestListNavigationAndWindowing(t *testing.T) {
 }
 
 func TestListEmpty(t *testing.T) {
-	l := New(gotui.Dark())
+	l := New(tuiweave.Dark())
 	l.SetSize(10, 3)
 	if got := l.Selected(); got != -1 {
 		t.Errorf("empty Selected() = %d, want -1", got)
@@ -81,7 +81,7 @@ func TestListEmpty(t *testing.T) {
 }
 
 func TestListTruncatesLongItems(t *testing.T) {
-	l := New(gotui.Dark())
+	l := New(tuiweave.Dark())
 	l.SetSize(10, 2)
 	l.SetItems("a very long item name", "short")
 	l.Focus()
@@ -102,12 +102,12 @@ func TestListWidthOneGolden(t *testing.T) {
 		}
 		views = append(views, l.View())
 	}
-	snaptest.SnapCells(t, strings.Join(views, "\n"), snaptest.WithRoles(gotui.Dark()))
+	snaptest.SnapCells(t, strings.Join(views, "\n"), snaptest.WithRoles(tuiweave.Dark()))
 }
 
 func TestItemsAreDefensiveCopies(t *testing.T) {
 	items := []string{"alpha", "beta"}
-	l := New(gotui.Dark())
+	l := New(tuiweave.Dark())
 	l.SetItems(items...)
 	items[0] = "changed by caller"
 	got := l.Items()
@@ -126,7 +126,7 @@ func TestListBlurredIgnoresKeys(t *testing.T) {
 }
 
 func TestFilterNarrowsAndReportsOriginalIndex(t *testing.T) {
-	l := New(gotui.Dark())
+	l := New(tuiweave.Dark())
 	l.SetSize(14, 4)
 	l.SetItems("alpha", "beta", "gamma", "beacon")
 	l.Focus()
@@ -146,7 +146,7 @@ func TestFilterNarrowsAndReportsOriginalIndex(t *testing.T) {
 }
 
 func TestFilterKeepsSelectionWhenStillMatching(t *testing.T) {
-	l := New(gotui.Dark())
+	l := New(tuiweave.Dark())
 	l.SetSize(14, 4)
 	l.SetItems("alpha", "beta", "gamma")
 	l.Select(2) // gamma
@@ -161,7 +161,7 @@ func TestFilterKeepsSelectionWhenStillMatching(t *testing.T) {
 }
 
 func TestFilterNoMatches(t *testing.T) {
-	l := New(gotui.Dark())
+	l := New(tuiweave.Dark())
 	l.SetSize(14, 3)
 	l.SetItems("alpha", "beta")
 	l.SetFilter("zzz")
@@ -177,7 +177,7 @@ func TestFilterNoMatches(t *testing.T) {
 }
 
 func TestFilteredWindowingAndScrollable(t *testing.T) {
-	l := New(gotui.Dark())
+	l := New(tuiweave.Dark())
 	l.SetSize(14, 2)
 	l.SetItems("m1", "x", "m2", "x", "m3", "x", "m4")
 	l.Focus()
@@ -196,7 +196,7 @@ func TestFilteredWindowingAndScrollable(t *testing.T) {
 }
 
 func TestSelectNonMatchingIndexIsNoop(t *testing.T) {
-	l := New(gotui.Dark())
+	l := New(tuiweave.Dark())
 	l.SetSize(14, 4)
 	l.SetItems("alpha", "beta", "gamma")
 	l.SetFilter("al") // only alpha matches

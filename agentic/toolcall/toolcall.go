@@ -14,8 +14,8 @@ import (
 	lipgloss "charm.land/lipgloss/v2"
 	"github.com/charmbracelet/x/ansi"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/agentic/chat"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/agentic/chat"
 )
 
 // Status is the lifecycle state of a tool call.
@@ -58,7 +58,7 @@ type Block struct {
 }
 
 // New returns a pending tool-call block styled from the theme's roles.
-func New(theme gotui.Theme, name, summary string) *Block {
+func New(theme tuiweave.Theme, name, summary string) *Block {
 	return &Block{
 		Name:           name,
 		Summary:        summary,

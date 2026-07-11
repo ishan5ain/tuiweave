@@ -1,5 +1,5 @@
 // Command chat is the Phase 3 exit-criterion app: a mock-backed agentic
-// chat session exercising every gotui/agentic component — streaming
+// chat session exercising every tuiweave/agentic component — streaming
 // markdown, a tool call gated by a permission prompt, an inline diff, and a
 // live usage bar.
 //
@@ -18,17 +18,17 @@ import (
 	tea "charm.land/bubbletea/v2"
 	lipgloss "charm.land/lipgloss/v2"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/agentic/chat"
-	"github.com/ishansain/gotui/agentic/diffview"
-	"github.com/ishansain/gotui/agentic/markdown"
-	"github.com/ishansain/gotui/agentic/permission"
-	"github.com/ishansain/gotui/agentic/toolcall"
-	"github.com/ishansain/gotui/agentic/usagebar"
-	"github.com/ishansain/gotui/focus"
-	"github.com/ishansain/gotui/layout"
-	"github.com/ishansain/gotui/overlay"
-	"github.com/ishansain/gotui/textarea"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/agentic/chat"
+	"github.com/ishan5ain/tuiweave/agentic/diffview"
+	"github.com/ishan5ain/tuiweave/agentic/markdown"
+	"github.com/ishan5ain/tuiweave/agentic/permission"
+	"github.com/ishan5ain/tuiweave/agentic/toolcall"
+	"github.com/ishan5ain/tuiweave/agentic/usagebar"
+	"github.com/ishan5ain/tuiweave/focus"
+	"github.com/ishan5ain/tuiweave/layout"
+	"github.com/ishan5ain/tuiweave/overlay"
+	"github.com/ishan5ain/tuiweave/textarea"
 )
 
 const responsePart1 = `Good question! The **layout** package splits terminal space with
@@ -72,7 +72,7 @@ func tick() tea.Cmd {
 }
 
 type model struct {
-	theme         gotui.Theme
+	theme         tuiweave.Theme
 	width, height int
 
 	transcript chat.Model
@@ -93,7 +93,7 @@ type model struct {
 }
 
 func newModel() model {
-	theme := gotui.Dark()
+	theme := tuiweave.Dark()
 	m := model{
 		theme:      theme,
 		transcript: chat.New(theme),
@@ -111,7 +111,7 @@ func newModel() model {
 	m.perm.SetProvenance(permission.Provenance{
 		Tool:          "Bash",
 		Operation:     "execute",
-		Target:        "gotui workspace",
+		Target:        "tuiweave workspace",
 		Scope:         "repository",
 		Detail:        "go test ./...",
 		Impact:        "runs the repository test suite",
@@ -181,7 +181,7 @@ func (m *model) advance() tea.Cmd {
 			return tick()
 		}
 		m.tool.SetStatus(toolcall.StatusSuccess)
-		m.tool.AppendOutput("ok  \tgithub.com/ishansain/gotui/layout\t0.3s\nok  \tgithub.com/ishansain/gotui/snaptest\t0.2s")
+		m.tool.AppendOutput("ok  \tgithub.com/ishan5ain/tuiweave/layout\t0.3s\nok  \tgithub.com/ishan5ain/tuiweave/snaptest\t0.2s")
 		m.tool.Expanded = true
 		theme, diff := m.theme, sampleDiff
 		// part 2 streams into a fresh assistant cell so it appears after the

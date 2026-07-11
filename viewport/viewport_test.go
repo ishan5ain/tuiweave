@@ -7,13 +7,13 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/mouse"
-	"github.com/ishansain/gotui/snaptest"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/mouse"
+	"github.com/ishan5ain/tuiweave/snaptest"
 )
 
 func newTestViewport(w, h, contentLines int) Model {
-	vp := New(gotui.Dark())
+	vp := New(tuiweave.Dark())
 	vp.SetSize(w, h)
 	lines := make([]string, contentLines)
 	for i := range lines {

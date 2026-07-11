@@ -6,13 +6,13 @@ import (
 	tea "charm.land/bubbletea/v2"
 	lipgloss "charm.land/lipgloss/v2"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/inspect"
-	"github.com/ishansain/gotui/snaptest"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/inspect"
+	"github.com/ishan5ain/tuiweave/snaptest"
 )
 
 func newTestMenu(width, height int) Model {
-	m := New(gotui.Dark())
+	m := New(tuiweave.Dark())
 	m.SetSize(width, height)
 	m.SetItems(
 		Item{ID: "open", Label: "Open workspace", Description: "Open a workspace"},
@@ -34,14 +34,14 @@ func TestMenuFocused(t *testing.T) {
 	m := newTestMenu(24, 4)
 	m.Focus()
 	snaptest.Snap(t, m.View())
-	snaptest.SnapCells(t, m.View(), snaptest.WithRoles(gotui.Dark()))
+	snaptest.SnapCells(t, m.View(), snaptest.WithRoles(tuiweave.Dark()))
 }
 
 func TestMenuBlurred(t *testing.T) {
 	m := newTestMenu(24, 4)
 	m.Select(1)
 	snaptest.Snap(t, m.View())
-	snaptest.SnapCells(t, m.View(), snaptest.WithRoles(gotui.Dark()))
+	snaptest.SnapCells(t, m.View(), snaptest.WithRoles(tuiweave.Dark()))
 }
 
 func TestMenuSkipsDisabledItemsAndScrolls(t *testing.T) {
@@ -110,7 +110,7 @@ func TestMenuWidthAndEmptyStates(t *testing.T) {
 			}
 		}
 	}
-	empty := New(gotui.Dark())
+	empty := New(tuiweave.Dark())
 	empty.SetSize(12, 2)
 	if empty.Selected() != -1 || len(splitLines(empty.View())) != 2 {
 		t.Fatalf("empty menu state: selected=%d view=%q", empty.Selected(), empty.View())

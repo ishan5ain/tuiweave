@@ -6,8 +6,8 @@ import (
 	tea "charm.land/bubbletea/v2"
 	"github.com/charmbracelet/x/ansi"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/snaptest"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/snaptest"
 )
 
 func typeString(m Model, s string) Model {
@@ -34,7 +34,7 @@ func key(name string) tea.KeyPressMsg {
 }
 
 func newFocused(width int) Model {
-	ti := New(gotui.Dark())
+	ti := New(tuiweave.Dark())
 	ti.SetSize(width, 1)
 	ti.Focus()
 	return ti
@@ -46,7 +46,7 @@ func TestTypingAndValue(t *testing.T) {
 	if got := ti.Value(); got != "hello world" {
 		t.Fatalf("Value() = %q, want %q", got, "hello world")
 	}
-	snaptest.SnapCells(t, ti.View(), snaptest.WithRoles(gotui.Dark()))
+	snaptest.SnapCells(t, ti.View(), snaptest.WithRoles(tuiweave.Dark()))
 }
 
 func TestShiftAndLockModifiedPrintableText(t *testing.T) {
@@ -94,7 +94,7 @@ func TestCursorMidText(t *testing.T) {
 }
 
 func TestBlurredIgnoresKeys(t *testing.T) {
-	ti := New(gotui.Dark())
+	ti := New(tuiweave.Dark())
 	ti.SetSize(30, 1)
 	ti = typeString(ti, "ignored")
 	if got := ti.Value(); got != "" {
@@ -103,10 +103,10 @@ func TestBlurredIgnoresKeys(t *testing.T) {
 }
 
 func TestPlaceholderGolden(t *testing.T) {
-	ti := New(gotui.Dark())
+	ti := New(tuiweave.Dark())
 	ti.SetSize(30, 1)
 	ti.Placeholder = "type a message…"
-	snaptest.SnapCells(t, ti.View(), snaptest.WithRoles(gotui.Dark()))
+	snaptest.SnapCells(t, ti.View(), snaptest.WithRoles(tuiweave.Dark()))
 }
 
 func TestHorizontalScrollShowsCursor(t *testing.T) {

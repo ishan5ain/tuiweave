@@ -1,4 +1,4 @@
-// Command frame demonstrates gotui's domain-neutral framing helpers in a
+// Command frame demonstrates tuiweave's domain-neutral framing helpers in a
 // small dashboard-like composition.
 //
 //	go run ./examples/frame
@@ -14,23 +14,23 @@ import (
 	tea "charm.land/bubbletea/v2"
 	lipgloss "charm.land/lipgloss/v2"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/button"
-	"github.com/ishansain/gotui/focus"
-	"github.com/ishansain/gotui/frame"
-	"github.com/ishansain/gotui/layout"
-	"github.com/ishansain/gotui/line"
-	"github.com/ishansain/gotui/menu"
-	"github.com/ishansain/gotui/progress"
-	"github.com/ishansain/gotui/splitpane"
-	"github.com/ishansain/gotui/stack"
-	"github.com/ishansain/gotui/tabs"
-	"github.com/ishansain/gotui/toggle"
-	"github.com/ishansain/gotui/toolbar"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/button"
+	"github.com/ishan5ain/tuiweave/focus"
+	"github.com/ishan5ain/tuiweave/frame"
+	"github.com/ishan5ain/tuiweave/layout"
+	"github.com/ishan5ain/tuiweave/line"
+	"github.com/ishan5ain/tuiweave/menu"
+	"github.com/ishan5ain/tuiweave/progress"
+	"github.com/ishan5ain/tuiweave/splitpane"
+	"github.com/ishan5ain/tuiweave/stack"
+	"github.com/ishan5ain/tuiweave/tabs"
+	"github.com/ishan5ain/tuiweave/toggle"
+	"github.com/ishan5ain/tuiweave/toolbar"
 )
 
 type model struct {
-	theme         gotui.Theme
+	theme         tuiweave.Theme
 	width, height int
 	nav           tabs.Model
 	actions       menu.Model
@@ -42,7 +42,7 @@ type model struct {
 }
 
 func newModel() model {
-	theme := gotui.Dark()
+	theme := tuiweave.Dark()
 	nav := tabs.New(theme)
 	nav.SetTabs(
 		tabs.Tab{ID: "overview", Label: "Overview"},

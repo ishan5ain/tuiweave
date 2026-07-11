@@ -3,12 +3,12 @@ package viewport
 import (
 	"testing"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/inspect"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/inspect"
 )
 
 func TestSemanticScrollBottom(t *testing.T) {
-	m := New(gotui.Dark())
+	m := New(tuiweave.Dark())
 	m.SetSize(10, 2)
 	m.SetContent("one\ntwo\nthree")
 	next, cmd := m.Update(inspect.Invoke(ActionBottom))

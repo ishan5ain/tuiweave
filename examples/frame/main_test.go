@@ -5,11 +5,11 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/button"
-	"github.com/ishansain/gotui/snaptest"
-	"github.com/ishansain/gotui/toggle"
-	"github.com/ishansain/gotui/toolbar"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/button"
+	"github.com/ishan5ain/tuiweave/snaptest"
+	"github.com/ishan5ain/tuiweave/toggle"
+	"github.com/ishan5ain/tuiweave/toolbar"
 )
 
 func TestFrameExampleGolden(t *testing.T) {
@@ -85,7 +85,7 @@ func TestFrameToolbarFocusedGolden(t *testing.T) {
 	m, _ = update(t, m, tea.KeyPressMsg{Code: tea.KeyTab})
 	m, _ = update(t, m, tea.KeyPressMsg{Code: tea.KeyTab})
 	snaptest.Snap(t, m.render())
-	snaptest.SnapCells(t, m.render(), snaptest.WithRoles(gotui.Dark()))
+	snaptest.SnapCells(t, m.render(), snaptest.WithRoles(tuiweave.Dark()))
 }
 
 func update(t *testing.T, m model, msg tea.Msg) (model, tea.Cmd) {

@@ -1,143 +1,78 @@
-# gotui
+# tuiweave
 
-`gotui` is a composable Go toolkit for building custom terminal user
-interfaces. It provides reliable primitives for layout, styling, interaction,
-scrolling, text editing, overlays, and rendering, with optional domain packages
-for agentic and other specialized applications.
+`tuiweave` is a composable Go component library for custom terminal interfaces
+built on Bubble Tea v2 and Lip Gloss v2. It provides themed primitives for
+layout, navigation, scrolling, text editing, overlays, testing, and optional
+agentic interfaces while leaving application state and orchestration to you.
 
-It is built on [bubbletea v2](https://github.com/charmbracelet/bubbletea),
-[lipgloss v2](https://github.com/charmbracelet/lipgloss), and
-[ultraviolet](https://github.com/charmbracelet/ultraviolet). It is designed
-**agent-friendly by design**: the API, conventions, examples, and verification
-loop make the component system easy for both humans and coding agents to
-understand, compose, and evolve.
+This is an independent community project and is not affiliated with Charmbracelet.
 
-The north star is a **small, composable Go vocabulary for terminal interfaces**:
-make layout, appearance, interaction, and verification predictable for humans
-and coding agents. Applications own orchestration and domain state; gotui owns
-reusable primitives and optional domain kits. Agentic UIs are a demanding
-proving ground, not the boundary of the core library.
+> **Pre-v1:** APIs may change in minor releases. Breaking changes are documented
+> in the changelog and release notes.
 
-**Status: pre-v1.** Phases 0–3.5 and the initial Phase 4 composition gate are
-complete; Phase 5 editing and interaction depth is underway. APIs still change
-freely while the agent-operable foundations and broader composition layer
-evolve.
+## Install
 
-## What's here
+tuiweave requires Go 1.25.8 or newer and is coupled to Bubble Tea v2.
 
-The library is organized in layers. The core stays domain-neutral; domain
-packages are built on top of it and applications own their event routing,
-backend protocols, and session lifecycle.
+```sh
+go get github.com/ishan5ain/tuiweave@v0.1.0
+```
 
-| Package | Purpose |
-|---|---|
-| `gotui` (root) | Semantic theme roles (`Theme`), `Dark()`/`Light()` defaults |
-| `gotui/layout` | Flexbox-like layout: constraints → rectangles → component sizes |
-| `gotui/mouse` | Standard vertical wheel deltas and app-owned mouse hit-testing helpers |
-| `gotui/snaptest` | Snapshot test harness: plain-text, raw-ANSI, role-labeled cell-grid, and interaction-scenario goldens |
-| `gotui/inspect` | Optional semantic UI tree and action metadata: IDs, bounds, focus, selection, scrolling, actions, and children |
-| `gotui/action` | Shared stable-ID selectable-action definitions for menus, toolbars, palettes, and app-owned routing |
-| `gotui/frame` | Width-aware themed panels, titled borders, dividers, and semantic badges |
-| `gotui/tabs` | Focusable, width-aware sibling-view navigation with stable tab IDs |
-| `gotui/menu` | Focusable vertical action menu with disabled entries and activation messages |
-| `gotui/toolbar` | Focusable horizontal action strip with disabled entries and activation messages |
-| `gotui/splitpane` | Width-aware horizontal pane composition with natural-height alignment and dividers |
-| `gotui/stack` | Width-aware vertical section composition for headers, bodies, separators, and footers |
-| `gotui/progress` | Passive, exact-width task progress indicator with semantic status roles |
-| `gotui/toggle` | Focusable on/off control with semantic actions and change messages |
-| `gotui/button` | Focusable single-action control with semantic activation and press messages |
-| `gotui/statusbar` | One-line status bar with themed left/right segments |
-| `gotui/autocomplete` | App-owned textinput paired with prefix-matched, stable-ID suggestions |
-| `gotui/list` | Scrolling list with selection cursor and filtering (original-index selection) |
-| `gotui/viewport` | Scrollable window over pre-rendered content (keys + mouse wheel) |
-| `gotui/textinput` | Single-line input: cell-aware cursor, placeholder, and horizontal scroll |
-| `gotui/textarea` | Multi-line input: cell-aware soft wrap, visual-row cursor, logical-rune selection, word movement/deletion, bounded undo/redo and kill/yank, content-driven height, and completion-friendly cursor/range APIs |
-| `gotui/scrollbar` | One-column scroll indicator for any `Scrollable` component |
-| `gotui/table` | Fixed + flex columns, header, row selection |
-| `gotui/help` | One-line key-hint bar |
-| `gotui/spinner` | Tick-driven activity indicator |
-| `gotui/dialog` | Modal confirm box answering via `ResultMsg` |
-| `gotui/overlay` | Cell-space compositing for modals/popovers (UV inside) |
-| `gotui/focus` | Copy-safe tab order, modal scopes, and nested focus layers |
-| `agentic/markdown` | Theme-mapped markdown rendering behind a swappable `Renderer` interface (glamour v2 today) |
-| `agentic/chat` | Streaming transcript: user/assistant/tool cells, auto-follow |
-| `agentic/toolcall` | Status-aware collapsible tool-call block |
-| `agentic/diffview` | Styled unified diffs, inline or scrollable |
-| `agentic/permission` | Numbered permission prompt (esc = safe default) |
-| `agentic/usagebar` | Model / tokens / cost / context bar with thresholds |
-| `gotui/palette` | Bounded command-palette foundation with filtering, stable action IDs, and semantic activation |
-| `gotui/line` | Style-preserving one-row truncation, alignment, fill, and left/right composition helpers |
-| `examples/…` | Runnable apps: `go run ./examples/chat` (mock agentic session), `./examples/table` (git-status mock), `./examples/frame` (composition, tabs, menu, toolbar, split panes, stacked chrome, and controls), `./examples/palette` (command palette), `./examples/autocomplete` (app-owned input plus suggestions), `./examples/textarea-autocomplete` (logical-rune completion replacement), `./examples/ops` (non-agentic operations console), `./examples/browser` (file-browser composition), `./examples/demo`, `./examples/statusbar` |
+```go
+package main
 
-Agentic packages are important reference implementations, not the boundary of
-the library. The same primitives should support editors, dashboards, file
-browsers, operational tools, forms, and other custom TUIs. See [PLAN.md](PLAN.md)
-for the next phases of general-purpose evolution.
+import (
+	"fmt"
 
-## Design pillars
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/statusbar"
+)
 
-- **Role-based theming** — components consume ~18 semantic color roles, never
-  raw colors; consistency is structural, not disciplinary.
-- **Pure MVU + glue** — components are plain bubbletea v2 models; opt-in
-  utilities handle focus, layout, and delegation. No framework, no DSL.
-- **Constraint layout** — `ultraviolet/layout`'s Cassowary solver behind a
-  small facade: `Len/Min/Max/Percent/Ratio/Fill` plus `Apply` to size
-  components straight from the split.
-- **Agent-verifiable rendering** — every component snapshot-tests to
-  plain-text goldens an agent can read in a git diff.
-- **Composable layers** — primitives and composition utilities remain
-  domain-neutral; agentic and application-specific packages build on them.
-- **Agent-friendly composition** — the package structure, contracts, recipes,
-  and examples provide a small vocabulary that coding agents can use without
-  inventing inconsistent local patterns.
+func main() {
+	bar := statusbar.New(tuiweave.Dark())
+	bar.SetSize(40, 1)
+	bar.SetLeft(statusbar.Segment{Text: "ready", Kind: statusbar.KindSuccess})
+	fmt.Println(bar.View())
+}
+```
 
-Agent-friendliness is an architectural quality, not a product specialization.
-The library should be easy to discover, difficult to misuse, flexible enough for
-distinct visual designs, and explicit about the interaction conventions that
-make those designs feel coherent.
+## Explore
 
-In practice, a gotui UI should support a complete lifecycle:
+- General-purpose composition: [`examples/frame`](examples/frame)
+- Agentic chat interface: [`examples/chat`](examples/chat)
+- All runnable examples: [`examples`](examples)
+- Package documentation: [pkg.go.dev](https://pkg.go.dev/github.com/ishan5ain/tuiweave)
+- Architecture: [DESIGN.md](DESIGN.md)
+- Roadmap: [ROADMAP.md](ROADMAP.md)
+- Contributing: [CONTRIBUTING.md](CONTRIBUTING.md)
+- Support: [SUPPORT.md](SUPPORT.md)
+- Security: [SECURITY.md](SECURITY.md)
 
-- **Discover** the right package, recipe, and example.
-- **Compose** it from explicit sizing, theme, focus, and state contracts.
-- **Verify** it through readable rendering snapshots today and deterministic
-  interaction scenarios as the roadmap expands.
-- **Operate** it through optional semantic inspection and stable actions.
-- **Recover** from loading, failure, cancellation, and narrow-terminal states.
-
-Discovery, composition, rendering snapshots, deterministic scenarios, semantic
-inspection/actions, and structured approval provenance now have initial support;
-the roadmap focuses on hardening those contracts while expanding the
-composition vocabulary.
-
-## Scope boundaries
-
-`gotui` owns reusable rendering and interaction components. It does not own an
-application event loop, backend protocol, persistence layer, or product-specific
-workflow. A package belongs in the core when it expresses a reusable terminal
-interaction pattern; it belongs under `agentic/` or in an application when it
-depends on a domain model or service.
-
-## Documentation
-
-Start with [AGENT-CATALOG.md](AGENT-CATALOG.md) when you have a task: it maps
-the task to a package, recipe, and canonical example. Read the matching section
-of [AGENTS.md](AGENTS.md) before implementing; use [DESIGN.md](DESIGN.md) when
-the package boundary or ownership is unclear.
-
-- [DESIGN.md](DESIGN.md) — architecture, decision record, component contract
-- [PLAN.md](PLAN.md) — phased roadmap with exit criteria
-- [AGENTS.md](AGENTS.md) — conventions for coding agents building with gotui
-- [AGENT-CONTRACT.md](AGENT-CONTRACT.md) — concise portable greenfield, migration, review, and compatibility contract
-- [AGENT-CATALOG.md](AGENT-CATALOG.md) — compact package and task routing index
-- [gotui-agent-kit](https://github.com/ishansain/gotui-agent-kit) — portable playbooks, Agent Skills package, templates, and read-only audit tooling
+The root package supplies semantic theme roles. Domain-neutral components live
+in top-level packages such as `layout`, `frame`, `tabs`, `menu`, `viewport`,
+`textinput`, and `textarea`; optional domain packages live under `agentic/`.
+The [agent catalog](AGENT-CATALOG.md) maps common tasks to packages and examples.
 
 ## Development
 
 ```sh
-go build ./... && go vet ./... && go test ./...
-
-# regenerate snapshot goldens after an intentional visual change; packages
-# without snaptest's -update flag may report an expected flag error:
-go test ./... -update
+gofmt -w .
+go mod tidy -diff
+go mod verify
+go build ./...
+go vet ./...
+go test ./...
+go test -race ./...
+govulncheck ./...
 ```
+
+Rendering changes require intentional snapshot review; see [AGENTS.md](AGENTS.md).
+
+## Known limitations
+
+- The API is pre-v1 and may evolve between minor versions.
+- Input-method editor behavior is incomplete.
+- Components currently target Bubble Tea v2.
+- Layout and rendering internals rely on a pre-v1 Ultraviolet dependency.
+
+Licensed under the [MIT License](LICENSE).

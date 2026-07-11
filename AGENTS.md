@@ -1,6 +1,6 @@
-# gotui — Agent Conventions
+# tuiweave — Agent Conventions
 
-Rules for writing code **with** gotui (apps) and **in** gotui (components).
+Rules for writing code **with** tuiweave (apps) and **in** tuiweave (components).
 The rules layer is compact; recipes link into the runnable example apps
 (`examples/statusbar`, `examples/demo`, `examples/chat`, `examples/frame`, `examples/palette`, `examples/autocomplete`, `examples/textarea-autocomplete`, `examples/ops`, `examples/browser`, `examples/table`). Architecture
 rationale lives in [DESIGN.md](DESIGN.md) — read it before adding a
@@ -14,23 +14,23 @@ and example before reading the detailed recipes below.
 
 - Runtime: `charm.land/bubbletea/v2` (MVU; root model's `View()` returns `tea.View`)
 - Styling: `charm.land/lipgloss/v2` (components render styled **strings**)
-- Layout: `github.com/ishansain/gotui/layout` (flexbox-like constraints → rects)
-- Mouse input: `github.com/ishansain/gotui/mouse` (wheel deltas and hit-testing)
-- Action definitions: `github.com/ishansain/gotui/action` (shared stable-ID action definitions)
-- Composition: `github.com/ishansain/gotui/frame` (width-aware themed decoration)
-- Navigation: `github.com/ishansain/gotui/tabs` (focusable sibling-view tabs)
-- Actions: `github.com/ishansain/gotui/menu` (focusable action choices)
-- Toolbars: `github.com/ishansain/gotui/toolbar` (horizontal action strips)
-- Split panes: `github.com/ishansain/gotui/splitpane` (width-aware view composition)
-- Stacked chrome: `github.com/ishansain/gotui/stack` (headers, sections, footers)
-- Progress: `github.com/ishansain/gotui/progress` (passive task indicators)
-- Toggles: `github.com/ishansain/gotui/toggle` (focusable boolean settings)
-- Buttons: `github.com/ishansain/gotui/button` (focusable single actions)
-- Command palettes: `github.com/ishansain/gotui/palette` (filtered action discovery)
-- Autocomplete: `github.com/ishansain/gotui/autocomplete` (app-owned input plus suggestions)
-- Line composition: `github.com/ishansain/gotui/line` (truncation, alignment, fill zones)
-- Testing: `github.com/ishansain/gotui/snaptest` (golden files)
-- Domain packages: `gotui/agentic/…` (markdown, chat, toolcall, diffview,
+- Layout: `github.com/ishan5ain/tuiweave/layout` (flexbox-like constraints → rects)
+- Mouse input: `github.com/ishan5ain/tuiweave/mouse` (wheel deltas and hit-testing)
+- Action definitions: `github.com/ishan5ain/tuiweave/action` (shared stable-ID action definitions)
+- Composition: `github.com/ishan5ain/tuiweave/frame` (width-aware themed decoration)
+- Navigation: `github.com/ishan5ain/tuiweave/tabs` (focusable sibling-view tabs)
+- Actions: `github.com/ishan5ain/tuiweave/menu` (focusable action choices)
+- Toolbars: `github.com/ishan5ain/tuiweave/toolbar` (horizontal action strips)
+- Split panes: `github.com/ishan5ain/tuiweave/splitpane` (width-aware view composition)
+- Stacked chrome: `github.com/ishan5ain/tuiweave/stack` (headers, sections, footers)
+- Progress: `github.com/ishan5ain/tuiweave/progress` (passive task indicators)
+- Toggles: `github.com/ishan5ain/tuiweave/toggle` (focusable boolean settings)
+- Buttons: `github.com/ishan5ain/tuiweave/button` (focusable single actions)
+- Command palettes: `github.com/ishan5ain/tuiweave/palette` (filtered action discovery)
+- Autocomplete: `github.com/ishan5ain/tuiweave/autocomplete` (app-owned input plus suggestions)
+- Line composition: `github.com/ishan5ain/tuiweave/line` (truncation, alignment, fill zones)
+- Testing: `github.com/ishan5ain/tuiweave/snaptest` (golden files)
+- Domain packages: `tuiweave/agentic/…` (markdown, chat, toolcall, diffview,
   permission, usagebar) — optional, backend-agnostic layers built on the
   primitives
 
@@ -39,7 +39,7 @@ editors, dashboards, file browsers, forms, operational tools, and agentic UIs.
 Keep product-specific orchestration, backend clients, persistence, and session
 lifecycle in application repositories.
 
-gotui is agent-friendly by design. Treat its primitives, theme roles, layout
+tuiweave is agent-friendly by design. Treat its primitives, theme roles, layout
 rules, interaction conventions, examples, and snapshots as a small design
 grammar: compose from that vocabulary first, then add a new abstraction only
 when the existing vocabulary cannot express the intended behavior cleanly.
@@ -50,24 +50,24 @@ For greenfield work, inspect `go.mod`, route to the closest example, map
 components/layout/focus/state ownership, build the smallest shell, then add
 snapshot and scenario coverage. For an existing-TUI migration, inventory
 rendering/input/scrolling/focus/domain logic, classify reusable behavior versus
-application behavior versus a candidate gotui API gap, and work in vertically
+application behavior versus a candidate tuiweave API gap, and work in vertically
 sliced tasks with explicit file ownership. Preserve behavior before changing
 visuals. For reviews, audit the hard rules, actual API names, narrow states,
 mouse bounds, modal results, and golden diffs.
 
-Pin gotui to a tagged version or commit. Do not use
+Pin tuiweave to a tagged version or commit. Do not use
 `@latest` in application instructions. A local `replace` directive is for
 development only. Application agents must report a reusable API gap with a
 minimal example and acceptance test instead of inventing a local fork; changes
-to gotui require explicit authorization.
+to tuiweave require explicit authorization.
 
 ## Hard rules
 
-1. **Colors come from `gotui.Theme` roles — never literals.** No hex strings,
+1. **Colors come from `tuiweave.Theme` roles — never literals.** No hex strings,
    no `lipgloss.Color("...")` outside theme definitions. If no role fits,
    stop and flag it; do not improvise a color.
 2. **Never import `ultraviolet` in app code or component packages.** Geometry
-   comes from `gotui/layout` (`layout.Rect`); UV is a library-internal detail.
+   comes from `tuiweave/layout` (`layout.Rect`); UV is a library-internal detail.
    (Inside the library, exactly three packages touch it: `layout`, `overlay`,
    `snaptest`.)
 3. **Every bounded component sizes itself only via `SetSize(w, h)`** and must
@@ -150,7 +150,7 @@ case tea.MouseWheelMsg:
     }
 ```
 
-## Writing a gotui component
+## Writing a tuiweave component
 
 Component contract (full rationale in DESIGN.md §4):
 
@@ -159,31 +159,31 @@ package widget
 
 type Model struct { /* value type; unexported fields */ }
 
-func New(theme gotui.Theme /*, config... */) Model   // derive styles from roles here
+func New(theme tuiweave.Theme /*, config... */) Model   // derive styles from roles here
 func (m Model) Update(msg tea.Msg) (Model, tea.Cmd)  // concrete type, not tea.Model
 func (m Model) View() string                         // bounded or documented intrinsic size
 func (m *Model) SetSize(width, height int)           // layout.Sizable
 func (m *Model) Focus() / Blur()                     // interactive components only
 ```
 
-One package per component (`gotui/widget`, flat, like bubbles). Agentic
-domain components go under `gotui/agentic/<name>` and consume plain Go types —
+One package per component (`tuiweave/widget`, flat, like bubbles). Agentic
+domain components go under `tuiweave/agentic/<name>` and consume plain Go types —
 no agent-backend clients (JSON-RPC etc.) in this repo.
 
 ## Testing a component
 
 ```go
 func TestWidgetDefault(t *testing.T) {
-    w := widget.New(gotui.Dark())
+    w := widget.New(tuiweave.Dark())
     w.SetSize(40, 5)
     snaptest.Snap(t, w.View())        // plain-text golden: layout & content
     snaptest.SnapCells(t, w.View(),   // style-run golden: which role styles what
-        snaptest.WithRoles(gotui.Dark()))
+        snaptest.WithRoles(tuiweave.Dark()))
     // snaptest.SnapStyled(t, ...)    // raw-bytes golden: rarely needed
 }
 ```
 
-`SnapCells` goldens read like `" gotui " [fg=TextInverted bg=Accent bold]` —
+`SnapCells` goldens read like `" tuiweave " [fg=TextInverted bg=Accent bold]` —
 use them to assert roles, e.g. that a selected row uses `SelectionBg`. (Roles
 sharing one color label as the first matching Theme field, so `TextInverted`
 may appear as `Surface` in the default themes.)
@@ -580,7 +580,7 @@ Full wiring: [examples/statusbar](examples/statusbar/main.go).
 sb := statusbar.New(theme)
 sb.SetSize(width, 1)
 sb.SetLeft(
-    statusbar.Segment{Text: "gotui", Kind: statusbar.KindAccent}, // "mode" badge; max one per side
+    statusbar.Segment{Text: "tuiweave", Kind: statusbar.KindAccent}, // "mode" badge; max one per side
     statusbar.Segment{Text: "main.go", Kind: statusbar.KindNormal},
 )
 sb.SetRight(statusbar.Segment{Text: "12:4", Kind: statusbar.KindMuted})

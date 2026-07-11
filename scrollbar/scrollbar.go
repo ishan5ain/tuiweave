@@ -17,10 +17,10 @@ import (
 
 	lipgloss "charm.land/lipgloss/v2"
 
-	"github.com/ishansain/gotui"
+	"github.com/ishan5ain/tuiweave"
 )
 
-// Scrollable is implemented by gotui's scrolling components (viewport, list,
+// Scrollable is implemented by tuiweave's scrolling components (viewport, list,
 // table, chat, diffview).
 type Scrollable interface {
 	// TotalLines is the total scrollable extent, in lines/rows.
@@ -32,14 +32,14 @@ type Scrollable interface {
 }
 
 // For renders a bar matching s, one cell wide and VisibleLines tall.
-func For(theme gotui.Theme, s Scrollable) string {
+func For(theme tuiweave.Theme, s Scrollable) string {
 	return Vertical(theme, s.VisibleLines(), s.TotalLines(), s.VisibleLines(), s.YOffset())
 }
 
 // Vertical renders a one-column scrollbar of the given height for content of
 // total lines, visible of which are shown starting at offset. When
 // everything fits, the whole bar renders as track.
-func Vertical(theme gotui.Theme, height, total, visible, offset int) string {
+func Vertical(theme tuiweave.Theme, height, total, visible, offset int) string {
 	if height <= 0 {
 		return ""
 	}

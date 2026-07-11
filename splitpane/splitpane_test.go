@@ -6,23 +6,23 @@ import (
 
 	lipgloss "charm.land/lipgloss/v2"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/snaptest"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/snaptest"
 )
 
 func TestHorizontal(t *testing.T) {
-	view := Horizontal(gotui.Dark(), 36, Options{},
+	view := Horizontal(tuiweave.Dark(), 36, Options{},
 		func(width int) string { return "left pane\nsecond line" },
 		func(width int) string { return "right pane" },
 	)
 	assertWidth(t, view, 36)
 	snaptest.Snap(t, view)
-	snaptest.SnapCells(t, view, snaptest.WithRoles(gotui.Dark()))
+	snaptest.SnapCells(t, view, snaptest.WithRoles(tuiweave.Dark()))
 }
 
 func TestHorizontalRatioAndGap(t *testing.T) {
 	var leftWidth, rightWidth int
-	view := Horizontal(gotui.Light(), 40, Options{Ratio: 30, Gap: 3},
+	view := Horizontal(tuiweave.Light(), 40, Options{Ratio: 30, Gap: 3},
 		func(width int) string {
 			leftWidth = width
 			return "left"
@@ -40,13 +40,13 @@ func TestHorizontalRatioAndGap(t *testing.T) {
 }
 
 func TestHorizontalNarrowAndNil(t *testing.T) {
-	if got := Horizontal(gotui.Dark(), 2, Options{}, func(int) string { return "left" }, func(int) string { return "right" }); got != "" {
+	if got := Horizontal(tuiweave.Dark(), 2, Options{}, func(int) string { return "left" }, func(int) string { return "right" }); got != "" {
 		t.Fatalf("too-narrow split = %q, want empty", got)
 	}
-	if got := Horizontal(gotui.Dark(), 20, Options{}, nil, func(int) string { return "right" }); got != "" {
+	if got := Horizontal(tuiweave.Dark(), 20, Options{}, nil, func(int) string { return "right" }); got != "" {
 		t.Fatalf("nil left split = %q, want empty", got)
 	}
-	view := Horizontal(gotui.Dark(), 20, Options{Gap: -1},
+	view := Horizontal(tuiweave.Dark(), 20, Options{Gap: -1},
 		func(int) string { return "left" },
 		func(int) string { return "right" },
 	)

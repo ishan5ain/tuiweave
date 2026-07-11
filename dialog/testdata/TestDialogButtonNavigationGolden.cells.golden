@@ -1,6 +1,6 @@
 1: "╭──────────────────────────────────╮" [fg=Accent]
 2: "│" [fg=Accent] | "                                  " [bg=SurfaceRaised] | "│" [fg=Accent]
-3: "│" [fg=Accent] | "  " [bg=SurfaceRaised] | "Quit gotui?" [fg=Text bg=SurfaceRaised bold] | "                     " [bg=SurfaceRaised] | "│" [fg=Accent]
+3: "│" [fg=Accent] | "  " [bg=SurfaceRaised] | "Quit tuiweave?" [fg=Text bg=SurfaceRaised bold] | "                  " [bg=SurfaceRaised] | "│" [fg=Accent]
 4: "│" [fg=Accent] | "  " [bg=SurfaceRaised] | "Unsaved changes will be lost." [fg=TextMuted bg=SurfaceRaised] | "   " [bg=SurfaceRaised] | "│" [fg=Accent]
 5: "│" [fg=Accent] | "                                  " [bg=SurfaceRaised] | "│" [fg=Accent]
 6: "│" [fg=Accent] | "  " [bg=SurfaceRaised] | "            " [fg=TextMuted bg=SurfaceRaised] | "  " [bg=SurfaceSunken] | "OK" [fg=TextMuted bg=SurfaceSunken] | "  " [bg=SurfaceSunken] | "  " [fg=TextMuted bg=SurfaceRaised] | "  " [bg=Accent] | "Cancel" [fg=Surface bg=Accent bold] | "  " [bg=Accent] | "  " [bg=SurfaceRaised] | "│" [fg=Accent]

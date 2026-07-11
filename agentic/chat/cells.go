@@ -6,8 +6,8 @@ import (
 	lipgloss "charm.land/lipgloss/v2"
 	"github.com/charmbracelet/x/ansi"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/agentic/markdown"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/agentic/markdown"
 )
 
 func fitHeader(style lipgloss.Style, text string, width int) string {
@@ -58,7 +58,7 @@ type User struct {
 }
 
 // NewUser returns a user message cell.
-func NewUser(theme gotui.Theme, text string) *User {
+func NewUser(theme tuiweave.Theme, text string) *User {
 	return &User{
 		text:        text,
 		headerStyle: lipgloss.NewStyle().Foreground(theme.Accent).Bold(true),
@@ -102,7 +102,7 @@ type Assistant struct {
 }
 
 // NewAssistant returns an empty assistant message cell rendering through r.
-func NewAssistant(theme gotui.Theme, r markdown.Renderer) *Assistant {
+func NewAssistant(theme tuiweave.Theme, r markdown.Renderer) *Assistant {
 	return &Assistant{
 		renderer:    r,
 		state:       StateStreaming,
@@ -164,7 +164,7 @@ type Text struct {
 }
 
 // NewText returns a faint note cell.
-func NewText(theme gotui.Theme, text string) *Text {
+func NewText(theme tuiweave.Theme, text string) *Text {
 	return &Text{
 		text:  text,
 		style: lipgloss.NewStyle().Foreground(theme.TextFaint).Italic(true),

@@ -6,9 +6,9 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 
-	"github.com/ishansain/gotui/dialog"
-	"github.com/ishansain/gotui/inspect"
-	"github.com/ishansain/gotui/snaptest"
+	"github.com/ishan5ain/tuiweave/dialog"
+	"github.com/ishan5ain/tuiweave/inspect"
+	"github.com/ishan5ain/tuiweave/snaptest"
 )
 
 // sized returns the demo model laid out at 80×24, as after a WindowSizeMsg.

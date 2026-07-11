@@ -6,28 +6,28 @@ import (
 
 	lipgloss "charm.land/lipgloss/v2"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/frame"
-	"github.com/ishansain/gotui/snaptest"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/frame"
+	"github.com/ishan5ain/tuiweave/snaptest"
 )
 
 func TestVertical(t *testing.T) {
-	view := Vertical(gotui.Dark(), 28, Options{Gap: 1, Divider: true},
+	view := Vertical(tuiweave.Dark(), 28, Options{Gap: 1, Divider: true},
 		func(width int) string { return "header" },
 		func(width int) string { return "body\nsecond line" },
 		func(width int) string { return "footer" },
 	)
 	assertWidth(t, view, 28)
 	snaptest.Snap(t, view)
-	snaptest.SnapCells(t, view, snaptest.WithRoles(gotui.Dark()))
+	snaptest.SnapCells(t, view, snaptest.WithRoles(tuiweave.Dark()))
 }
 
 func TestVerticalSkipsEmptySections(t *testing.T) {
-	view := Vertical(gotui.Light(), 20, Options{},
+	view := Vertical(tuiweave.Light(), 20, Options{},
 		nil,
 		func(width int) string { return "header" },
 		func(width int) string { return "" },
-		func(width int) string { return frame.Divider(gotui.Light(), width) },
+		func(width int) string { return frame.Divider(tuiweave.Light(), width) },
 		func(width int) string { return "footer" },
 	)
 	assertWidth(t, view, 20)
@@ -35,14 +35,14 @@ func TestVerticalSkipsEmptySections(t *testing.T) {
 }
 
 func TestVerticalWidthAndEmpty(t *testing.T) {
-	if got := Vertical(gotui.Dark(), 0, Options{}, func(int) string { return "content" }); got != "" {
+	if got := Vertical(tuiweave.Dark(), 0, Options{}, func(int) string { return "content" }); got != "" {
 		t.Fatalf("zero-width stack = %q, want empty", got)
 	}
-	if got := Vertical(gotui.Dark(), 20, Options{}, nil, func(int) string { return "" }); got != "" {
+	if got := Vertical(tuiweave.Dark(), 20, Options{}, nil, func(int) string { return "" }); got != "" {
 		t.Fatalf("empty stack = %q, want empty", got)
 	}
 	for width := 1; width <= 24; width++ {
-		view := Vertical(gotui.Dark(), width, Options{},
+		view := Vertical(tuiweave.Dark(), width, Options{},
 			func(int) string { return "a" },
 			func(int) string { return "b\nc" },
 		)

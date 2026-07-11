@@ -1,6 +1,6 @@
 // Command demo is the Phase 2 exit-criterion app: a multi-pane TUI composed
-// purely from gotui components, laid out with gotui/layout, with focus
-// cycling and a modal dialog composited by gotui/overlay.
+// purely from tuiweave components, laid out with tuiweave/layout, with focus
+// cycling and a modal dialog composited by tuiweave/overlay.
 //
 //	go run ./examples/demo
 //
@@ -16,21 +16,21 @@ import (
 	tea "charm.land/bubbletea/v2"
 	lipgloss "charm.land/lipgloss/v2"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/dialog"
-	"github.com/ishansain/gotui/focus"
-	"github.com/ishansain/gotui/help"
-	"github.com/ishansain/gotui/layout"
-	"github.com/ishansain/gotui/list"
-	"github.com/ishansain/gotui/overlay"
-	"github.com/ishansain/gotui/spinner"
-	"github.com/ishansain/gotui/statusbar"
-	"github.com/ishansain/gotui/textinput"
-	"github.com/ishansain/gotui/viewport"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/dialog"
+	"github.com/ishan5ain/tuiweave/focus"
+	"github.com/ishan5ain/tuiweave/help"
+	"github.com/ishan5ain/tuiweave/layout"
+	"github.com/ishan5ain/tuiweave/list"
+	"github.com/ishan5ain/tuiweave/overlay"
+	"github.com/ishan5ain/tuiweave/spinner"
+	"github.com/ishan5ain/tuiweave/statusbar"
+	"github.com/ishan5ain/tuiweave/textinput"
+	"github.com/ishan5ain/tuiweave/viewport"
 )
 
 type model struct {
-	theme         gotui.Theme
+	theme         tuiweave.Theme
 	width, height int
 
 	list    list.Model
@@ -46,7 +46,7 @@ type model struct {
 }
 
 func newModel() model {
-	theme := gotui.Dark()
+	theme := tuiweave.Dark()
 	m := model{
 		theme:   theme,
 		list:    list.New(theme),
@@ -68,7 +68,7 @@ func newModel() model {
 	)
 	m.quitDlg.ID = "quit"
 	m.quitDlg.Title = "Quit demo?"
-	m.quitDlg.Body = "This closes the gotui Phase 2 demo."
+	m.quitDlg.Body = "This closes the tuiweave Phase 2 demo."
 	m.fm = focus.NewManager(3)
 	m.applyFocus()
 	m.syncViewport()

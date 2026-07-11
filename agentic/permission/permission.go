@@ -3,7 +3,7 @@
 // structured provenance for the operation being approved.
 //
 // Like dialog, the app owns visibility: render it (composited with
-// gotui/overlay) while waiting, and close it when Update returns a
+// tuiweave/overlay) while waiting, and close it when Update returns a
 // ResultMsg command.
 package permission
 
@@ -15,8 +15,8 @@ import (
 	lipgloss "charm.land/lipgloss/v2"
 	"github.com/charmbracelet/x/ansi"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/layout"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/layout"
 )
 
 // ResultMsg is emitted (as a command) when the user picks an option.
@@ -76,7 +76,7 @@ type Model struct {
 // New returns a prompt with the standard options: Allow once, Allow always,
 // Deny. The Warning role frames it — permission requests are caution
 // moments, not errors.
-func New(theme gotui.Theme) Model {
+func New(theme tuiweave.Theme) Model {
 	return Model{
 		options: []string{"Allow once", "Allow always", "Deny"},
 		panelStyle: lipgloss.NewStyle().

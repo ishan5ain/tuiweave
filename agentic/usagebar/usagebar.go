@@ -1,6 +1,6 @@
 // Package usagebar renders the session status line of an agentic tool:
 // model name, token counts, cost, and context usage, formatted onto a
-// gotui statusbar.
+// tuiweave statusbar.
 package usagebar
 
 import (
@@ -8,8 +8,8 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/statusbar"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/statusbar"
 )
 
 // Stats is a session usage snapshot.
@@ -31,7 +31,7 @@ type Model struct {
 }
 
 // New returns an empty usage bar styled from the theme's roles.
-func New(theme gotui.Theme) Model {
+func New(theme tuiweave.Theme) Model {
 	m := Model{bar: statusbar.New(theme)}
 	m.SetStats(Stats{})
 	return m

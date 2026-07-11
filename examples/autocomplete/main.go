@@ -13,16 +13,16 @@ import (
 	tea "charm.land/bubbletea/v2"
 	lipgloss "charm.land/lipgloss/v2"
 
-	"github.com/ishansain/gotui"
-	"github.com/ishansain/gotui/autocomplete"
-	"github.com/ishansain/gotui/frame"
-	"github.com/ishansain/gotui/layout"
-	"github.com/ishansain/gotui/statusbar"
-	"github.com/ishansain/gotui/textinput"
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/autocomplete"
+	"github.com/ishan5ain/tuiweave/frame"
+	"github.com/ishan5ain/tuiweave/layout"
+	"github.com/ishan5ain/tuiweave/statusbar"
+	"github.com/ishan5ain/tuiweave/textinput"
 )
 
 type model struct {
-	theme         gotui.Theme
+	theme         tuiweave.Theme
 	width, height int
 	input         textinput.Model
 	suggestions   autocomplete.Model
@@ -30,7 +30,7 @@ type model struct {
 }
 
 func newModel() model {
-	theme := gotui.Dark()
+	theme := tuiweave.Dark()
 	input := textinput.New(theme)
 	input.Prompt = "> "
 	input.Placeholder = "type a command prefix"

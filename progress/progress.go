@@ -12,7 +12,7 @@ import (
 	lipgloss "charm.land/lipgloss/v2"
 	"github.com/charmbracelet/x/ansi"
 
-	"github.com/ishansain/gotui"
+	"github.com/ishan5ain/tuiweave"
 )
 
 // Status selects the semantic role used for the filled portion of the bar.
@@ -46,7 +46,7 @@ type Model struct {
 }
 
 // New returns a progress indicator styled from the theme's semantic roles.
-func New(theme gotui.Theme) Model {
+func New(theme tuiweave.Theme) Model {
 	base := lipgloss.NewStyle().Background(theme.SurfaceRaised)
 	return Model{
 		showPercent: true,

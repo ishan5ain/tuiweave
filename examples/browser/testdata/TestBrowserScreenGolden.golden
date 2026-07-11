@@ -3,7 +3,7 @@
 ╭ Files ───────────────────────╮ ╭ Preview ───────────────────────────────────────────╮
 │                              │ │                                                    │
 │ > filter files               │ │ package main                                       │┃
-│ ▎ cmd/gotui/main.go          │ │                                                    │┃
+│ ▎ cmd/tuiweave/main.go       │ │                                                    │┃
 │   layout/layout.go           │ │ import (                                           │┃
 │   list/list.go               │ │     "fmt"                                          │┃
 │   examples/browser/main.go   │ │     "os"                                           │┃

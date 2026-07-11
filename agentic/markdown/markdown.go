@@ -17,7 +17,7 @@ import (
 	glamour "charm.land/glamour/v2"
 	"charm.land/glamour/v2/ansi"
 
-	"github.com/ishansain/gotui"
+	"github.com/ishan5ain/tuiweave"
 )
 
 // Renderer renders markdown source to styled terminal text wrapped at width.
@@ -38,7 +38,7 @@ func Sprint(r Renderer, source string, width int) string {
 
 // NewRenderer returns the default glamour-backed Renderer, styled from the
 // theme's roles.
-func NewRenderer(theme gotui.Theme) Renderer {
+func NewRenderer(theme tuiweave.Theme) Renderer {
 	return &glamourRenderer{
 		styles:    styleConfig(theme),
 		renderers: map[int]*glamour.TermRenderer{},
@@ -75,13 +75,15 @@ func hex(c color.Color) *string {
 	return &s
 }
 
+func ptr[T any](v T) *T { return &v }
+
 // styleConfig maps theme roles onto glamour's stylesheet. Restrained on
 // purpose: color and weight from roles, structure left to glamour.
-func styleConfig(t gotui.Theme) ansi.StyleConfig {
+func styleConfig(t tuiweave.Theme) ansi.StyleConfig {
 	return ansi.StyleConfig{
 		Document: ansi.StyleBlock{
 			StylePrimitive: ansi.StylePrimitive{Color: hex(t.Text)},
-			Margin:         new(uint(0)),
+			Margin:         ptr(uint(0)),
 		},
 		Paragraph: ansi.StyleBlock{
 			StylePrimitive: ansi.StylePrimitive{Color: hex(t.Text)},
@@ -89,7 +91,7 @@ func styleConfig(t gotui.Theme) ansi.StyleConfig {
 		Text: ansi.StylePrimitive{Color: hex(t.Text)},
 
 		Heading: ansi.StyleBlock{
-			StylePrimitive: ansi.StylePrimitive{Color: hex(t.Accent), Bold: new(true)},
+			StylePrimitive: ansi.StylePrimitive{Color: hex(t.Accent), Bold: ptr(true)},
 		},
 		H1: ansi.StyleBlock{
 			StylePrimitive: ansi.StylePrimitive{Prefix: "# "},
@@ -97,15 +99,15 @@ func styleConfig(t gotui.Theme) ansi.StyleConfig {
 		H2: ansi.StyleBlock{StylePrimitive: ansi.StylePrimitive{Prefix: "## "}},
 		H3: ansi.StyleBlock{StylePrimitive: ansi.StylePrimitive{Prefix: "### "}},
 
-		Emph:           ansi.StylePrimitive{Italic: new(true)},
-		Strong:         ansi.StylePrimitive{Bold: new(true)},
-		Strikethrough:  ansi.StylePrimitive{CrossedOut: new(true)},
+		Emph:           ansi.StylePrimitive{Italic: ptr(true)},
+		Strong:         ansi.StylePrimitive{Bold: ptr(true)},
+		Strikethrough:  ansi.StylePrimitive{CrossedOut: ptr(true)},
 		HorizontalRule: ansi.StylePrimitive{Color: hex(t.BorderMuted)},
 
 		BlockQuote: ansi.StyleBlock{
-			StylePrimitive: ansi.StylePrimitive{Color: hex(t.TextMuted), Italic: new(true)},
-			Indent:         new(uint(1)),
-			IndentToken:    new("│ "),
+			StylePrimitive: ansi.StylePrimitive{Color: hex(t.TextMuted), Italic: ptr(true)},
+			Indent:         ptr(uint(1)),
+			IndentToken:    ptr("│ "),
 		},
 
 		List: ansi.StyleList{
@@ -117,7 +119,7 @@ func styleConfig(t gotui.Theme) ansi.StyleConfig {
 		Item:        ansi.StylePrimitive{Color: hex(t.Text), BlockPrefix: "• "},
 		Enumeration: ansi.StylePrimitive{Color: hex(t.TextMuted), BlockPrefix: ". "},
 
-		Link:     ansi.StylePrimitive{Color: hex(t.Info), Underline: new(true)},
+		Link:     ansi.StylePrimitive{Color: hex(t.Info), Underline: ptr(true)},
 		LinkText: ansi.StylePrimitive{Color: hex(t.Info)},
 
 		Code: ansi.StyleBlock{
@@ -126,11 +128,11 @@ func styleConfig(t gotui.Theme) ansi.StyleConfig {
 		CodeBlock: ansi.StyleCodeBlock{
 			StyleBlock: ansi.StyleBlock{
 				StylePrimitive: ansi.StylePrimitive{Color: hex(t.Text)},
-				Margin:         new(uint(1)),
+				Margin:         ptr(uint(1)),
 			},
 			Chroma: &ansi.Chroma{
 				Text:            ansi.StylePrimitive{Color: hex(t.Text)},
-				Comment:         ansi.StylePrimitive{Color: hex(t.TextFaint), Italic: new(true)},
+				Comment:         ansi.StylePrimitive{Color: hex(t.TextFaint), Italic: ptr(true)},
 				Keyword:         ansi.StylePrimitive{Color: hex(t.Accent)},
 				KeywordType:     ansi.StylePrimitive{Color: hex(t.Info)},
 				NameFunction:    ansi.StylePrimitive{Color: hex(t.Info)},

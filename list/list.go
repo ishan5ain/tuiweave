@@ -13,7 +13,7 @@ import (
 	lipgloss "charm.land/lipgloss/v2"
 	"github.com/charmbracelet/x/ansi"
 
-	"github.com/ishansain/gotui"
+	"github.com/ishan5ain/tuiweave"
 )
 
 // Model is a list component. Create one with New.
@@ -41,7 +41,7 @@ const (
 )
 
 // New returns an empty list styled from the theme's roles.
-func New(theme gotui.Theme) Model {
+func New(theme tuiweave.Theme) Model {
 	return Model{
 		itemStyle: lipgloss.NewStyle().Foreground(theme.Text),
 		selectedStyle: lipgloss.NewStyle().
