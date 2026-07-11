@@ -48,6 +48,16 @@ func key(name string) tea.KeyPressMsg {
 		return tea.KeyPressMsg{Code: tea.KeyLeft, Mod: tea.ModShift}
 	case "shift+up":
 		return tea.KeyPressMsg{Code: tea.KeyUp, Mod: tea.ModShift}
+	case "ctrl+left":
+		return tea.KeyPressMsg{Code: tea.KeyLeft, Mod: tea.ModCtrl}
+	case "ctrl+shift+left":
+		return tea.KeyPressMsg{Code: tea.KeyLeft, Mod: tea.ModCtrl | tea.ModShift}
+	case "ctrl+right":
+		return tea.KeyPressMsg{Code: tea.KeyRight, Mod: tea.ModCtrl}
+	case "ctrl+shift+right":
+		return tea.KeyPressMsg{Code: tea.KeyRight, Mod: tea.ModCtrl | tea.ModShift}
+	case "alt+y":
+		return tea.KeyPressMsg{Code: 'y', Mod: tea.ModAlt}
 	case "ctrl+a":
 		return tea.KeyPressMsg{Code: 'a', Mod: tea.ModCtrl}
 	case "ctrl+z":
@@ -60,6 +70,8 @@ func key(name string) tea.KeyPressMsg {
 		return tea.KeyPressMsg{Code: 'k', Mod: tea.ModCtrl}
 	case "ctrl+w":
 		return tea.KeyPressMsg{Code: 'w', Mod: tea.ModCtrl}
+	case "ctrl+u":
+		return tea.KeyPressMsg{Code: 'u', Mod: tea.ModCtrl}
 	}
 	panic("unsupported key in test helper: " + name)
 }
@@ -103,6 +115,11 @@ func TestCellWidthWrapAndCursor(t *testing.T) {
 		if got := ansi.StringWidth(line); got != 8 {
 			t.Fatalf("rendered cell width = %d, want 8 for %q", got, line)
 		}
+	}
+	ta.SetValue("界abc\nabcd")
+	ta, _ = ta.Update(key("up"))
+	if ta.row != 0 || ta.col != 3 {
+		t.Fatalf("vertical cell mapping = (%d,%d), want (0,3)", ta.row, ta.col)
 	}
 	snaptest.Snap(t, ta.View())
 }
@@ -277,6 +294,84 @@ func TestSelectionCollapsesBeforeTyping(t *testing.T) {
 	}
 }
 
+func TestWordMovementAndSelection(t *testing.T) {
+	ta := newFocused(24, 3)
+	ta.SetValue("one two three")
+	ta, _ = ta.Update(key("ctrl+left"))
+	if ta.row != 0 || ta.col != 8 {
+		t.Fatalf("ctrl+left cursor = (%d,%d), want (0,8)", ta.row, ta.col)
+	}
+	ta, _ = ta.Update(key("ctrl+shift+left"))
+	if ta.SelectedText() != "two " {
+		t.Fatalf("word selection = %q, want %q", ta.SelectedText(), "two ")
+	}
+
+	ta.SetValue("one two\nthree")
+	ta.row, ta.col = 0, 0
+	ta, _ = ta.Update(key("ctrl+right"))
+	if ta.row != 0 || ta.col != 4 {
+		t.Fatalf("first ctrl+right cursor = (%d,%d), want (0,4)", ta.row, ta.col)
+	}
+	ta, _ = ta.Update(key("ctrl+right"))
+	if ta.row != 1 || ta.col != 0 {
+		t.Fatalf("cross-line ctrl+right cursor = (%d,%d), want (1,0)", ta.row, ta.col)
+	}
+	ta, _ = ta.Update(key("ctrl+shift+right"))
+	if ta.SelectedText() != "three" {
+		t.Fatalf("right word selection = %q, want %q", ta.SelectedText(), "three")
+	}
+}
+
+func TestKillRingAndYank(t *testing.T) {
+	ta := newFocused(24, 3)
+	ta.SetValue("one two")
+	previous := ta
+	next, _ := ta.Update(key("ctrl+w"))
+	if previous.Value() != "one two" || previous.CanYank() {
+		t.Fatalf("prior MVU model changed after kill: value=%q canYank=%v", previous.Value(), previous.CanYank())
+	}
+	ta = next
+	if got := ta.Value(); got != "one " || !ta.CanYank() {
+		t.Fatalf("kill = %q, canYank=%v; want one space and true", got, ta.CanYank())
+	}
+	ta, _ = ta.Update(key("alt+y"))
+	if got := ta.Value(); got != "one two" {
+		t.Fatalf("yank = %q, want one two", got)
+	}
+	ta, _ = ta.Update(key("ctrl+z"))
+	if got := ta.Value(); got != "one " {
+		t.Fatalf("undo yank = %q, want one space", got)
+	}
+	ta, _ = ta.Update(inspect.Invoke(ActionYank))
+	if got := ta.Value(); got != "one two" {
+		t.Fatalf("semantic yank = %q, want one two", got)
+	}
+
+	ta.SetValue("one two")
+	if ta.CanYank() {
+		t.Fatal("SetValue did not clear the kill ring")
+	}
+	ta, _ = ta.Update(key("ctrl+u"))
+	if got := ta.Value(); got != "" || !ta.CanYank() {
+		t.Fatalf("line kill = %q, canYank=%v; want empty value and true", got, ta.CanYank())
+	}
+	ta, _ = ta.Update(key("alt+y"))
+	if got := ta.Value(); got != "one two" {
+		t.Fatalf("line yank = %q, want one two", got)
+	}
+
+	ta.SetValue("one two\nthree")
+	ta, _ = ta.Update(key("home"))
+	ta, _ = ta.Update(key("ctrl+k"))
+	if got := ta.Value(); got != "one two\n" || !ta.CanYank() {
+		t.Fatalf("line-end kill = %q, canYank=%v; want trailing newline and true", got, ta.CanYank())
+	}
+	ta, _ = ta.Update(key("alt+y"))
+	if got := ta.Value(); got != "one two\nthree" {
+		t.Fatalf("line-end yank = %q, want original value", got)
+	}
+}
+
 func TestTextareaSemanticEditingActions(t *testing.T) {
 	ta := newFocused(20, 3)
 	ta.SetValue("abc")
@@ -320,6 +415,17 @@ func TestTextareaSelectionScenarioGolden(t *testing.T) {
 		snaptest.ScenarioStep{Name: "select all", Msg: key("ctrl+a")},
 		snaptest.ScenarioStep{Name: "replace selection", Msg: tea.KeyPressMsg{Text: "hi"}},
 		snaptest.ScenarioStep{Name: "undo", Msg: key("ctrl+z")},
+	)
+	snaptest.SnapScenario(t, result)
+}
+
+func TestTextareaEditingDepthScenarioGolden(t *testing.T) {
+	m := scenarioModel{textarea: newFocused(20, 3)}
+	m.textarea.SetValue("one two")
+	result := snaptest.RunScenario(m,
+		snaptest.ScenarioStep{Name: "kill previous word", Msg: key("ctrl+w")},
+		snaptest.ScenarioStep{Name: "yank", Msg: key("alt+y")},
+		snaptest.ScenarioStep{Name: "undo yank", Msg: key("ctrl+z")},
 	)
 	snaptest.SnapScenario(t, result)
 }

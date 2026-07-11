@@ -36,6 +36,11 @@
       "enabled": false
     },
     {
+      "id": "yank",
+      "label": "Yank killed text",
+      "enabled": false
+    },
+    {
       "id": "select_all",
       "label": "Select all text",
       "enabled": true

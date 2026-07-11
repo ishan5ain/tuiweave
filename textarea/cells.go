@@ -39,3 +39,20 @@ func clustersOf(line []rune) []runeCluster {
 func cellWidth(runes []rune) int {
 	return ansi.StringWidth(string(runes))
 }
+
+func runeOffsetAtCell(text []rune, target int) int {
+	if target <= 0 {
+		return 0
+	}
+	used := 0
+	for _, cluster := range clustersOf(text) {
+		if used+cluster.width > target {
+			return cluster.start
+		}
+		used += cluster.width
+		if used == target {
+			return cluster.end
+		}
+	}
+	return len(text)
+}

@@ -27,7 +27,7 @@ rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
 | Show selectable records | `list` or `table`; add `scrollbar.For` |
 | Show long content | `viewport`; forward mouse wheels; add `scrollbar.For` |
 | Accept one line | `textinput`; the app owns Enter/submit |
-| Accept chat-style text | `textarea`; app owns Enter/send and optional Alt+Enter newline |
+| Accept chat-style text | `textarea`; app owns Enter/send and optional Alt+Enter newline; word movement and kill/yank are built in |
 | Confirm or gate an action | `dialog` or `agentic/permission` + `overlay` |
 | Stream a transcript | `agentic/chat` + `agentic/markdown`; keep cell pointers |
 | Show tool execution | `agentic/toolcall`; set ID/status and mutate output |
@@ -60,7 +60,7 @@ rules and recipes, [DESIGN.md](DESIGN.md) for architectural rationale, and
 | `table` | Selecting rows with columns | Header and rule consume two rows |
 | `viewport` | Scrolling pre-rendered content | Mouse wheel works even when blurred |
 | `textinput` | Editing one line | Enter is not handled; read `Value()` in the app |
-| `textarea` | Editing wrapped/multiline text | Logical-rune selection, cell-aware wrapping, bounded undo/redo; Enter inserts a newline |
+| `textarea` | Editing wrapped/multiline text | Logical-rune selection, cell-aware wrapping, bounded undo/redo, word movement, and a bounded kill/yank ring; Enter inserts a newline |
 | `help` | Showing key hints | Drops whole hints from the right when narrow |
 | `spinner` | Showing activity | Intrinsic-size; start with `Tick`, forward `TickMsg` |
 | `dialog` | Confirming or cancelling | App owns visibility; result arrives as `ResultMsg` |

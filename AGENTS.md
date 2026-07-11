@@ -538,6 +538,7 @@ ti.Focus()                       // cursor renders; keys accepted
 ta := textarea.New(theme)        // multi-line, soft-wrapped
 ta.SelectAll()                   // logical-rune selection; inspect with SelectedText()
 ta.Undo() / ta.Redo()             // bounded edit history; CanUndo/CanRedo report state
+ta.Yank()                         // insert the latest killed text; CanYank reports state
 // enter inserts a newline INSIDE the textarea — for chat-style "enter sends",
 // intercept enter at the app level and offer alt+enter for newlines:
 case "enter":     /* read ta.Value(), send, ta.Reset() */
@@ -553,10 +554,14 @@ Grow a chat input with its content by re-splitting the layout after edits:
 - `ctrl+z`/`ctrl+y` (or `ctrl+shift+z`) undo and redo up to 100 edit states.
   Programmatic `SetValue` and `Reset` establish a fresh history baseline;
   selection changes themselves are not edits.
+- `ctrl+left/right` move by whitespace-delimited words; Shift variants select
+  those words. `ctrl+w`, `ctrl+u`, and `ctrl+k` kill text into a bounded
+  20-entry ring; `alt+y` or the semantic `yank` action inserts the latest kill.
+  `ctrl+y` remains redo for compatibility with the history contract.
 - Textarea display geometry is grapheme- and cell-aware for wide and combining
-  characters, while logical selection positions remain rune-based. Kill ring,
-  word-wise movement, and IME behavior remain later work; other text-bearing
-  components still need a broader cell-width audit.
+  characters, while logical selection positions remain rune-based. Kill-ring
+  rotation/coalescing, richer editing commands, and IME behavior remain later
+  work; other text-bearing components still need a broader cell-width audit.
 
 ### scrollbar
 

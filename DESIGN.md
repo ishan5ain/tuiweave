@@ -440,8 +440,10 @@ theme API from growing per-component.
   logical-rune selections, select-all/replacement, and bounded undo/redo on top
   of tier-1 soft wrap, visual-row movement, line joins, and paste. Its display
   geometry now uses grapheme clusters and terminal-cell widths for wide and
-  combining characters. Still open: kill ring, word-wise movement, IME, and a
-  broader cell-width audit across text-bearing components.
+  combining characters. It also has whitespace-delimited word movement and a
+  bounded model-owned kill/yank ring (`ctrl+w/u/k`, `alt+y`; `ctrl+y` remains
+  redo). Still open: kill-ring rotation/coalescing, richer editing commands,
+  IME, and a broader cell-width audit across text-bearing components.
 - **Streaming markdown renderer design:** incremental block parser vs
   full-document reparse with damage hints — decide when glamour's limits are
   measured, not guessed.

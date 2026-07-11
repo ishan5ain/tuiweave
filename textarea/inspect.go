@@ -17,6 +17,7 @@ func (m Model) Actions() []inspect.Action {
 		{ID: ActionClear, Label: "Clear textarea", Enabled: !m.Empty()},
 		{ID: ActionUndo, Label: "Undo edit", Enabled: m.CanUndo()},
 		{ID: ActionRedo, Label: "Redo edit", Enabled: m.CanRedo()},
+		{ID: ActionYank, Label: "Yank killed text", Enabled: m.CanYank()},
 		{ID: ActionSelectAll, Label: "Select all text", Enabled: !m.Empty()},
 		{ID: ActionClearSelection, Label: "Clear selection", Enabled: m.HasSelection()},
 	}
@@ -38,6 +39,8 @@ func (m Model) applyAction(msg tea.Msg) (Model, bool) {
 		m.Undo()
 	case ActionRedo:
 		m.Redo()
+	case ActionYank:
+		m.Yank()
 	case ActionSelectAll:
 		m.SelectAll()
 	case ActionClearSelection:

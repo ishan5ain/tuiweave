@@ -1,0 +1,19 @@
+## initial
+command: no
+> one two
+
+
+## kill previous word
+command: no
+> one
+
+
+## yank
+command: no
+> one two
+
+
+## undo yank
+command: no
+> one
+

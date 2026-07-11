@@ -101,6 +101,16 @@ func (m *Model) beginSelection() {
 	}
 }
 
+func (m *Model) setSelection(start, end position) {
+	if start == end {
+		m.hasAnchor = false
+		return
+	}
+	m.anchor = start
+	m.hasAnchor = true
+	m.row, m.col = end.row, end.col
+}
+
 func (m *Model) deleteSelection() {
 	start, end, ok := m.selectionRange()
 	if !ok {
@@ -178,6 +188,9 @@ func (m *Model) restore(state editState) {
 
 func (m *Model) applyEdit(edit func()) {
 	before := m.snapshot()
+	// Update returns a value model. Detach the working copy before any edit can
+	// replace a line or mutate a shared line slice from the previous model.
+	m.lines = cloneLines(m.lines)
 	edit()
 	after := m.snapshot()
 	if sameState(before, after) {

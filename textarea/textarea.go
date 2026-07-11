@@ -9,13 +9,14 @@
 //	h := min(4, m.input.ContentHeight())
 //	layout.Vertical(layout.Fill(1), layout.Len(h)).Apply(...)
 //
-// Tier-2 editing adds logical-rune selections, select-all/replacement, and a
-// bounded undo/redo history. Kill ring, IME, and cell-width-aware movement are
-// still separate follow-up work.
+// Tier-2 editing adds logical-rune selections, select-all/replacement, bounded
+// undo/redo, word-wise movement, and a small model-owned kill ring. IME and
+// richer editing commands remain separate follow-up work.
 package textarea
 
 import (
 	"strings"
+	"unicode"
 
 	tea "charm.land/bubbletea/v2"
 	lipgloss "charm.land/lipgloss/v2"
@@ -35,6 +36,7 @@ type Model struct {
 	hasAnchor     bool
 	undo          []editState
 	redo          []editState
+	killRing      []string
 
 	// Prompt is rendered before the first visual row; continuation rows are
 	// indented to match. Default "> ".
@@ -55,6 +57,7 @@ const (
 	ActionClear          = "clear"
 	ActionUndo           = "undo"
 	ActionRedo           = "redo"
+	ActionYank           = "yank"
 	ActionSelectAll      = "select_all"
 	ActionClearSelection = "clear_selection"
 )
@@ -101,6 +104,7 @@ func (m *Model) SetValue(s string) {
 	m.setValue(s)
 	m.hasAnchor = false
 	m.resetHistory()
+	m.killRing = nil
 	m.ensureCursorVisible()
 }
 
@@ -120,6 +124,7 @@ func (m *Model) Reset() {
 	m.row, m.col, m.yoff = 0, 0, 0
 	m.hasAnchor = false
 	m.resetHistory()
+	m.killRing = nil
 }
 
 // Empty reports whether the textarea holds no text.
@@ -311,6 +316,44 @@ func (m *Model) moveRight() {
 	}
 }
 
+func wordSpace(r rune) bool { return unicode.IsSpace(r) }
+
+func (m *Model) moveWordLeft() {
+	if m.col == 0 {
+		if m.row > 0 {
+			m.row--
+			m.col = len(m.lines[m.row])
+		}
+		return
+	}
+	line := m.lines[m.row]
+	i := m.col
+	for i > 0 && wordSpace(line[i-1]) {
+		i--
+	}
+	for i > 0 && !wordSpace(line[i-1]) {
+		i--
+	}
+	m.col = i
+}
+
+func (m *Model) moveWordRight() {
+	line := m.lines[m.row]
+	i := m.col
+	for i < len(line) && !wordSpace(line[i]) {
+		i++
+	}
+	for i < len(line) && wordSpace(line[i]) {
+		i++
+	}
+	if i == len(line) && m.row < len(m.lines)-1 {
+		m.row++
+		m.col = 0
+		return
+	}
+	m.col = i
+}
+
 // moveVertical moves the cursor by one visual row, clamping the column.
 func (m *Model) moveVertical(delta int) {
 	rows := m.visualRows()
@@ -324,7 +367,7 @@ func (m *Model) moveVertical(delta int) {
 	}
 	r := rows[target]
 	m.row = r.line
-	m.col = r.startCol + min(vcol, len(r.text))
+	m.col = r.startCol + runeOffsetAtCell(r.text, vcol)
 }
 
 func (m *Model) moveWithSelection(extend bool, collapse int, move func()) {
@@ -347,32 +390,6 @@ func (m *Model) moveWithSelection(extend bool, collapse int, move func()) {
 		m.ClearSelection()
 	}
 	move()
-}
-
-func (m *Model) killToLineEnd() {
-	line := m.lines[m.row]
-	if m.col < len(line) {
-		m.lines[m.row] = line[:m.col]
-		return
-	}
-	m.deleteForward() // at end of line, ctrl+k joins (emacs behavior)
-}
-
-func (m *Model) deleteWordBack() {
-	line := m.lines[m.row]
-	if m.col == 0 {
-		m.backspace()
-		return
-	}
-	i := m.col
-	for i > 0 && line[i-1] == ' ' {
-		i--
-	}
-	for i > 0 && line[i-1] != ' ' {
-		i--
-	}
-	m.lines[m.row] = append(line[:i], line[m.col:]...)
-	m.col = i
 }
 
 // Update handles editing keys while focused. Enter inserts a newline; the
@@ -418,6 +435,10 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 		m.moveWithSelection(extend, -1, m.moveLeft)
 	case "right", "shift+right":
 		m.moveWithSelection(extend, 1, m.moveRight)
+	case "ctrl+left", "ctrl+shift+left":
+		m.moveWithSelection(extend, -1, m.moveWordLeft)
+	case "ctrl+right", "ctrl+shift+right":
+		m.moveWithSelection(extend, 1, m.moveWordRight)
 	case "up", "shift+up":
 		m.moveWithSelection(extend, -1, func() { m.moveVertical(-1) })
 	case "down", "shift+down":
@@ -434,30 +455,56 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 		m.Undo()
 	case "ctrl+y", "ctrl+shift+z":
 		m.Redo()
+	case "alt+y":
+		m.Yank()
 	case "ctrl+u":
 		m.applyEdit(func() {
 			if m.HasSelection() {
-				m.deleteSelection()
+				m.killSelection()
 				return
 			}
-			m.lines[m.row] = append([]rune{}, m.lines[m.row][m.col:]...)
-			m.col = 0
+			start := position{row: m.row, col: 0}
+			m.setSelection(start, m.cursorPosition())
+			m.killSelection()
 		})
 	case "ctrl+k":
 		m.applyEdit(func() {
 			if m.HasSelection() {
-				m.deleteSelection()
+				m.killSelection()
 				return
 			}
-			m.killToLineEnd()
+			start := m.cursorPosition()
+			end := start
+			if start.col < len(m.lines[start.row]) {
+				end.col = len(m.lines[start.row])
+			} else if start.row < len(m.lines)-1 {
+				end = position{row: start.row + 1, col: 0}
+			}
+			m.setSelection(start, end)
+			m.killSelection()
 		})
 	case "ctrl+w":
 		m.applyEdit(func() {
 			if m.HasSelection() {
-				m.deleteSelection()
+				m.killSelection()
 				return
 			}
-			m.deleteWordBack()
+			start := m.cursorPosition()
+			if start.col == 0 && start.row > 0 {
+				start = position{row: start.row - 1, col: len(m.lines[start.row-1])}
+			} else {
+				line := m.lines[start.row]
+				i := start.col
+				for i > 0 && wordSpace(line[i-1]) {
+					i--
+				}
+				for i > 0 && !wordSpace(line[i-1]) {
+					i--
+				}
+				start.col = i
+			}
+			m.setSelection(start, m.cursorPosition())
+			m.killSelection()
 		})
 	default:
 		return m, nil
