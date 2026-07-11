@@ -12,5 +12,7 @@
 .pi-subagents/
 
 # Example binaries
+/chat
+/ops
 examples/chat
 examples/ops
