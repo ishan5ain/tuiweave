@@ -53,12 +53,46 @@ in top-level packages such as `layout`, `frame`, `tabs`, `menu`, `viewport`,
 `textinput`, and `textarea`; optional domain packages live under `agentic/`.
 The [agent catalog](AGENT-CATALOG.md) maps common tasks to packages and examples.
 
+### Package guides
+
+Foundations and composition:
+[`action`](action), [`focus`](focus), [`frame`](frame), [`inspect`](inspect),
+[`layout`](layout), [`line`](line), [`mouse`](mouse), [`overlay`](overlay),
+[`scrollbar`](scrollbar), [`snaptest`](snaptest), [`splitpane`](splitpane), and
+[`stack`](stack).
+
+General-purpose components:
+[`autocomplete`](autocomplete), [`button`](button), [`dialog`](dialog),
+[`help`](help), [`list`](list), [`menu`](menu), [`palette`](palette),
+[`progress`](progress), [`spinner`](spinner), [`statusbar`](statusbar),
+[`table`](table), [`tabs`](tabs), [`textarea`](textarea),
+[`textinput`](textinput), [`toggle`](toggle), [`toolbar`](toolbar), and
+[`viewport`](viewport).
+
+Agentic domain components:
+[`chat`](agentic/chat), [`diffview`](agentic/diffview),
+[`markdown`](agentic/markdown), [`permission`](agentic/permission),
+[`toolcall`](agentic/toolcall), and [`usagebar`](agentic/usagebar).
+
 Eight built-in theme presets are available through `tuiweave.Presets()` and
 `tuiweave.ThemeForPreset(id)`. Named constructors such as `Dark()`, `Nord()`,
 and `CatppuccinLatte()` are convenient when an app does not need discovery.
 Components derive styles when constructed, so an app that changes themes
 reconstructs its components from the newly selected `Theme` while preserving
 application-owned state. See [`examples/statusbar`](examples/statusbar).
+
+## API highlights
+
+- `Theme` defines the semantic roles consumed by every themed component.
+- `Dark`, `Light`, `Nord`, and other named constructors provide fixed themes.
+- `Presets` and `ThemeForPreset` support application-owned theme selection.
+
+## Related documentation
+
+- [API reference](https://pkg.go.dev/github.com/ishan5ain/tuiweave)
+- [Architecture](DESIGN.md)
+- [Agent catalog](AGENT-CATALOG.md)
+- [Authoring conventions](AGENTS.md)
 
 ## Development
 
