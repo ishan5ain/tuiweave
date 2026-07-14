@@ -121,6 +121,102 @@ func TestOpsInspectionGolden(t *testing.T) {
 	snaptest.Snap(t, string(data))
 }
 
+func TestOpsSemanticActionRouting(t *testing.T) {
+	m := sized(t)
+	m, _ = update(t, m, tea.KeyPressMsg{Code: 'p', Mod: tea.ModCtrl})
+
+	commands := requireInspectNode(t, m.Inspect(), "commands")
+	if commands.Bounds != inspect.FromRect(m.commandsArea) {
+		t.Fatalf("commands bounds = %+v, want %+v", commands.Bounds, inspect.FromRect(m.commandsArea))
+	}
+	if !inspectActionEnabled(commands, "commands.select.restart") {
+		t.Fatal("commands.select.restart is not enabled")
+	}
+	t.Run("palette-open", func(t *testing.T) {
+		snaptest.Snap(t, marshalInspection(t, m))
+	})
+
+	var cmd tea.Cmd
+	m, cmd = update(t, m, inspect.Invoke("commands.select.restart"))
+	if cmd != nil || m.commands.SelectedID() != "restart" {
+		t.Fatalf("semantic select: command=%v selected=%q", cmd != nil, m.commands.SelectedID())
+	}
+	m, cmd = update(t, m, inspect.Invoke("commands.activate"))
+	if cmd == nil {
+		t.Fatal("commands.activate returned no command")
+	}
+	if m.showConfirm {
+		t.Fatal("confirmation opened before SelectedMsg was delivered")
+	}
+	selected, ok := cmd().(palette.SelectedMsg)
+	if !ok || selected.ID != "restart" {
+		t.Fatalf("commands.activate result = %#v, want restart selection", selected)
+	}
+	m, _ = update(t, m, selected)
+	if !m.showPalette || !m.showConfirm {
+		t.Fatalf("delivered restart selection: palette=%v confirmation=%v", m.showPalette, m.showConfirm)
+	}
+
+	confirm := requireInspectNode(t, m.Inspect(), "confirm-restart")
+	if confirm.Bounds != inspect.FromRect(m.confirmArea) {
+		t.Fatalf("confirmation bounds = %+v, want %+v", confirm.Bounds, inspect.FromRect(m.confirmArea))
+	}
+	for _, id := range []string{"confirm-restart.confirm", "confirm-restart.cancel"} {
+		if !inspectActionEnabled(confirm, id) {
+			t.Fatalf("%s is not enabled", id)
+		}
+	}
+	t.Run("confirmation-visible", func(t *testing.T) {
+		snaptest.Snap(t, marshalInspection(t, m))
+	})
+
+	m, cmd = update(t, m, inspect.Invoke("confirm-restart.cancel"))
+	if cmd == nil || !m.showConfirm {
+		t.Fatalf("semantic cancel: command=%v confirmation=%v", cmd != nil, m.showConfirm)
+	}
+	result, ok := cmd().(dialog.ResultMsg)
+	if !ok || result.ID != "restart" || result.OK {
+		t.Fatalf("semantic cancel result = %#v", result)
+	}
+	m, _ = update(t, m, result)
+	if !m.showPalette || m.showConfirm || m.notice != "restart cancelled" {
+		t.Fatalf("cancel result: palette=%v confirmation=%v notice=%q", m.showPalette, m.showConfirm, m.notice)
+	}
+
+	// Repeat from a clean model so the positive result covers the same
+	// command-delivery boundary as cancellation.
+	m = sized(t)
+	m, _ = update(t, m, tea.KeyPressMsg{Code: 'p', Mod: tea.ModCtrl})
+	m, _ = update(t, m, inspect.Invoke("commands.select.restart"))
+	m, cmd = update(t, m, inspect.Invoke("commands.activate"))
+	selected, ok = cmd().(palette.SelectedMsg)
+	if !ok {
+		t.Fatalf("repeat activation result = %#v", selected)
+	}
+	m, _ = update(t, m, selected)
+	m, cmd = update(t, m, inspect.Invoke("confirm-restart.confirm"))
+	if cmd == nil {
+		t.Fatal("semantic confirm returned no command")
+	}
+	result, ok = cmd().(dialog.ResultMsg)
+	if !ok || result.ID != "restart" || !result.OK {
+		t.Fatalf("semantic confirm result = %#v", result)
+	}
+	m, _ = update(t, m, result)
+	if m.showPalette || m.showConfirm || m.notice != "restarted service" {
+		t.Fatalf("confirm result: palette=%v confirmation=%v notice=%q", m.showPalette, m.showConfirm, m.notice)
+	}
+
+	// The dispatcher must reject actions that are not in the current visible
+	// tree, disabled actions, and unknown IDs without changing state.
+	assertRejectedSemanticAction(t, sized(t), "commands.select.restart")
+
+	m = sized(t)
+	m, _ = update(t, m, tea.KeyPressMsg{Code: 'p', Mod: tea.ModCtrl})
+	assertRejectedSemanticAction(t, m, "commands.select.delete")
+	assertRejectedSemanticAction(t, m, "commands.unknown")
+}
+
 func TestOpsScenarioGolden(t *testing.T) {
 	result := snaptest.RunScenario(sized(t),
 		snaptest.ScenarioStep{Name: "focus actions", Msg: tea.KeyPressMsg{Code: tea.KeyTab}},
@@ -147,4 +243,61 @@ func update(t *testing.T, m model, msg tea.Msg) (model, tea.Cmd) {
 	t.Helper()
 	next, cmd := m.Update(msg)
 	return next.(model), cmd
+}
+
+func marshalInspection(t *testing.T, m model) string {
+	t.Helper()
+	data, err := inspect.Marshal(m.Inspect())
+	if err != nil {
+		t.Fatal(err)
+	}
+	return string(data)
+}
+
+func requireInspectNode(t *testing.T, root inspect.Node, id string) inspect.Node {
+	t.Helper()
+	if root.ID == id {
+		return root
+	}
+	for _, child := range root.Children {
+		if node := findInspectNode(child, id); node.ID != "" {
+			return node
+		}
+	}
+	t.Fatalf("inspection node %q not found", id)
+	return inspect.Node{}
+}
+
+func findInspectNode(node inspect.Node, id string) inspect.Node {
+	if node.ID == id {
+		return node
+	}
+	for _, child := range node.Children {
+		if found := findInspectNode(child, id); found.ID != "" {
+			return found
+		}
+	}
+	return inspect.Node{}
+}
+
+func inspectActionEnabled(node inspect.Node, id string) bool {
+	for _, action := range node.Actions {
+		if action.ID == id {
+			return action.Enabled
+		}
+	}
+	return false
+}
+
+func assertRejectedSemanticAction(t *testing.T, m model, id string) {
+	t.Helper()
+	before := marshalInspection(t, m)
+	next, cmd := m.Update(inspect.Invoke(id))
+	if cmd != nil {
+		t.Fatalf("rejected action %q returned a command", id)
+	}
+	got := next.(model)
+	if after := marshalInspection(t, got); after != before {
+		t.Fatalf("rejected action %q mutated inspection state", id)
+	}
 }

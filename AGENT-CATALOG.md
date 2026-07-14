@@ -191,6 +191,19 @@ snaptest.SnapScenario(t, result)
 Execute timers, I/O, or command-produced messages explicitly in the test when
 that behavior is part of the scenario.
 
+### Semantic action routing
+
+For an end-to-end example, follow [`examples/ops`](examples/ops): it retains
+the rectangles it owns during layout, assembles an absolute [`inspect`](inspect) tree with
+`BindAt`, and routes qualified IDs such as `commands.select.restart` through
+the visible tree. The app validates visibility and `Enabled`, strips the node
+prefix before forwarding `inspect.Invoke(localID)` to the existing `palette`
+or `dialog`, and returns the resulting `tea.Cmd` without executing it. Tests
+then execute and deliver the returned `palette.SelectedMsg` or
+`dialog.ResultMsg` explicitly. This keeps routing, modal visibility, focus
+stack changes, and side effects application-owned; see [Agent-operable
+surfaces](#agent-operable-surfaces) for the general inspection contract.
+
 ## Common failure modes
 
 - Using a raw hex color instead of a `tuiweave.Theme` role.
