@@ -147,6 +147,47 @@ func TestCellWidthRendering(t *testing.T) {
 	snaptest.Snap(t, ti.View())
 }
 
+func TestNarrowCellWidthStatesStayWithinBox(t *testing.T) {
+	for _, width := range []int{0, 1, 2, 8} {
+		for _, focused := range []bool{false, true} {
+			ti := New(tuiweave.Dark())
+			ti.SetSize(width, 1)
+			ti.Placeholder = "界👩‍💻e\u0301abc"
+			if focused {
+				ti.Focus()
+			}
+
+			for _, value := range []string{"", "界👩‍💻e\u0301abc"} {
+				ti.SetValue(value)
+				got := ansi.StringWidth(ansi.Strip(ti.View()))
+				if got > width {
+					t.Fatalf("width=%d focused=%v value=%q rendered width=%d", width, focused, value, got)
+				}
+			}
+		}
+	}
+}
+
+func TestNarrowUnicodeGolden(t *testing.T) {
+	ti := newFocused(5)
+	ti.SetValue("界👩‍💻")
+	snaptest.Snap(t, ti.View())
+	snaptest.SnapCells(t, ti.View(), snaptest.WithRoles(tuiweave.Dark()))
+}
+
+func TestVisibleWindowKeepsGraphemeBoundaries(t *testing.T) {
+	value := []rune("A界e\u0301👩‍💻Z")
+	for _, pos := range []int{0, 1, 2, 3, 4, len(value)} {
+		start, end, _, _, _ := windowForCursor(value, pos, 5, true)
+		for _, cluster := range clustersOf(value) {
+			if (cluster.start < start && start < cluster.end) ||
+				(cluster.start < end && end < cluster.end) {
+				t.Fatalf("pos=%d window=[%d,%d] splits cluster=%#v", pos, start, end, cluster)
+			}
+		}
+	}
+}
+
 func TestEditingUsesGraphemeBoundaries(t *testing.T) {
 	ti := newFocused(20)
 	ti.SetValue("e\u0301x")
@@ -169,5 +210,19 @@ func TestEditingUsesGraphemeBoundaries(t *testing.T) {
 	ti, _ = ti.Update(key("backspace"))
 	if got := ti.Value(); got != "x" {
 		t.Fatalf("backspace combining grapheme = %q, want x", got)
+	}
+
+	ti.SetValue("👩‍💻x")
+	ti.pos = 1 // inside the emoji cluster
+	ti, _ = ti.Update(key("backspace"))
+	if got := ti.Value(); got != "x" || ti.pos != 0 {
+		t.Fatalf("backspace emoji cluster = %q at %d, want x at 0", got, ti.pos)
+	}
+
+	ti.SetValue("👩‍💻x")
+	ti.pos = 1 // inside the emoji cluster
+	ti, _ = ti.Update(tea.KeyPressMsg{Code: tea.KeyDelete})
+	if got := ti.Value(); got != "x" || ti.pos != 0 {
+		t.Fatalf("delete emoji cluster = %q at %d, want x at 0", got, ti.pos)
 	}
 }

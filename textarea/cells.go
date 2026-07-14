@@ -40,6 +40,35 @@ func cellWidth(runes []rune) int {
 	return ansi.StringWidth(string(runes))
 }
 
+func previousClusterStart(line []rune, pos int) int {
+	start := 0
+	for _, cluster := range clustersOf(line) {
+		if cluster.start >= pos {
+			break
+		}
+		start = cluster.start
+	}
+	return start
+}
+
+func clusterStartAt(line []rune, pos int) int {
+	for _, cluster := range clustersOf(line) {
+		if pos < cluster.end {
+			return cluster.start
+		}
+	}
+	return len(line)
+}
+
+func nextClusterEnd(line []rune, pos int) int {
+	for _, cluster := range clustersOf(line) {
+		if cluster.end > pos {
+			return cluster.end
+		}
+	}
+	return len(line)
+}
+
 func runeOffsetAtCell(text []rune, target int) int {
 	if target <= 0 {
 		return 0
