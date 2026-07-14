@@ -59,7 +59,7 @@ func main() {
 - Small composition example: [`examples/frame`](examples/frame)
 - Public-API consumer smoke app: [`examples/consumer`](examples/consumer)
 - Agentic chat interface: [`examples/chat`](examples/chat)
-- Snapshot verification: [`snaptest`](snaptest)
+- Snapshot verification: [`snaptest` tutorial](snaptest/README.md)
 - Semantic inspection and actions: [`inspect`](inspect) and [`examples/ops`](examples/ops)
 - All runnable examples: [`examples`](examples)
 - Package documentation: [pkg.go.dev](https://pkg.go.dev/github.com/ishan5ain/tuiweave)
