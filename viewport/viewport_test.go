@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	tea "charm.land/bubbletea/v2"
+	"github.com/charmbracelet/x/ansi"
 
 	"github.com/ishan5ain/tuiweave"
 	"github.com/ishan5ain/tuiweave/mouse"
@@ -105,5 +106,77 @@ func TestViewportScrollPercent(t *testing.T) {
 	vp.GotoBottom()
 	if got := vp.ScrollPercent(); got != 1 {
 		t.Errorf("bottom percent = %v, want 1", got)
+	}
+}
+
+func TestViewportUnicodeNarrowRowsStayWithinBox(t *testing.T) {
+	content := "界界界\ne\u0301 combining\n👩‍💻 developer\nshort"
+	for _, width := range []int{0, 1, 2, 3, 4, 8, 16} {
+		for _, focused := range []bool{false, true} {
+			vp := New(tuiweave.Dark())
+			vp.SetSize(width, 3)
+			vp.SetContent(content)
+			if focused {
+				vp.Focus()
+			}
+
+			view := vp.View()
+			if width == 0 {
+				if view != "" {
+					t.Fatalf("width=0 focused=%v rendered %q", focused, view)
+				}
+				continue
+			}
+			for row, line := range strings.Split(view, "\n") {
+				if got := ansi.StringWidth(ansi.Strip(line)); got != width {
+					t.Fatalf("width=%d focused=%v row=%d rendered width=%d: %q", width, focused, row, got, line)
+				}
+			}
+		}
+	}
+}
+
+func TestViewportUnicodeTruncationPreservesClusters(t *testing.T) {
+	for _, test := range []struct {
+		name  string
+		width int
+		want  string
+	}{
+		{name: "combining", width: 1, want: "e\u0301"},
+		{name: "emoji too narrow", width: 1, want: " "},
+		{name: "emoji", width: 2, want: "👩‍💻"},
+		{name: "emoji and following rune", width: 3, want: "👩‍💻x"},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			vp := New(tuiweave.Dark())
+			vp.SetSize(test.width, 1)
+			content := test.want
+			if test.name == "emoji too narrow" || test.name == "emoji" || test.name == "emoji and following rune" {
+				content = "👩‍💻x"
+			}
+			if test.name == "combining" {
+				content = "e\u0301x"
+			}
+			vp.SetContent(content)
+			if got := ansi.Strip(vp.View()); got != test.want {
+				t.Fatalf("rendered %q, want %q", got, test.want)
+			}
+		})
+	}
+}
+
+func TestViewportUnicodeScrollKeepsRowsBounded(t *testing.T) {
+	vp := New(tuiweave.Dark())
+	vp.SetSize(12, 2)
+	vp.SetContent("界 one\ne\u0301 two\n👩‍💻 three\n終 four")
+	vp.Focus()
+	vp, _ = vp.Update(keyPress("end"))
+	if !vp.AtBottom() {
+		t.Fatalf("viewport is not at bottom: offset=%d", vp.YOffset())
+	}
+	for row, line := range strings.Split(ansi.Strip(vp.View()), "\n") {
+		if got := ansi.StringWidth(line); got != 12 {
+			t.Fatalf("row %d width = %d, want 12", row, got)
+		}
 	}
 }

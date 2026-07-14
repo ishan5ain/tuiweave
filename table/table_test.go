@@ -7,6 +7,7 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 	lipgloss "charm.land/lipgloss/v2"
+	"github.com/charmbracelet/x/ansi"
 
 	"github.com/ishan5ain/tuiweave"
 	"github.com/ishan5ain/tuiweave/snaptest"
@@ -121,4 +122,96 @@ func TestTableNarrowWideContentStaysWithinBox(t *testing.T) {
 	)
 	snaptest.Snap(t, tb.View())
 	snaptest.SnapCells(t, tb.View(), snaptest.WithRoles(tuiweave.Dark()))
+}
+
+func TestTableUnicodeNarrowRowsStayWithinBox(t *testing.T) {
+	for _, width := range []int{0, 1, 2, 3, 4, 8, 16} {
+		for _, focused := range []bool{false, true} {
+			tb := New(tuiweave.Dark())
+			tb.SetSize(width, 5)
+			tb.SetColumns(
+				Column{Title: "識別子", Width: 4},
+				Column{Title: "説明"},
+				Column{Title: "状態", Width: 4},
+			)
+			tb.SetRows(
+				[]string{"界界", "サービスの説明", "运行中"},
+				[]string{"e\u0301", "combining", "👩‍💻"},
+			)
+			if focused {
+				tb.Focus()
+				tb.Select(1)
+			}
+
+			view := tb.View()
+			if width == 0 {
+				if view != "" {
+					t.Fatalf("width=0 focused=%v rendered %q", focused, view)
+				}
+				continue
+			}
+			for row, line := range strings.Split(view, "\n") {
+				if got := ansi.StringWidth(ansi.Strip(line)); got != width {
+					t.Fatalf("width=%d focused=%v row=%d rendered width=%d: %q", width, focused, row, got, line)
+				}
+			}
+		}
+	}
+}
+
+func TestTableUnicodeTruncationPreservesClusters(t *testing.T) {
+	tb := New(tuiweave.Dark())
+	tb.SetSize(8, 4)
+	tb.SetColumns(Column{Title: "Name"}, Column{Title: "State", Width: 3})
+	tb.SetRows([]string{"👩‍💻", "e\u0301"})
+	tb.Focus()
+	tb.Select(0)
+	view := ansi.Strip(tb.View())
+	if !strings.Contains(view, "👩‍💻") {
+		t.Fatalf("selected emoji was truncated or split: %q", view)
+	}
+	if strings.Contains(view, "👩") != strings.Contains(view, "💻") {
+		t.Fatalf("emoji grapheme was split: %q", view)
+	}
+}
+
+func TestTableNarrowEmojiDoesNotSplit(t *testing.T) {
+	tb := New(tuiweave.Dark())
+	tb.SetSize(3, 3) // one cell for each column, one gap
+	tb.SetColumns(Column{Title: "A", Width: 1}, Column{Title: "B"})
+	tb.SetRows([]string{"👩‍💻", "ok"})
+	view := ansi.Strip(tb.View())
+	if strings.Contains(view, "👩") || strings.Contains(view, "💻") {
+		t.Fatalf("narrow emoji cell was split instead of truncated: %q", view)
+	}
+	for row, line := range strings.Split(view, "\n") {
+		if got := ansi.StringWidth(line); got != 3 {
+			t.Fatalf("row %d width = %d, want 3: %q", row, got, line)
+		}
+	}
+}
+
+func TestTableUnicodeSelectionScroll(t *testing.T) {
+	tb := New(tuiweave.Dark())
+	tb.SetSize(14, 4) // two visible data rows
+	tb.SetColumns(Column{Title: "Name"}, Column{Title: "State", Width: 4})
+	tb.SetRows(
+		[]string{"界 one", "ok"},
+		[]string{"e\u0301 two", "ok"},
+		[]string{"👩‍💻 three", "ok"},
+		[]string{"終 four", "ok"},
+	)
+	tb.Focus()
+	tb, _ = tb.Update(keyPress("G"))
+	if got := tb.Selected(); got != 3 {
+		t.Fatalf("selected = %d, want 3", got)
+	}
+	if got := tb.YOffset(); got != 2 {
+		t.Fatalf("YOffset = %d, want 2", got)
+	}
+	for row, line := range strings.Split(ansi.Strip(tb.View()), "\n") {
+		if got := ansi.StringWidth(line); got != 14 {
+			t.Fatalf("row %d width = %d, want 14", row, got)
+		}
+	}
 }

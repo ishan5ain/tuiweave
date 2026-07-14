@@ -7,6 +7,7 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
+	"github.com/charmbracelet/x/ansi"
 
 	"github.com/ishan5ain/tuiweave"
 	"github.com/ishan5ain/tuiweave/snaptest"
@@ -103,6 +104,76 @@ func TestListWidthOneGolden(t *testing.T) {
 		views = append(views, l.View())
 	}
 	snaptest.SnapCells(t, strings.Join(views, "\n"), snaptest.WithRoles(tuiweave.Dark()))
+}
+
+func TestListUnicodeNarrowRowsStayWithinBox(t *testing.T) {
+	items := []string{"界界界", "e\u0301 combining", "👩‍💻 developer", "short"}
+	for _, width := range []int{0, 1, 2, 3, 4, 8, 16} {
+		for _, focused := range []bool{false, true} {
+			l := New(tuiweave.Dark())
+			l.SetSize(width, 3)
+			l.SetItems(items...)
+			if focused {
+				l.Focus()
+				l.Select(2)
+			}
+
+			view := l.View()
+			if width == 0 {
+				if view != "" {
+					t.Fatalf("width=0 focused=%v rendered %q", focused, view)
+				}
+				continue
+			}
+			for row, line := range strings.Split(view, "\n") {
+				if got := ansi.StringWidth(ansi.Strip(line)); got != width {
+					t.Fatalf("width=%d focused=%v row=%d rendered width=%d: %q", width, focused, row, got, line)
+				}
+			}
+		}
+	}
+}
+
+func TestListUnicodeTruncationGolden(t *testing.T) {
+	l := New(tuiweave.Dark())
+	l.SetSize(10, 3)
+	l.SetItems("界e\u0301", "👩‍💻 developer", "a very long wide 名称")
+	l.Focus()
+	l.Select(1)
+	snaptest.Snap(t, l.View())
+	snaptest.SnapCells(t, l.View(), snaptest.WithRoles(tuiweave.Dark()))
+}
+
+func TestListNarrowEmojiDoesNotSplit(t *testing.T) {
+	l := New(tuiweave.Dark())
+	l.SetSize(3, 1) // one cell for the item after the marker and gap
+	l.SetItems("👩‍💻")
+	view := ansi.Strip(l.View())
+	if strings.Contains(view, "👩") || strings.Contains(view, "💻") {
+		t.Fatalf("narrow emoji item was split instead of truncated: %q", view)
+	}
+	if got := ansi.StringWidth(view); got != 3 {
+		t.Fatalf("narrow list width = %d, want 3: %q", got, view)
+	}
+}
+
+func TestListUnicodeSelectionScroll(t *testing.T) {
+	l := New(tuiweave.Dark())
+	l.SetSize(12, 2)
+	l.SetItems("界 one", "e\u0301 two", "👩‍💻 three", "終 four")
+	l.Focus()
+	l, _ = l.Update(keyPress("G"))
+	if got := l.Selected(); got != 3 {
+		t.Fatalf("selected = %d, want 3", got)
+	}
+	if got := l.YOffset(); got != 2 {
+		t.Fatalf("YOffset = %d, want 2", got)
+	}
+	for row, line := range strings.Split(ansi.Strip(l.View()), "\n") {
+		if got := ansi.StringWidth(line); got != 12 {
+			t.Fatalf("row %d width = %d, want 12", row, got)
+		}
+	}
 }
 
 func TestItemsAreDefensiveCopies(t *testing.T) {
