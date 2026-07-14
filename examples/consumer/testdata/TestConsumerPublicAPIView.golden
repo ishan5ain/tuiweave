@@ -1,0 +1,8 @@
+╭ Components ──────────────────────────────────╮
+│▌ layout                                      │
+│  focus                                       │
+│  frame                                       │
+│  snaptest                                    │
+│                                              │
+╰──────────────────────────────────────────────╯
+ consumer  layout         j/k navigate · q quit

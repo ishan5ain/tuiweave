@@ -10,6 +10,23 @@ This is an independent community project and is not affiliated with Charmbracele
 > **Pre-v1:** APIs may change in minor releases. Breaking changes are documented
 > in the changelog and release notes.
 
+## Why tuiweave?
+
+tuiweave is for Bubble Tea applications that want reusable components without
+giving up application-owned state and routing.
+
+- **Uniform composition:** components share explicit sizing, focus, theme, and
+  state-ownership contracts.
+- **Deterministic verification:** `snaptest` checks layout, Unicode, style roles,
+  and named interaction scenarios without requiring a live terminal session.
+- **Human- and agent-operable surfaces:** `inspect` and semantic actions expose
+  discoverable UI state without making tuiweave own an event loop or transport.
+
+Compared with using individual Bubbles, tuiweave provides a consistent
+cross-component contract and an application-oriented verification layer. It is
+still a component library, not an application framework: your app owns layout
+decisions, visibility, routing, persistence, and side effects.
+
 ## Install
 
 tuiweave requires Go 1.25.8 or newer and is coupled to Bubble Tea v2.
@@ -38,8 +55,12 @@ func main() {
 
 ## Explore
 
-- General-purpose composition: [`examples/frame`](examples/frame)
+- Canonical non-agentic app: [`examples/ops`](examples/ops)
+- Small composition example: [`examples/frame`](examples/frame)
+- Public-API consumer smoke app: [`examples/consumer`](examples/consumer)
 - Agentic chat interface: [`examples/chat`](examples/chat)
+- Snapshot verification: [`snaptest`](snaptest)
+- Semantic inspection and actions: [`inspect`](inspect) and [`examples/ops`](examples/ops)
 - All runnable examples: [`examples`](examples)
 - Package documentation: [pkg.go.dev](https://pkg.go.dev/github.com/ishan5ain/tuiweave)
 - Architecture: [DESIGN.md](DESIGN.md)
@@ -52,6 +73,12 @@ The root package supplies semantic theme roles. Domain-neutral components live
 in top-level packages such as `layout`, `frame`, `tabs`, `menu`, `viewport`,
 `textinput`, and `textarea`; optional domain packages live under `agentic/`.
 The [agent catalog](AGENT-CATALOG.md) maps common tasks to packages and examples.
+
+### Start with five packages
+
+For a small interactive application, start with `layout`, `focus`, `frame`, one
+interaction component such as `list` or `textarea`, and `snaptest`. Add
+`inspect` when the application needs machine-readable state or semantic actions.
 
 ### Package guides
 
@@ -91,6 +118,8 @@ application-owned state. See [`examples/statusbar`](examples/statusbar).
 
 - [API reference](https://pkg.go.dev/github.com/ishan5ain/tuiweave)
 - [Architecture](DESIGN.md)
+- [Dependency and compatibility policy](DESIGN.md#6-dependency-policy)
+- [v1 readiness checklist](V1-READINESS.md)
 - [Agent catalog](AGENT-CATALOG.md)
 - [Authoring conventions](AGENTS.md)
 

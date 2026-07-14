@@ -1,0 +1,8 @@
+1: "╭" [fg=Border] | " Components " [fg=TextMuted] | "──────────────────────────────────╮" [fg=Border]
+2: "│" [fg=Border] | "▌" [fg=Accent bg=SelectionBg] | " layout                                      " [fg=Text bg=SelectionBg] | "│" [fg=Border]
+3: "│" [fg=Border] | "  focus" [fg=Text bg=SurfaceRaised] | "                                       " | "│" [fg=Border]
+4: "│" [fg=Border] | "  frame" [fg=Text bg=SurfaceRaised] | "                                       " | "│" [fg=Border]
+5: "│" [fg=Border] | "  snaptest" [fg=Text bg=SurfaceRaised] | "                                    " | "│" [fg=Border]
+6: "│" [fg=Border] | "                                              " [fg=Text bg=SurfaceRaised] | "│" [fg=Border]
+7: "╰──────────────────────────────────────────────╯" [fg=Border]
+8: " consumer " [fg=Surface bg=Accent bold] | " layout " [fg=Text bg=SurfaceRaised] | "       " [bg=SurfaceRaised] | " j/k navigate · q quit " [fg=TextMuted bg=SurfaceRaised]
