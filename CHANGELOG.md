@@ -5,6 +5,8 @@ before v1, a minor release may contain breaking changes when clearly called out.
 
 ## [Unreleased]
 
+- Added a compile-checked `snaptest` tutorial covering readable, role-aware,
+  and scenario goldens with explicit command delivery.
 - Added a discoverable catalog of eight built-in theme presets with stable IDs,
   lookup, named constructors, and a cycling statusbar example.
 
