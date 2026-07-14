@@ -51,6 +51,15 @@ func previousClusterStart(value []rune, pos int) int {
 	return start
 }
 
+func clusterStartAt(value []rune, pos int) int {
+	for _, cluster := range clustersOf(value) {
+		if pos < cluster.end {
+			return cluster.start
+		}
+	}
+	return len(value)
+}
+
 func nextClusterEnd(value []rune, pos int) int {
 	for _, cluster := range clustersOf(value) {
 		if cluster.end > pos {

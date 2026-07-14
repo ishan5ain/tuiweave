@@ -102,13 +102,16 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 	case "backspace":
 		if m.pos > 0 {
 			start := previousClusterStart(m.value, m.pos)
-			m.value = append(m.value[:start], m.value[m.pos:]...)
+			end := nextClusterEnd(m.value, start)
+			m.value = append(append([]rune{}, m.value[:start]...), m.value[end:]...)
 			m.pos = start
 		}
 	case "delete":
 		if m.pos < len(m.value) {
-			end := nextClusterEnd(m.value, m.pos)
-			m.value = append(m.value[:m.pos], m.value[end:]...)
+			start := clusterStartAt(m.value, m.pos)
+			end := nextClusterEnd(m.value, start)
+			m.value = append(append([]rune{}, m.value[:start]...), m.value[end:]...)
+			m.pos = start
 		}
 	case "left":
 		m.pos = previousClusterStart(m.value, m.pos)
@@ -130,7 +133,11 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 }
 
 func (m *Model) insert(runes []rune) {
-	m.value = append(m.value[:m.pos], append(runes, m.value[m.pos:]...)...)
+	value := make([]rune, 0, len(m.value)+len(runes))
+	value = append(value, m.value[:m.pos]...)
+	value = append(value, runes...)
+	value = append(value, m.value[m.pos:]...)
+	m.value = value
 	m.pos += len(runes)
 }
 
@@ -142,7 +149,7 @@ func (m *Model) deleteWordBack() {
 	for i > 0 && m.value[i-1] != ' ' {
 		i--
 	}
-	m.value = append(m.value[:i], m.value[m.pos:]...)
+	m.value = append(append([]rune{}, m.value[:i]...), m.value[m.pos:]...)
 	m.pos = i
 }
 
