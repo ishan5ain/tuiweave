@@ -1,0 +1,14 @@
+## initial
+command: no
+[ ] Auto-refresh
+No change delivered
+
+## activate toggle
+command: yes
+[x] Auto-refresh
+No change delivered
+
+## deliver changed result
+command: no
+[x] Auto-refresh
+Delivered auto-refresh=true
