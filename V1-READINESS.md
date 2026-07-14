@@ -17,7 +17,10 @@ stable v1 release. It is a decision aid, not a release schedule.
 
 - [ ] Verify every bounded component's `SetSize` and exact-width/height behavior
       across narrow, empty, focused, and blurred states.
-- [ ] Complete the cell-width and IME expectations for text-bearing components.
+- [x] Complete the cell-width expectations for the audited text-bearing
+      components; see [Issue #10](https://github.com/ishan5ain/tuiweave/issues/10).
+- [ ] Define IME expectations separately with application evidence; see
+      [Issue #19](https://github.com/ishan5ain/tuiweave/issues/19).
 - [ ] Define the accessibility semantics exposed by inspection and document
       what remains application-owned.
 - [ ] Keep application state, visibility, routing, and side effects outside
