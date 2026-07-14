@@ -1,10 +1,12 @@
 package palette
 
 import (
+	"strings"
 	"testing"
 
 	tea "charm.land/bubbletea/v2"
 	lipgloss "charm.land/lipgloss/v2"
+	"github.com/charmbracelet/x/ansi"
 
 	"github.com/ishan5ain/tuiweave"
 	"github.com/ishan5ain/tuiweave/inspect"
@@ -118,6 +120,95 @@ func TestPaletteEmptyStateAndExactWidth(t *testing.T) {
 	m := newTestPalette(20, 0)
 	if got := m.View(); got != "" {
 		t.Fatalf("zero-height view = %q, want empty", got)
+	}
+}
+
+func TestPaletteUnicodeNarrowRowsStayWithinBox(t *testing.T) {
+	items := []Item{
+		{ID: "wide", Label: "界界界", Description: "説明"},
+		{ID: "combining", Label: "e\u0301 cluster", Description: "accent"},
+		{ID: "emoji", Label: "👩‍💻 developer", Description: "coding"},
+		{ID: "plain", Label: "ordinary", Description: "text"},
+	}
+	for _, width := range []int{0, 1, 2, 3, 4, 8, 16} {
+		for _, focused := range []bool{false, true} {
+			m := New(tuiweave.Dark())
+			m.SetSize(width, 4)
+			m.SetItems(items...)
+			if focused {
+				m.Focus()
+				m.Select(2)
+			}
+
+			view := m.View()
+			if width == 0 {
+				if view != "" {
+					t.Fatalf("width=0 focused=%v rendered %q", focused, view)
+				}
+				continue
+			}
+			for row, line := range strings.Split(view, "\n") {
+				if got := ansi.StringWidth(ansi.Strip(line)); got != width {
+					t.Fatalf("width=%d focused=%v row=%d rendered width=%d: %q", width, focused, row, got, line)
+				}
+			}
+		}
+	}
+}
+
+func TestPaletteUnicodeTruncationGolden(t *testing.T) {
+	m := New(tuiweave.Dark())
+	m.SetSize(12, 4)
+	m.SetItems(
+		Item{ID: "wide", Label: "界e\u0301", Description: "説明"},
+		Item{ID: "emoji", Label: "👩‍💻 developer", Description: "coding"},
+		Item{ID: "long", Label: "a very long wide 名称", Description: "詳細"},
+	)
+	m.Focus()
+	m.Select(1)
+	snaptest.Snap(t, m.View())
+	snaptest.SnapCells(t, m.View(), snaptest.WithRoles(tuiweave.Dark()))
+}
+
+func TestPaletteNarrowEmojiDoesNotSplit(t *testing.T) {
+	m := New(tuiweave.Dark())
+	m.SetSize(3, 2)
+	m.SetItems(Item{ID: "emoji", Label: "👩‍💻"})
+	m.Focus()
+	m.Select(0)
+
+	view := ansi.Strip(m.View())
+	if strings.Contains(view, "👩") || strings.Contains(view, "💻") {
+		t.Fatalf("narrow emoji item was split instead of truncated: %q", view)
+	}
+	for row, line := range strings.Split(view, "\n") {
+		if got := ansi.StringWidth(line); got != 3 {
+			t.Fatalf("row %d width = %d, want 3: %q", row, got, line)
+		}
+	}
+}
+
+func TestPaletteUnicodeSelectionScroll(t *testing.T) {
+	m := New(tuiweave.Dark())
+	m.SetSize(14, 3) // query plus two visible result rows
+	m.SetItems(
+		Item{ID: "one", Label: "界 one"},
+		Item{ID: "two", Label: "e\u0301 two"},
+		Item{ID: "three", Label: "👩‍💻 three"},
+		Item{ID: "four", Label: "終 four"},
+	)
+	m.Focus()
+	m, _ = m.Update(keyPress("G"))
+	if got := m.Selected(); got != 3 {
+		t.Fatalf("selected = %d, want 3", got)
+	}
+	if got := m.YOffset(); got != 2 {
+		t.Fatalf("YOffset = %d, want 2", got)
+	}
+	for row, line := range strings.Split(ansi.Strip(m.View()), "\n") {
+		if got := ansi.StringWidth(line); got != 14 {
+			t.Fatalf("row %d width = %d, want 14", row, got)
+		}
 	}
 }
 

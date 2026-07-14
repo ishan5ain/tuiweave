@@ -6,6 +6,7 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 	lipgloss "charm.land/lipgloss/v2"
+	"github.com/charmbracelet/x/ansi"
 
 	"github.com/ishan5ain/tuiweave"
 	"github.com/ishan5ain/tuiweave/inspect"
@@ -107,6 +108,112 @@ func TestAutocompleteWideAndNarrowContentStaysWithinBox(t *testing.T) {
 				t.Fatalf("width %d line %d rendered as %d: %q", width, i+1, got, line)
 			}
 		}
+	}
+}
+
+func TestAutocompleteUnicodeNarrowRowsStayWithinBox(t *testing.T) {
+	items := []Item{
+		{ID: "wide", Value: "界界界", Label: "界界界", Description: "説明"},
+		{ID: "combining", Value: "e\u0301", Label: "e\u0301 cluster", Description: "accent"},
+		{ID: "emoji", Value: "👩‍💻", Label: "👩‍💻 developer", Description: "coding"},
+		{ID: "plain", Value: "ordinary", Label: "ordinary", Description: "text"},
+	}
+	for _, width := range []int{0, 1, 2, 3, 4, 8, 16} {
+		for _, focused := range []bool{false, true} {
+			m := New(tuiweave.Dark())
+			m.SetSize(width, 3)
+			m.SetItems(items...)
+			if focused {
+				m.Focus()
+				m.Select(2)
+			}
+
+			view := m.View()
+			if width == 0 {
+				if view != "" {
+					t.Fatalf("width=0 focused=%v rendered %q", focused, view)
+				}
+				continue
+			}
+			for row, line := range strings.Split(view, "\n") {
+				if got := ansi.StringWidth(ansi.Strip(line)); got != width {
+					t.Fatalf("width=%d focused=%v row=%d rendered width=%d: %q", width, focused, row, got, line)
+				}
+			}
+		}
+	}
+}
+
+func TestAutocompleteUnicodeTruncationGolden(t *testing.T) {
+	m := New(tuiweave.Dark())
+	m.SetSize(12, 3)
+	m.SetItems(
+		Item{ID: "wide", Value: "界e\u0301", Label: "界e\u0301", Description: "説明"},
+		Item{ID: "emoji", Value: "👩‍💻 developer", Label: "👩‍💻 developer", Description: "coding"},
+		Item{ID: "long", Value: "a very long wide 名称", Label: "a very long wide 名称", Description: "詳細"},
+	)
+	m.Focus()
+	m.Select(1)
+	snaptest.Snap(t, m.View())
+	snaptest.SnapCells(t, m.View(), snaptest.WithRoles(tuiweave.Dark()))
+}
+
+func TestAutocompleteNarrowEmojiDoesNotSplit(t *testing.T) {
+	m := New(tuiweave.Dark())
+	m.SetSize(3, 2)
+	m.SetItems(Item{ID: "emoji", Value: "👩‍💻", Label: "👩‍💻"})
+	m.Focus()
+	m.Select(0)
+
+	view := ansi.Strip(m.View())
+	if strings.Contains(view, "👩") || strings.Contains(view, "💻") {
+		t.Fatalf("narrow emoji suggestion was split instead of truncated: %q", view)
+	}
+	for row, line := range strings.Split(view, "\n") {
+		if got := ansi.StringWidth(line); got != 3 {
+			t.Fatalf("row %d width = %d, want 3: %q", row, got, line)
+		}
+	}
+}
+
+func TestAutocompleteUnicodeSelectionScroll(t *testing.T) {
+	m := New(tuiweave.Dark())
+	m.SetSize(14, 2)
+	m.SetItems(
+		Item{ID: "one", Value: "界 one", Label: "界 one"},
+		Item{ID: "two", Value: "e\u0301 two", Label: "e\u0301 two"},
+		Item{ID: "three", Value: "👩‍💻 three", Label: "👩‍💻 three"},
+		Item{ID: "four", Value: "終 four", Label: "終 four"},
+	)
+	m.Focus()
+	m, _ = m.Update(keyPress("G"))
+	if got := m.Selected(); got != 3 {
+		t.Fatalf("selected = %d, want 3", got)
+	}
+	if got := m.YOffset(); got != 2 {
+		t.Fatalf("YOffset = %d, want 2", got)
+	}
+	for row, line := range strings.Split(ansi.Strip(m.View()), "\n") {
+		if got := ansi.StringWidth(line); got != 14 {
+			t.Fatalf("row %d width = %d, want 14", row, got)
+		}
+	}
+}
+
+func TestAutocompleteUnicodeQueryMatchesByPrefix(t *testing.T) {
+	m := New(tuiweave.Dark())
+	m.SetItems(
+		Item{ID: "wide", Value: "界面", Label: "界面"},
+		Item{ID: "combining", Value: "e\u0301clair", Label: "e\u0301clair"},
+	)
+
+	m.SetQuery("界")
+	if got := m.SelectedID(); got != "wide" {
+		t.Fatalf("wide query selected %q, want wide", got)
+	}
+	m.SetQuery("e\u0301")
+	if got := m.SelectedID(); got != "combining" {
+		t.Fatalf("combining query selected %q, want combining", got)
 	}
 }
 

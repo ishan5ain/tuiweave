@@ -1,0 +1,4 @@
+1: "› " [fg=Accent bg=SurfaceSunken] | " " [fg=Text reverse]
+2: "  界é  説明 " [fg=Text bg=SurfaceRaised]
+3: "▸ 👩\u200d💻 dev…  …" [fg=Text bg=SelectionBg]
+4: "  a very…  …" [fg=Text bg=SurfaceRaised]
