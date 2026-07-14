@@ -464,6 +464,12 @@ reconstruction remain application-owned.
 
 ## 6. Dependency policy
 
+- **Compatibility floor:** the published module currently requires Go 1.25.8.
+  This is not only a development-environment choice: `glamour/v2` v2.0.1
+  declares the same minimum, while Bubble Tea v2, Lip Gloss v2, and
+  Ultraviolet currently declare Go 1.25.0. Lowering the floor therefore
+  requires an upstream or module-structure change and must be measured rather
+  than promised.
 - `charm.land/bubbletea/v2` (v2.0.8), `charm.land/lipgloss/v2` (v2.0.5) —
   beta; pinned, upgraded deliberately. Note: charm's v2 modules live on
   `charm.land` vanity paths.
@@ -473,6 +479,28 @@ reconstruction remain application-owned.
 - `charm.land/glamour/v2` (v2.0.1) — fenced behind `markdown.Renderer`;
   only `agentic/markdown` imports it.
 - No dependency on `x/exp/teatest` in the core verification loop.
+
+The compatibility policy for pre-v1 releases is:
+
+1. Applications should pin a tagged tuiweave version or commit. The module
+   follows semantic-versioning conventions, but minor releases may contain
+   breaking changes before v1 when they are called out in the changelog and
+   release notes.
+2. Bubble Tea v2 and Lip Gloss v2 are public runtime and styling contracts;
+   upgrades are deliberate dependency events, not transparent implementation
+   updates.
+3. `layout.Rect` and `layout.Constraint` currently use public type aliases to
+   Ultraviolet types. Consumers import tuiweave's `layout` package, but the
+   underlying type identity can still affect source compatibility. A future
+   alias removal would be an explicit API migration, not an incidental
+   refactor.
+4. Ultraviolet remains internal to `overlay` and `snaptest`; only its layout
+   types are surfaced through the documented `layout` aliases. Its
+   pseudo-version is upgraded only with layout, overlay, and SnapCells
+   regression coverage.
+5. The project does not promise compatibility with arbitrary newer upstream
+   major or beta versions. Supported versions are the versions in `go.mod`
+   plus the stable Go version exercised by CI.
 
 ## 7. Open questions
 

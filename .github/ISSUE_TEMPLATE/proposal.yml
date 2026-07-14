@@ -17,3 +17,17 @@ body:
       description: Include ownership, sizing, focus, messages, and alternatives.
     validations:
       required: true
+  - type: textarea
+    id: cross-application-evidence
+    attributes:
+      label: Cross-application evidence
+      description: Which two or more independent applications need this behavior, and why can existing packages not express it cleanly?
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance tests
+      description: Describe the behavior, snapshot, scenario, or compatibility test that would demonstrate the proposal is complete.
+    validations:
+      required: true
