@@ -66,3 +66,65 @@ func TestLineEmptyAndInvalidWidths(t *testing.T) {
 		}
 	}
 }
+
+func TestLineUnicodeNarrowBoundaries(t *testing.T) {
+	values := []string{
+		"界e\u0301",
+		"👩‍💻 developer",
+		"a very long wide 名称",
+	}
+	for _, width := range []int{0, 1, 2, 3, 4, 8, 16} {
+		for _, value := range values {
+			truncated := Truncate(value, width)
+			if got := ansi.StringWidth(truncated); got > width {
+				t.Fatalf("Truncate(%q, %d) width = %d", value, width, got)
+			}
+
+			for _, align := range []Align{AlignLeft, AlignCenter, AlignRight} {
+				fitted := Fit(value, width, align)
+				if got := ansi.StringWidth(fitted); got != width {
+					t.Fatalf("Fit(%q, %d, %d) width = %d, want %d", value, width, align, got, width)
+				}
+			}
+
+			joined := Join(width, value, "終", JoinOptions{Gap: 1})
+			if got := ansi.StringWidth(joined); got != width {
+				t.Fatalf("Join(%q, %d) width = %d, want %d", value, width, got, width)
+			}
+		}
+
+		for _, pattern := range []string{"界", "e\u0301", "👩‍💻"} {
+			filled := Fill(width, pattern)
+			if got := ansi.StringWidth(filled); got != width {
+				t.Fatalf("Fill(%q, %d) width = %d, want %d", pattern, width, got, width)
+			}
+		}
+	}
+}
+
+func TestLineUnicodeTruncationGolden(t *testing.T) {
+	view := strings.Join([]string{
+		Truncate("界e\u0301👩‍💻 wide", 9),
+		Fit("界e\u0301", 8, AlignCenter),
+		Join(14, "👩‍💻 developer", "終", JoinOptions{Gap: 1}),
+		Fill(8, "界"),
+	}, "\n")
+	snaptest.Snap(t, view)
+}
+
+func TestLineNarrowEmojiDoesNotSplit(t *testing.T) {
+	for _, test := range []struct {
+		width int
+		want  string
+	}{
+		{width: 1, want: "…"},
+		{width: 2, want: "👩‍💻"},
+	} {
+		if got := ansi.Strip(Truncate("👩‍💻", test.width)); got != test.want {
+			t.Fatalf("Truncate emoji at width %d = %q, want %q", test.width, got, test.want)
+		}
+		if got := ansi.Strip(Fit("👩‍💻", test.width, AlignLeft)); ansi.StringWidth(got) != test.width {
+			t.Fatalf("Fit emoji at width %d rendered width %d", test.width, ansi.StringWidth(got))
+		}
+	}
+}
