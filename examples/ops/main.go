@@ -11,6 +11,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	tea "charm.land/bubbletea/v2"
 	lipgloss "charm.land/lipgloss/v2"
@@ -54,6 +55,13 @@ type model struct {
 	showPalette bool
 	showConfirm bool
 	notice      string
+
+	// The app retains the screen-space rectangles it owns during layout. They
+	// are used both for routing/inspection and to keep semantic bounds tied to
+	// the same rectangles that size the components.
+	tabsArea, actionsArea                             layout.Rect
+	rowsArea, loadArea, autoRefreshArea, openLogsArea layout.Rect
+	commandsArea, commandsPanelArea, confirmArea      layout.Rect
 }
 
 func newModel() model {
@@ -183,6 +191,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.WindowSizeMsg:
 		m.width, m.height = msg.Width, msg.Height
 		m.layout()
+	case inspect.ActionMsg:
+		if cmd, handled := m.dispatchAction(msg.ID); handled {
+			cmds = append(cmds, cmd)
+		}
 	case palette.SelectedMsg:
 		if msg.ID == "restart" {
 			m.showConfirm = true
@@ -272,30 +284,59 @@ func (m *model) layout() {
 		layout.Fill(1),
 		layout.Len(1),
 	).Split(layout.NewRect(0, 0, m.width, m.height)).Assign(&header, &body, &footer)
+	m.tabsArea = layout.NewRect(header.Min.X, header.Min.Y+1, header.Dx(), 1)
 	m.tabs.SetSize(header.Dx(), 1)
 
 	var actions, operations layout.Rect
 	layout.Horizontal(layout.Fill(1), layout.Fill(1)).WithSpacing(1).Split(body).Assign(&actions, &operations)
 	actionContent := frame.PanelContentRect(actions, frame.PanelOptions{Padding: 1})
+	m.actionsArea = actionContent
 	m.actions.SetSize(actionContent.Dx(), actionContent.Dy())
 	operationContent := frame.PanelContentRect(operations, frame.PanelOptions{Padding: 1})
-	var rowsArea, loadArea, refreshArea, openArea layout.Rect
 	layout.Vertical(
 		layout.Fill(1),
 		layout.Len(1),
 		layout.Len(1),
 		layout.Len(1),
-	).Split(operationContent).Assign(&rowsArea, &loadArea, &refreshArea, &openArea)
-	m.rows.SetSize(rowsArea.Dx(), rowsArea.Dy())
-	m.load.SetSize(loadArea.Dx(), loadArea.Dy())
-	m.autoRefresh.SetSize(refreshArea.Dx(), refreshArea.Dy())
-	m.openLogs.SetSize(openArea.Dx(), openArea.Dy())
+	).Split(operationContent).Assign(&m.rowsArea, &m.loadArea, &m.autoRefreshArea, &m.openLogsArea)
+	m.rows.SetSize(m.rowsArea.Dx(), m.rowsArea.Dy())
+	m.load.SetSize(m.loadArea.Dx(), m.loadArea.Dy())
+	m.autoRefresh.SetSize(m.autoRefreshArea.Dx(), m.autoRefreshArea.Dy())
+	m.openLogs.SetSize(m.openLogsArea.Dx(), m.openLogsArea.Dy())
 
 	m.status.SetSize(footer.Dx(), footer.Dy())
 	paletteWidth := min(56, max(16, m.width-4))
 	paletteHeight := min(8, max(5, m.height-6))
 	m.commands.SetSize(max(1, paletteWidth-4), max(1, paletteHeight-4))
 	m.confirm.SetSize(min(44, max(1, m.width-4)), 10)
+
+	paletteOptions := frame.PanelOptions{
+		Title:   "Command palette",
+		Focused: true,
+		Padding: 1,
+	}
+	m.commandsPanelArea = centeredArea(
+		layout.NewRect(0, 0, m.width, m.height),
+		frame.Panel(m.theme, m.commands.View(), paletteWidth, paletteOptions),
+	)
+	m.commandsArea = frame.PanelContentRect(m.commandsPanelArea, paletteOptions)
+	m.confirmArea = centeredArea(
+		layout.NewRect(0, 0, m.width, m.height),
+		m.confirm.View(),
+	)
+}
+
+// centeredArea returns the screen-space rectangle used by overlay.Center for
+// a rendered overlay. Components inside a decorative panel use a separate
+// content rectangle derived from frame.PanelContentRect.
+func centeredArea(base layout.Rect, view string) layout.Rect {
+	width, height := lipgloss.Width(view), lipgloss.Height(view)
+	return layout.NewRect(
+		base.Min.X+max(0, (base.Dx()-width)/2),
+		base.Min.Y+max(0, (base.Dy()-height)/2),
+		width,
+		height,
+	)
 }
 
 func (m model) render() string {
@@ -359,7 +400,7 @@ func (m model) render() string {
 		func(int) string { return footerView },
 	)
 	if m.showPalette {
-		paletteWidth := min(56, max(16, m.width-4))
+		paletteWidth := m.commandsPanelArea.Dx()
 		prompt := frame.Panel(m.theme, m.commands.View(), paletteWidth, frame.PanelOptions{
 			Title:   "Command palette",
 			Focused: true,
@@ -373,20 +414,68 @@ func (m model) render() string {
 	return base
 }
 
+// dispatchAction validates a tree-level semantic action against the current
+// visible tree, then forwards only its component-local suffix. It deliberately
+// returns the component command without executing it; Bubble Tea delivers the
+// resulting message through the app's normal Update path.
+func (m *model) dispatchAction(id string) (tea.Cmd, bool) {
+	node, localID, ok := findEnabledAction(m.Inspect(), id)
+	if !ok {
+		return nil, false
+	}
+
+	switch node.ID {
+	case "commands":
+		next, cmd := m.commands.Update(inspect.Invoke(localID))
+		m.commands = next
+		return cmd, true
+	case "confirm-restart":
+		next, cmd := m.confirm.Update(inspect.Invoke(localID))
+		m.confirm = next
+		return cmd, true
+	default:
+		// The example intentionally exposes only the palette/dialog workflow as
+		// a routed semantic surface. Other nodes remain inspectable, while
+		// their application-specific side effects stay keyboard/app-owned.
+		return nil, false
+	}
+}
+
+// findEnabledAction also acts as the visibility check: hidden overlays are
+// absent from Inspect, so their qualified IDs cannot be dispatched.
+func findEnabledAction(node inspect.Node, id string) (inspect.Node, string, bool) {
+	for _, action := range node.Actions {
+		if action.ID != id || !action.Enabled {
+			continue
+		}
+		prefix := node.ID + "."
+		if node.ID == "" || !strings.HasPrefix(id, prefix) {
+			return inspect.Node{}, "", false
+		}
+		return node, strings.TrimPrefix(id, prefix), true
+	}
+	for _, child := range node.Children {
+		if target, localID, ok := findEnabledAction(child, id); ok {
+			return target, localID, true
+		}
+	}
+	return inspect.Node{}, "", false
+}
+
 func (m model) Inspect() inspect.Node {
 	children := []inspect.Node{
-		inspect.Bind("tabs", m.tabs),
-		inspect.Bind("actions", m.actions),
-		inspect.Bind("operations", m.rows),
-		inspect.Bind("load", m.load),
-		inspect.Bind("auto-refresh", m.autoRefresh),
-		inspect.Bind("open-logs", m.openLogs),
+		inspect.BindAt("tabs", inspect.FromRect(m.tabsArea), m.tabs),
+		inspect.BindAt("actions", inspect.FromRect(m.actionsArea), m.actions),
+		inspect.BindAt("operations", inspect.FromRect(m.rowsArea), m.rows),
+		inspect.BindAt("load", inspect.FromRect(m.loadArea), m.load),
+		inspect.BindAt("auto-refresh", inspect.FromRect(m.autoRefreshArea), m.autoRefresh),
+		inspect.BindAt("open-logs", inspect.FromRect(m.openLogsArea), m.openLogs),
 	}
 	if m.showPalette {
-		children = append(children, inspect.Bind("commands", m.commands))
+		children = append(children, inspect.BindAt("commands", inspect.FromRect(m.commandsArea), m.commands))
 	}
 	if m.showConfirm {
-		children = append(children, inspect.Bind("confirm-restart", m.confirm))
+		children = append(children, inspect.BindAt("confirm-restart", inspect.FromRect(m.confirmArea), m.confirm))
 	}
 	return inspect.Group("ops", "application", inspect.Bounds{Width: m.width, Height: m.height}, children...)
 }

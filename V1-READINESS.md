@@ -29,7 +29,7 @@ stable v1 release. It is a decision aid, not a release schedule.
       behavior.
 - [ ] Cover important transitions with named scenarios, including emitted
       commands and explicitly delivered command results.
-- [ ] Demonstrate semantic inspection and action routing end to end in a small,
+- [x] Demonstrate semantic inspection and action routing end to end in a small,
       deterministic application test.
 - [ ] Exercise the public API from a consumer-shaped example that does not rely
       on internal packages or undocumented helpers.

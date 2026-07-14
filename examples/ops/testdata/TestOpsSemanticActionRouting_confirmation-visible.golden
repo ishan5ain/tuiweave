@@ -336,7 +336,7 @@
         "height": 4
       },
       "label": "Restart service",
-      "focused": true,
+      "focused": false,
       "selected": {
         "index": 0,
         "count": 5,
@@ -351,12 +351,12 @@
         {
           "id": "commands.focus",
           "label": "Focus command palette",
-          "enabled": false
+          "enabled": true
         },
         {
           "id": "commands.blur",
           "label": "Blur command palette",
-          "enabled": true
+          "enabled": false
         },
         {
           "id": "commands.next",
@@ -424,6 +424,51 @@
         "item_count": "5",
         "query": "",
         "selected_id": "restart"
+      }
+    },
+    {
+      "id": "confirm-restart",
+      "kind": "dialog",
+      "bounds": {
+        "x": 18,
+        "y": 6,
+        "width": 44,
+        "height": 9
+      },
+      "label": "Restart service?",
+      "focused": false,
+      "status": "awaiting_input",
+      "selected": {
+        "index": 0,
+        "count": 2,
+        "label": "Restart"
+      },
+      "actions": [
+        {
+          "id": "confirm-restart.confirm",
+          "label": "Restart",
+          "description": "Accept the dialog",
+          "enabled": true
+        },
+        {
+          "id": "confirm-restart.cancel",
+          "label": "Cancel",
+          "description": "Dismiss the dialog",
+          "enabled": true
+        },
+        {
+          "id": "confirm-restart.next",
+          "label": "Next button",
+          "enabled": true
+        },
+        {
+          "id": "confirm-restart.previous",
+          "label": "Previous button",
+          "enabled": false
+        }
+      ],
+      "attributes": {
+        "body": "Restarting the selected service may interrupt traffic."
       }
     }
   ]
