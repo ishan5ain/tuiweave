@@ -1,9 +1,11 @@
 package statusbar
 
 import (
+	"strings"
 	"testing"
 
 	lipgloss "charm.land/lipgloss/v2"
+	"github.com/charmbracelet/x/ansi"
 
 	"github.com/ishan5ain/tuiweave"
 	"github.com/ishan5ain/tuiweave/snaptest"
@@ -73,4 +75,50 @@ func TestStatusbarLightTheme(t *testing.T) {
 	sb.SetLeft(Segment{Text: "light", Kind: KindAccent})
 	sb.SetRight(Segment{Text: "warn", Kind: KindWarning})
 	snaptest.SnapCells(t, sb.View(), snaptest.WithRoles(tuiweave.Light()))
+}
+
+func TestStatusbarUnicodeNarrowRowsStayWithinBox(t *testing.T) {
+	for _, width := range []int{0, 1, 2, 3, 4, 8, 16} {
+		sb := New(tuiweave.Dark())
+		sb.SetSize(width, 1)
+		sb.SetLeft(
+			Segment{Text: "界e\u0301", Kind: KindNormal},
+			Segment{Text: "👩‍💻 developer", Kind: KindAccent},
+		)
+		sb.SetRight(Segment{Text: "終", Kind: KindMuted})
+		view := sb.View()
+		if width == 0 {
+			if view != "" {
+				t.Fatalf("width=0 rendered %q", view)
+			}
+			continue
+		}
+		if got := ansi.StringWidth(ansi.Strip(view)); got != width {
+			t.Fatalf("width=%d rendered width=%d: %q", width, got, view)
+		}
+	}
+}
+
+func TestStatusbarUnicodeTruncationGolden(t *testing.T) {
+	sb := New(tuiweave.Dark())
+	sb.SetSize(12, 1)
+	sb.SetLeft(Segment{Text: "👩‍💻 developer", Kind: KindNormal})
+	snap := sb.View()
+	snaptest.Snap(t, snap)
+	snaptest.SnapCells(t, snap, snaptest.WithRoles(tuiweave.Dark()))
+}
+
+func TestStatusbarNarrowEmojiDoesNotSplit(t *testing.T) {
+	for _, width := range []int{1, 2, 3} {
+		sb := New(tuiweave.Dark())
+		sb.SetSize(width, 1)
+		sb.SetLeft(Segment{Text: "👩‍💻", Kind: KindNormal})
+		view := ansi.Strip(sb.View())
+		if strings.Contains(view, "👩") || strings.Contains(view, "💻") {
+			t.Fatalf("width=%d split emoji segment: %q", width, view)
+		}
+		if got := ansi.StringWidth(view); got != width {
+			t.Fatalf("width=%d rendered width=%d: %q", width, got, view)
+		}
+	}
 }
