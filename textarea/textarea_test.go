@@ -143,6 +143,112 @@ func TestCellWidthWrapAndCursor(t *testing.T) {
 	snaptest.Snap(t, ta.View())
 }
 
+func TestNarrowCellWidthStatesStayWithinBox(t *testing.T) {
+	for _, width := range []int{0, 1, 2, 3, 8} {
+		for _, focused := range []bool{false, true} {
+			ta := New(tuiweave.Dark())
+			ta.SetSize(width, 2)
+			ta.Placeholder = "界👩‍💻e\u0301abc"
+			if focused {
+				ta.Focus()
+			}
+
+			for _, value := range []string{"", "界👩‍💻e\u0301abc"} {
+				ta.SetValue(value)
+				for row, line := range strings.Split(ta.View(), "\n") {
+					got := ansi.StringWidth(line)
+					if got > width {
+						t.Fatalf("width=%d focused=%v value=%q row=%d rendered width=%d", width, focused, value, row, got)
+					}
+				}
+			}
+		}
+	}
+}
+
+func TestNarrowPromptGolden(t *testing.T) {
+	ta := New(tuiweave.Dark())
+	ta.SetSize(1, 1)
+	ta.Placeholder = "界"
+	snaptest.Snap(t, ta.View())
+	snaptest.SnapCells(t, ta.View(), snaptest.WithRoles(tuiweave.Dark()))
+}
+
+func TestSoftWrapKeepsUnicodeClustersTogether(t *testing.T) {
+	ta := newFocused(6, 5) // wrap width 4 after the prompt
+	ta.SetValue("界e\u0301👩‍💻x")
+	rows := ta.visualRows()
+	if len(rows) != 2 {
+		t.Fatalf("visual row count = %d, want 2: %#v", len(rows), rows)
+	}
+	if got := string(rows[0].text) + string(rows[1].text); got != ta.Value() {
+		t.Fatalf("wrapped text = %q, want %q", got, ta.Value())
+	}
+	boundaries := map[int]bool{0: true, len([]rune(ta.Value())): true}
+	for _, cluster := range clustersOf([]rune(ta.Value())) {
+		boundaries[cluster.start] = true
+		boundaries[cluster.end] = true
+	}
+	for _, row := range rows {
+		if !boundaries[row.startCol] || !boundaries[row.startCol+len(row.text)] {
+			t.Fatalf("row %#v splits a source grapheme", row)
+		}
+		if got := ansi.StringWidth(string(row.text)); got != row.width {
+			t.Fatalf("row width = %d, want %d for %q", row.width, got, string(row.text))
+		}
+	}
+}
+
+func TestBlurredExactWrapShowsContent(t *testing.T) {
+	ta := New(tuiweave.Dark())
+	ta.SetSize(8, 1) // wrap width 6 after the prompt
+	ta.SetValue("abcdef")
+	if got := ansi.Strip(ta.View()); got != "> abcdef" {
+		t.Fatalf("blurred exact-wrap view = %q, want %q", got, "> abcdef")
+	}
+
+	ta.Focus()
+	ta.Blur()
+	if got := ansi.Strip(ta.View()); got != "> abcdef" {
+		t.Fatalf("blurred after focus view = %q, want %q", got, "> abcdef")
+	}
+}
+
+func TestEditingUsesGraphemeBoundaries(t *testing.T) {
+	ta := newFocused(20, 3)
+	ta.SetValue("e\u0301👩‍💻x")
+	ta, _ = ta.Update(key("left"))
+	if ta.col != 5 { // after x; emoji occupies three logical runes
+		t.Fatalf("left from end moved to rune %d, want 5", ta.col)
+	}
+	ta, _ = ta.Update(key("left"))
+	if ta.col != 2 {
+		t.Fatalf("left split emoji cluster at rune %d, want 2", ta.col)
+	}
+	ta, _ = ta.Update(key("left"))
+	if ta.col != 0 {
+		t.Fatalf("left split combining cluster at rune %d, want 0", ta.col)
+	}
+	ta, _ = ta.Update(key("delete"))
+	if got := ta.Value(); got != "👩‍💻x" {
+		t.Fatalf("delete combining cluster = %q, want emoji and x", got)
+	}
+
+	ta.SetValue("👩‍💻x")
+	ta.SetCursor(0, 1) // deliberately place the logical cursor inside the emoji
+	ta, _ = ta.Update(key("backspace"))
+	if got := ta.Value(); got != "x" || ta.col != 0 {
+		t.Fatalf("backspace emoji cluster = %q at %d, want x at 0", got, ta.col)
+	}
+
+	ta.SetValue("👩‍💻x")
+	ta.SetCursor(0, 1)
+	ta, _ = ta.Update(key("delete"))
+	if got := ta.Value(); got != "x" || ta.col != 0 {
+		t.Fatalf("delete emoji cluster = %q at %d, want x at 0", got, ta.col)
+	}
+}
+
 func TestCursorAtExactWrapBoundary(t *testing.T) {
 	ta := newFocused(12, 4) // wrap width 10
 	ta = typeString(ta, "0123456789")

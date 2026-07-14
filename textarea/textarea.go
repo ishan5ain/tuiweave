@@ -2,7 +2,7 @@
 // soft-wrapped display, a prompt gutter, and content-driven height.
 //
 // The model is logical lines ([][]rune); display is those lines soft-wrapped
-// at the available width (character-level, deterministic). Enter inserts a
+// at the available cell width (grapheme-aware, deterministic). Enter inserts a
 // newline — the app owns the send key. ContentHeight reports how many visual
 // rows the content needs, so apps can grow the input:
 //
@@ -98,10 +98,16 @@ func (m *Model) SetSize(width, height int) {
 }
 
 // Focus makes the textarea accept keys and show its cursor.
-func (m *Model) Focus() { m.focused = true }
+func (m *Model) Focus() {
+	m.focused = true
+	m.ensureCursorVisible()
+}
 
 // Blur stops the textarea from accepting keys and hides the cursor.
-func (m *Model) Blur() { m.focused = false }
+func (m *Model) Blur() {
+	m.focused = false
+	m.ensureCursorVisible()
+}
 
 // Focused reports whether the textarea accepts keys.
 func (m Model) Focused() bool { return m.focused }
@@ -169,9 +175,16 @@ func (m *Model) insertStringRaw(s string) {
 	}
 }
 
+// visiblePrompt is the prompt clipped to the assigned width. A prompt
+// grapheme that does not fit is omitted, which keeps narrow boxes bounded and
+// leaves any remaining cell available for content.
+func (m Model) visiblePrompt() string {
+	return ansi.Truncate(m.Prompt, m.width, "")
+}
+
 // wrapWidth is the usable text width after the prompt gutter.
 func (m Model) wrapWidth() int {
-	return m.width - ansi.StringWidth(m.Prompt)
+	return m.width - ansi.StringWidth(m.visiblePrompt())
 }
 
 // vrow is one visual (soft-wrapped) display row.
@@ -221,7 +234,7 @@ func (m Model) visualRows() []vrow {
 			text:     line[start:],
 			width:    rowWidth,
 		})
-		if rowWidth == w && m.row == li && m.col == len(line) {
+		if m.focused && rowWidth == w && m.row == li && m.col == len(line) {
 			rows = append(rows, vrow{line: li, startCol: len(line)})
 		}
 	}
@@ -273,6 +286,7 @@ func (m *Model) SetCursor(row, col int) {
 	}
 	m.row = row
 	m.col = col
+	m.ensureCursorVisible()
 }
 
 func (m *Model) ensureCursorVisible() {
@@ -313,8 +327,10 @@ func (m *Model) splitLine() {
 func (m *Model) backspace() {
 	if m.col > 0 {
 		line := m.lines[m.row]
-		m.lines[m.row] = append(line[:m.col-1], line[m.col:]...)
-		m.col--
+		start := previousClusterStart(line, m.col)
+		end := nextClusterEnd(line, start)
+		m.lines[m.row] = append(append([]rune{}, line[:start]...), line[end:]...)
+		m.col = start
 		return
 	}
 	if m.row > 0 {
@@ -329,7 +345,10 @@ func (m *Model) backspace() {
 func (m *Model) deleteForward() {
 	line := m.lines[m.row]
 	if m.col < len(line) {
-		m.lines[m.row] = append(line[:m.col], line[m.col+1:]...)
+		start := clusterStartAt(line, m.col)
+		end := nextClusterEnd(line, start)
+		m.lines[m.row] = append(append([]rune{}, line[:start]...), line[end:]...)
+		m.col = start
 		return
 	}
 	if m.row < len(m.lines)-1 {
@@ -340,7 +359,7 @@ func (m *Model) deleteForward() {
 
 func (m *Model) moveLeft() {
 	if m.col > 0 {
-		m.col--
+		m.col = previousClusterStart(m.lines[m.row], m.col)
 	} else if m.row > 0 {
 		m.row--
 		m.col = len(m.lines[m.row])
@@ -349,7 +368,7 @@ func (m *Model) moveLeft() {
 
 func (m *Model) moveRight() {
 	if m.col < len(m.lines[m.row]) {
-		m.col++
+		m.col = nextClusterEnd(m.lines[m.row], m.col)
 	} else if m.row < len(m.lines)-1 {
 		m.row++
 		m.col = 0
@@ -587,7 +606,7 @@ func (m Model) View() string {
 	}
 	w := m.wrapWidth()
 	if w <= 0 {
-		return m.promptStyle.Render(m.Prompt)
+		return m.promptStyle.Render(m.visiblePrompt())
 	}
 
 	if m.Empty() && m.Placeholder != "" {
@@ -610,16 +629,18 @@ func (m Model) View() string {
 }
 
 func (m Model) renderRow(r vrow, vi, cursorIdx, vcol int) string {
-	gutter := m.promptStyle.Render(m.Prompt)
+	prompt := m.visiblePrompt()
+	promptWidth := ansi.StringWidth(prompt)
+	gutter := m.promptStyle.Render(prompt)
 	if vi != 0 {
-		gutter = strings.Repeat(" ", ansi.StringWidth(m.Prompt))
+		gutter = strings.Repeat(" ", promptWidth)
 	}
 
 	var b strings.Builder
 	b.WriteString(gutter)
 	b.WriteString(m.renderText(r, vi, cursorIdx, vcol))
 
-	used := ansi.StringWidth(m.Prompt) + r.width
+	used := promptWidth + r.width
 	if m.focused && vi == cursorIdx && m.col == r.startCol+len(r.text) {
 		used++
 	}
@@ -687,7 +708,7 @@ func (m Model) renderText(r vrow, vi, cursorIdx, vcol int) string {
 
 func (m Model) renderPlaceholder(w int) string {
 	ph := ansi.Truncate(m.Placeholder, w, "")
-	prompt := m.promptStyle.Render(m.Prompt)
+	prompt := m.promptStyle.Render(m.visiblePrompt())
 	if !m.focused {
 		return prompt + m.placeholderStyle.Render(ph)
 	}
