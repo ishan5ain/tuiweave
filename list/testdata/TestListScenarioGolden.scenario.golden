@@ -1,0 +1,33 @@
+## initial
+command: no
+▎ alpha
+  beta
+  gamma
+
+## blurred navigation is ignored
+command: no
+▎ alpha
+  beta
+  gamma
+
+## focus list
+command: no
+▌ alpha
+  beta
+  gamma
+
+## select beta
+command: no
+  alpha
+▌ beta
+  gamma
+
+## filter matching items
+command: no
+▌ beta
+  beacon
+
+## select beacon
+command: no
+  beta
+▌ beacon

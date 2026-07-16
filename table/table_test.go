@@ -10,6 +10,7 @@ import (
 	"github.com/charmbracelet/x/ansi"
 
 	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/inspect"
 	"github.com/ishan5ain/tuiweave/snaptest"
 )
 
@@ -215,3 +216,40 @@ func TestTableUnicodeSelectionScroll(t *testing.T) {
 		}
 	}
 }
+
+func TestTableScenarioGolden(t *testing.T) {
+	tb := newTestTable(24, 5, 8)
+	result := snaptest.RunScenario(tableScenarioModel{table: tb},
+		snaptest.ScenarioStep{Name: "blurred navigation is ignored", Msg: keyPress("G")},
+		snaptest.ScenarioStep{Name: "focus table", Msg: inspect.Invoke(ActionFocus)},
+		snaptest.ScenarioStep{Name: "select last row", Msg: keyPress("G")},
+		snaptest.ScenarioStep{Name: "resize narrow", Msg: tea.WindowSizeMsg{Width: 12, Height: 4}},
+	)
+	snaptest.SnapScenario(t, result)
+
+	final := result.Model.(tableScenarioModel)
+	if got := final.table.Selected(); got != 7 {
+		t.Fatalf("final selected row = %d, want 7", got)
+	}
+	if got := final.table.YOffset(); got != 6 {
+		t.Fatalf("final offset = %d, want 6", got)
+	}
+}
+
+type tableScenarioModel struct {
+	table Model
+}
+
+func (m tableScenarioModel) Init() tea.Cmd { return nil }
+
+func (m tableScenarioModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	if size, ok := msg.(tea.WindowSizeMsg); ok {
+		m.table.SetSize(size.Width, size.Height)
+		return m, nil
+	}
+	var cmd tea.Cmd
+	m.table, cmd = m.table.Update(msg)
+	return m, cmd
+}
+
+func (m tableScenarioModel) View() tea.View { return tea.NewView(m.table.View()) }

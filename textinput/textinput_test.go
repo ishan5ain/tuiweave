@@ -7,6 +7,7 @@ import (
 	"github.com/charmbracelet/x/ansi"
 
 	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/inspect"
 	"github.com/ishan5ain/tuiweave/snaptest"
 )
 
@@ -226,3 +227,46 @@ func TestEditingUsesGraphemeBoundaries(t *testing.T) {
 		t.Fatalf("delete emoji cluster = %q at %d, want x at 0", got, ti.pos)
 	}
 }
+
+func TestTextinputScenarioGolden(t *testing.T) {
+	ti := New(tuiweave.Dark())
+	ti.SetSize(12, 1)
+	ti.Placeholder = "type here"
+	result := snaptest.RunScenario(textinputScenarioModel{input: ti},
+		snaptest.ScenarioStep{Name: "blurred input is ignored", Msg: tea.KeyPressMsg{Code: 'x', Text: "x"}},
+		snaptest.ScenarioStep{Name: "focus input", Msg: inspect.Invoke(ActionFocus)},
+		snaptest.ScenarioStep{Name: "type wide grapheme", Msg: tea.KeyPressMsg{Code: '界', Text: "界"}},
+		snaptest.ScenarioStep{Name: "type suffix", Msg: tea.KeyPressMsg{Code: 'a', Text: "a"}},
+		snaptest.ScenarioStep{Name: "resize narrow", Msg: tea.WindowSizeMsg{Width: 3, Height: 1}},
+		snaptest.ScenarioStep{Name: "delete suffix", Msg: key("backspace")},
+		snaptest.ScenarioStep{Name: "blur input", Msg: inspect.Invoke(ActionBlur)},
+		snaptest.ScenarioStep{Name: "blurred edit is ignored", Msg: tea.KeyPressMsg{Code: 'z', Text: "z"}},
+	)
+	snaptest.SnapScenario(t, result)
+
+	final := result.Model.(textinputScenarioModel)
+	if got := final.input.Value(); got != "界" {
+		t.Fatalf("final value = %q, want 界", got)
+	}
+	if final.input.Focused() {
+		t.Fatal("final input is focused")
+	}
+}
+
+type textinputScenarioModel struct {
+	input Model
+}
+
+func (m textinputScenarioModel) Init() tea.Cmd { return nil }
+
+func (m textinputScenarioModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	if size, ok := msg.(tea.WindowSizeMsg); ok {
+		m.input.SetSize(size.Width, 1)
+		return m, nil
+	}
+	var cmd tea.Cmd
+	m.input, cmd = m.input.Update(msg)
+	return m, cmd
+}
+
+func (m textinputScenarioModel) View() tea.View { return tea.NewView(m.input.View()) }

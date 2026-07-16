@@ -1,0 +1,35 @@
+## initial
+command: no
+line 01
+line 02
+line 03
+
+## blurred key is ignored
+command: no
+line 01
+line 02
+line 03
+
+## blurred wheel scrolls
+command: no
+line 04
+line 05
+line 06
+
+## focus viewport
+command: no
+line 04
+line 05
+line 06
+
+## scroll to bottom
+command: no
+line 06
+line 07
+line 08
+
+## resize narrow
+command: no
+line 06
+line 07
+line 08
