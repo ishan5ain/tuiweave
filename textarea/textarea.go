@@ -606,11 +606,11 @@ func (m Model) View() string {
 	}
 	w := m.wrapWidth()
 	if w <= 0 {
-		return m.promptStyle.Render(m.visiblePrompt())
+		return m.fitView(m.promptStyle.Render(m.visiblePrompt()))
 	}
 
 	if m.Empty() && m.Placeholder != "" {
-		return m.renderPlaceholder(w)
+		return m.fitView(m.renderPlaceholder(w))
 	}
 
 	rows := m.visualRows()
@@ -625,7 +625,29 @@ func (m Model) View() string {
 		}
 		out = append(out, m.renderRow(rows[vi], vi, cursorIdx, vcol))
 	}
-	return strings.Join(out, "\n")
+	return m.fitView(strings.Join(out, "\n"))
+}
+
+func (m Model) fitView(view string) string {
+	rows := strings.Split(view, "\n")
+	if len(rows) > m.height {
+		rows = rows[:m.height]
+	}
+	for i, row := range rows {
+		width := ansi.StringWidth(row)
+		if width > m.width {
+			row = ansi.Truncate(row, m.width, "")
+			width = ansi.StringWidth(row)
+		}
+		if width < m.width {
+			row += strings.Repeat(" ", m.width-width)
+		}
+		rows[i] = row
+	}
+	for len(rows) < m.height {
+		rows = append(rows, strings.Repeat(" ", m.width))
+	}
+	return strings.Join(rows, "\n")
 }
 
 func (m Model) renderRow(r vrow, vi, cursorIdx, vcol int) string {

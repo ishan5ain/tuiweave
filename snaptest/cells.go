@@ -78,11 +78,20 @@ func SnapCells(t *testing.T, view string, opts ...Option) {
 
 	buf := renderToGrid(view)
 
+	compare(t, goldenPath(t, ".cells.golden"), formatGrid(buf, cfg))
+}
+
+func formatGrid(buf uv.ScreenBuffer, cfg config) string {
 	var b strings.Builder
 	for y := range buf.Height() {
-		fmt.Fprintf(&b, "%d: %s\n", y+1, formatRuns(buf, y, cfg))
+		fmt.Fprintf(&b, "%d:", y+1)
+		if runs := formatRuns(buf, y, cfg); runs != "" {
+			b.WriteByte(' ')
+			b.WriteString(runs)
+		}
+		b.WriteByte('\n')
 	}
-	compare(t, goldenPath(t, ".cells.golden"), b.String())
+	return b.String()
 }
 
 // renderToGrid parses a rendered ANSI string into a cell grid.

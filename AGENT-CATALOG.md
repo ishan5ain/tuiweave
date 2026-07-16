@@ -269,14 +269,15 @@ go build ./... && go vet ./... && go test ./...
 After an intentional rendering change:
 
 ```sh
-go test ./... -update
+go test ./path/to/changed/package -update
+go test ./...
 git diff -- '**/testdata/**'
 ```
 
-The repository-wide update command reaches packages with no snapshot flag
-(`action`, `focus`, `inspect`, `layout`, and `mouse`); their
-`flag provided but not defined: -update` output is expected. Snapshot-bearing
-packages must still pass, and every changed golden must be reviewed.
+Run the targeted update command for every affected snapshot-bearing package.
+Do not pass `-update` to `go test ./...`: packages that do not import
+`snaptest` correctly reject the unknown flag. Every changed golden must be
+reviewed before the normal full suite passes.
 
 Run the closest example while developing:
 

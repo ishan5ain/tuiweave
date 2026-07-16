@@ -365,7 +365,7 @@ github.com/ishan5ain/tuiweave
 ├── toggle/            focusable boolean setting control
 ├── button/            focusable single-action control
 ├── palette/           bounded command-palette foundation
-├── autocomplete/      app-owned input plus bounded suggestion window
+├── autocomplete/      app-owned input plus conditional suggestion window
 ├── line/              width-aware single-row composition helpers
 ├── statusbar/  list/  viewport/  textinput/  textarea/  table/  help/  spinner/
 │                    generic primitives, one package each
@@ -386,7 +386,7 @@ github.com/ishan5ain/tuiweave
 │   ├── chat/        mock agentic session (Phase 3 exit criterion), golden-tested
 │   ├── frame/       framing/decorations/tabs/menu/toolbar/splitpane/stack/progress/toggle/button composition example, golden-tested
 │   ├── palette/     filtered command discovery and activation example, golden-tested
-│   ├── autocomplete/ app-owned input plus bounded suggestions, golden-tested
+│   ├── autocomplete/ app-owned input plus conditional suggestions, golden-tested
 │   ├── ops/         non-agentic operations-console pressure test, golden-tested
 │   ├── browser/     filterable file list + scrollable preview, golden-tested
 │   └── table/       git-status mock: table + diffview + scrollbars, golden-tested
@@ -427,11 +427,15 @@ not implement `Update` or `SetSize`; they receive explicit dimensions from the
 app and are covered by focused rendering goldens plus a runnable composition
 example.
 
-The current exceptions are `spinner` (a single intrinsic-size glyph) and the
-modal panels (`dialog`, `permission`), which are width-bounded and render at
-natural content height. `layout.SizeModeOf` defaults ordinary components to
-`SizeBounded`, so applications can inspect the policy without special-casing
-package names.
+The current exceptions are `spinner` (a single intrinsic-size glyph), the
+one-line components (`button`, `toggle`, `tabs`, `toolbar`, `progress`, `help`,
+`statusbar`, `textinput`, and `agentic/usagebar`), the conditional
+`autocomplete` popup, and the modal panels (`dialog`, `permission`). One-line
+components are width-bounded with a natural height of one row; `autocomplete`
+fills its assigned height only while matches exist; modal panels are
+width-bounded with natural content height. `layout.SizeModeOf` defaults
+ordinary components to `SizeBounded`, so applications can inspect the policy
+without special-casing package names.
 
 **Chat cells are a second, smaller contract** (`agentic/chat.Cell`):
 `Render(width int) string`. Cells are *pointers* the app keeps and mutates

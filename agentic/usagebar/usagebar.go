@@ -9,6 +9,7 @@ import (
 	tea "charm.land/bubbletea/v2"
 
 	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/layout"
 	"github.com/ishan5ain/tuiweave/statusbar"
 )
 
@@ -64,6 +65,10 @@ func (m Model) Stats() Stats { return m.stats }
 
 // SetSize sets the box the bar renders in; the bar is one line tall.
 func (m *Model) SetSize(width, height int) { m.bar.SetSize(width, height) }
+
+// SizeMode reports that the usage bar is width-constrained with a natural
+// height of one row.
+func (m Model) SizeMode() layout.SizeMode { return layout.SizeWidthBounded }
 
 // Update implements the component contract. The bar handles no messages.
 func (m Model) Update(_ tea.Msg) (Model, tea.Cmd) { return m, nil }

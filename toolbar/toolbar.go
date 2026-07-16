@@ -13,6 +13,7 @@ import (
 	"github.com/ishan5ain/tuiweave"
 	"github.com/ishan5ain/tuiweave/action"
 	"github.com/ishan5ain/tuiweave/inspect"
+	"github.com/ishan5ain/tuiweave/layout"
 )
 
 const (
@@ -88,6 +89,10 @@ func (m *Model) SetSize(width, height int) {
 	m.width, m.height = width, height
 	m.scrollIntoView()
 }
+
+// SizeMode reports that the toolbar is width-constrained with a natural
+// height of one row.
+func (m Model) SizeMode() layout.SizeMode { return layout.SizeWidthBounded }
 
 // SetItems replaces the actions, preserving the selected ID when it remains
 // enabled. Otherwise the first enabled action is selected.

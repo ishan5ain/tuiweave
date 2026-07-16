@@ -1,4 +1,4 @@
-// Package autocomplete provides a bounded suggestion window for an
+// Package autocomplete provides a conditional, width-bounded suggestion window for an
 // application-owned text input. The app owns the query and insertion policy;
 // this component owns matching, navigation, rendering, and semantic
 // activation.
@@ -14,6 +14,7 @@ import (
 	"github.com/ishan5ain/tuiweave"
 	"github.com/ishan5ain/tuiweave/action"
 	"github.com/ishan5ain/tuiweave/inspect"
+	"github.com/ishan5ain/tuiweave/layout"
 )
 
 const (
@@ -56,9 +57,10 @@ type SelectedMsg struct {
 	Label string
 }
 
-// Model is a bounded, focusable suggestion window. The query is deliberately
-// app-owned so the same component can sit beside textinput, textarea, or a
-// domain-specific editor.
+// Model is a width-bounded, focusable suggestion window. It fills its assigned
+// height while matches exist and renders empty when there are no matches. The
+// query is deliberately app-owned so the same component can sit beside
+// textinput, textarea, or a domain-specific editor.
 type Model struct {
 	width, height int
 	items         []Item
@@ -101,6 +103,11 @@ func (m *Model) SetSize(width, height int) {
 	m.width, m.height = width, height
 	m.scrollIntoView()
 }
+
+// SizeMode reports that the suggestion window is width-constrained while its
+// height is conditional: it fills the assigned height when visible and renders
+// empty when there are no matches.
+func (m Model) SizeMode() layout.SizeMode { return layout.SizeWidthBounded }
 
 // SetItems replaces candidates while preserving the selected ID when it is
 // still enabled and matches the current query.
