@@ -82,6 +82,48 @@ func TestEscPicksSafeDefault(t *testing.T) {
 	}
 }
 
+func TestPermissionResultDeliveryScenarioGolden(t *testing.T) {
+	m := permissionScenarioModel{prompt: newTestPrompt(), open: true}
+	result := snaptest.RunScenario(m,
+		snaptest.ScenarioStep{Name: "select allow always", Msg: key("down")},
+		snaptest.ScenarioStep{Name: "confirm emits result", Msg: key("enter")},
+		snaptest.ScenarioStep{
+			Name: "application delivers result",
+			Msg:  ResultMsg{ID: "bash", Choice: 1, Option: "Allow always"},
+		},
+	)
+	snaptest.SnapScenario(t, result)
+}
+
+type permissionScenarioModel struct {
+	prompt  Model
+	open    bool
+	outcome string
+}
+
+func (m permissionScenarioModel) Init() tea.Cmd { return nil }
+
+func (m permissionScenarioModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	if result, ok := msg.(ResultMsg); ok {
+		m.open = false
+		m.outcome = result.ID + ": " + result.Option
+		return m, nil
+	}
+	if !m.open {
+		return m, nil
+	}
+	var cmd tea.Cmd
+	m.prompt, cmd = m.prompt.Update(msg)
+	return m, cmd
+}
+
+func (m permissionScenarioModel) View() tea.View {
+	if !m.open {
+		return tea.NewView(m.outcome)
+	}
+	return tea.NewView(m.prompt.View())
+}
+
 func TestOutOfRangeNumberIgnored(t *testing.T) {
 	p := newTestPrompt()
 	_, cmd := p.Update(key("9"))

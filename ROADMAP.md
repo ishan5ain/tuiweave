@@ -2,7 +2,7 @@
 
 tuiweave is working toward a stable v1 component vocabulary. Near-term work:
 
-- broaden cell-width and input-method handling across text-bearing components;
+- define and validate input-method handling across text-bearing components;
 - harden semantic inspection and action routing;
 - expand accessibility, mouse, and narrow-terminal scenario coverage;
 - stabilize component APIs through real application use;

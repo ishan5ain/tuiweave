@@ -1,0 +1,25 @@
+## initial
+command: no
+╭──────────────────────────────────╮
+│                                  │
+│  Quit tuiweave?                  │
+│  Unsaved changes will be lost.   │
+│                                  │
+│                OK      Cancel    │
+│                                  │
+╰──────────────────────────────────╯
+
+## confirm emits result
+command: yes
+╭──────────────────────────────────╮
+│                                  │
+│  Quit tuiweave?                  │
+│  Unsaved changes will be lost.   │
+│                                  │
+│                OK      Cancel    │
+│                                  │
+╰──────────────────────────────────╯
+
+## application delivers result
+command: no
+confirmed quit

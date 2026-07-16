@@ -5,6 +5,10 @@ before v1, a minor release may contain breaking changes when clearly called out.
 
 ## [Unreleased]
 
+- Completed the cross-component cell-width audit and separated the remaining
+  IME contract work into its own evidence-driven follow-up.
+- Added direct regression coverage for shared grapheme protection and named
+  modal scenarios with explicit command-result delivery.
 - Added a compile-checked `snaptest` tutorial covering readable, role-aware,
   and scenario goldens with explicit command delivery.
 - Added an end-to-end semantic inspection and action-routing workflow in
