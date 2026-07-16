@@ -1,0 +1,35 @@
+## initial
+command: no
+> type here
+
+## blurred input is ignored
+command: no
+> type here
+
+## focus input
+command: no
+> type here
+
+## type wide grapheme
+command: no
+> 界
+
+## type suffix
+command: no
+> 界a
+
+## resize narrow
+command: no
+>
+
+## delete suffix
+command: no
+>
+
+## blur input
+command: no
+>
+
+## blurred edit is ignored
+command: no
+>

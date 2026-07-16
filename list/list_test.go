@@ -10,6 +10,7 @@ import (
 	"github.com/charmbracelet/x/ansi"
 
 	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/inspect"
 	"github.com/ishan5ain/tuiweave/snaptest"
 )
 
@@ -276,3 +277,45 @@ func TestSelectNonMatchingIndexIsNoop(t *testing.T) {
 		t.Errorf("Select(non-matching) changed selection to %q", got)
 	}
 }
+
+func TestListScenarioGolden(t *testing.T) {
+	l := New(tuiweave.Dark())
+	l.SetSize(14, 3)
+	l.SetItems("alpha", "beta", "gamma", "beacon")
+	result := snaptest.RunScenario(listScenarioModel{list: l},
+		snaptest.ScenarioStep{Name: "blurred navigation is ignored", Msg: keyPress("j")},
+		snaptest.ScenarioStep{Name: "focus list", Msg: inspect.Invoke(ActionFocus)},
+		snaptest.ScenarioStep{Name: "select beta", Msg: keyPress("j")},
+		snaptest.ScenarioStep{Name: "filter matching items", Msg: listFilterMsg("be")},
+		snaptest.ScenarioStep{Name: "select beacon", Msg: keyPress("j")},
+	)
+	snaptest.SnapScenario(t, result)
+
+	final := result.Model.(listScenarioModel)
+	if got := final.list.SelectedItem(); got != "beacon" {
+		t.Fatalf("final selected item = %q, want beacon", got)
+	}
+	if got := final.list.FilteredLen(); got != 2 {
+		t.Fatalf("final filtered length = %d, want 2", got)
+	}
+}
+
+type listFilterMsg string
+
+type listScenarioModel struct {
+	list Model
+}
+
+func (m listScenarioModel) Init() tea.Cmd { return nil }
+
+func (m listScenarioModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	if filter, ok := msg.(listFilterMsg); ok {
+		m.list.SetFilter(string(filter))
+		return m, nil
+	}
+	var cmd tea.Cmd
+	m.list, cmd = m.list.Update(msg)
+	return m, cmd
+}
+
+func (m listScenarioModel) View() tea.View { return tea.NewView(m.list.View()) }

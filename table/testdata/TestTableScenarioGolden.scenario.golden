@@ -1,0 +1,38 @@
+## initial
+command: no
+ID   Name        State
+────────────────────────
+1    service-01  ok
+2    service-02  ok
+3    service-03  ok
+
+## blurred navigation is ignored
+command: no
+ID   Name        State
+────────────────────────
+1    service-01  ok
+2    service-02  ok
+3    service-03  ok
+
+## focus table
+command: no
+ID   Name        State
+────────────────────────
+1    service-01  ok
+2    service-02  ok
+3    service-03  ok
+
+## select last row
+command: no
+ID   Name        State
+────────────────────────
+6    service-06  ok
+7    service-07  ok
+8    service-08  ok
+
+## resize narrow
+command: no
+ID    State
+────────────
+7     ok
+8     ok

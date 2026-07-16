@@ -9,6 +9,7 @@ import (
 	"github.com/charmbracelet/x/ansi"
 
 	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/inspect"
 	"github.com/ishan5ain/tuiweave/mouse"
 	"github.com/ishan5ain/tuiweave/snaptest"
 )
@@ -180,3 +181,41 @@ func TestViewportUnicodeScrollKeepsRowsBounded(t *testing.T) {
 		}
 	}
 }
+
+func TestViewportScenarioGolden(t *testing.T) {
+	vp := newTestViewport(12, 3, 8)
+	result := snaptest.RunScenario(viewportScenarioModel{viewport: vp},
+		snaptest.ScenarioStep{Name: "blurred key is ignored", Msg: keyPress("j")},
+		snaptest.ScenarioStep{Name: "blurred wheel scrolls", Msg: tea.MouseWheelMsg{Button: tea.MouseWheelDown}},
+		snaptest.ScenarioStep{Name: "focus viewport", Msg: inspect.Invoke(ActionFocus)},
+		snaptest.ScenarioStep{Name: "scroll to bottom", Msg: keyPress("G")},
+		snaptest.ScenarioStep{Name: "resize narrow", Msg: tea.WindowSizeMsg{Width: 7, Height: 3}},
+	)
+	snaptest.SnapScenario(t, result)
+
+	final := result.Model.(viewportScenarioModel)
+	if !final.viewport.Focused() {
+		t.Fatal("final viewport is not focused")
+	}
+	if !final.viewport.AtBottom() {
+		t.Fatalf("final viewport offset = %d, want bottom", final.viewport.YOffset())
+	}
+}
+
+type viewportScenarioModel struct {
+	viewport Model
+}
+
+func (m viewportScenarioModel) Init() tea.Cmd { return nil }
+
+func (m viewportScenarioModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	if size, ok := msg.(tea.WindowSizeMsg); ok {
+		m.viewport.SetSize(size.Width, size.Height)
+		return m, nil
+	}
+	var cmd tea.Cmd
+	m.viewport, cmd = m.viewport.Update(msg)
+	return m, cmd
+}
+
+func (m viewportScenarioModel) View() tea.View { return tea.NewView(m.viewport.View()) }
