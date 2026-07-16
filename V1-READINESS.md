@@ -5,7 +5,7 @@ stable v1 release. It is a decision aid, not a release schedule.
 
 ## Compatibility
 
-- [ ] Publish the supported Go, Bubble Tea, Lip Gloss, Glamour, and Ultraviolet
+- [x] Publish the supported Go, Bubble Tea, Lip Gloss, Glamour, and Ultraviolet
       versions as a tested compatibility matrix.
 - [ ] Decide whether Go 1.25.8 remains the minimum or whether the optional
       `agentic` layer should move to a separate module.
@@ -34,13 +34,13 @@ stable v1 release. It is a decision aid, not a release schedule.
       commands and explicitly delivered command results.
 - [x] Demonstrate semantic inspection and action routing end to end in a small,
       deterministic application test.
-- [ ] Exercise the public API from a consumer-shaped example that does not rely
+- [x] Exercise the public API from a consumer-shaped example that does not rely
       on internal packages or undocumented helpers.
 
 ## Adoption
 
 - [ ] Present one polished non-agentic reference application in the README.
-- [ ] Give newcomers a short package-learning path and a clear comparison with
+- [x] Give newcomers a short package-learning path and a clear comparison with
       Bubbles and framework-style alternatives.
 - [ ] Convert the remaining roadmap areas into scoped issues with acceptance
       tests, non-goals, and an explanation of which applications need them.

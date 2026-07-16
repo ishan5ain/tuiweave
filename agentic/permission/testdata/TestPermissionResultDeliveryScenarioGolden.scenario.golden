@@ -1,0 +1,45 @@
+## initial
+command: no
+╭──────────────────────────────────────╮
+│                                      │
+│  Run "go test ./..."?                │
+│  The agent wants to run a shell      │
+│  command.                            │
+│                                      │
+│   1  Allow once                      │
+│   2  Allow always                    │
+│   3  Deny                            │
+│                                      │
+╰──────────────────────────────────────╯
+
+## select allow always
+command: no
+╭──────────────────────────────────────╮
+│                                      │
+│  Run "go test ./..."?                │
+│  The agent wants to run a shell      │
+│  command.                            │
+│                                      │
+│   1  Allow once                      │
+│   2  Allow always                    │
+│   3  Deny                            │
+│                                      │
+╰──────────────────────────────────────╯
+
+## confirm emits result
+command: yes
+╭──────────────────────────────────────╮
+│                                      │
+│  Run "go test ./..."?                │
+│  The agent wants to run a shell      │
+│  command.                            │
+│                                      │
+│   1  Allow once                      │
+│   2  Allow always                    │
+│   3  Deny                            │
+│                                      │
+╰──────────────────────────────────────╯
+
+## application delivers result
+command: no
+bash: Allow always

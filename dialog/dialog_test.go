@@ -85,6 +85,44 @@ func TestDialogCancelViaButtonsAndEsc(t *testing.T) {
 	_ = d
 }
 
+func TestDialogResultDeliveryScenarioGolden(t *testing.T) {
+	m := dialogScenarioModel{dialog: newTestDialog(), open: true}
+	result := snaptest.RunScenario(m,
+		snaptest.ScenarioStep{Name: "confirm emits result", Msg: key("enter")},
+		snaptest.ScenarioStep{Name: "application delivers result", Msg: ResultMsg{ID: "quit", OK: true}},
+	)
+	snaptest.SnapScenario(t, result)
+}
+
+type dialogScenarioModel struct {
+	dialog  Model
+	open    bool
+	outcome string
+}
+
+func (m dialogScenarioModel) Init() tea.Cmd { return nil }
+
+func (m dialogScenarioModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	if result, ok := msg.(ResultMsg); ok {
+		m.open = false
+		m.outcome = "confirmed " + result.ID
+		return m, nil
+	}
+	if !m.open {
+		return m, nil
+	}
+	var cmd tea.Cmd
+	m.dialog, cmd = m.dialog.Update(msg)
+	return m, cmd
+}
+
+func (m dialogScenarioModel) View() tea.View {
+	if !m.open {
+		return tea.NewView(m.outcome)
+	}
+	return tea.NewView(m.dialog.View())
+}
+
 func TestDialogTooSmallRendersNothing(t *testing.T) {
 	d := newTestDialog()
 	d.SetSize(4, 3)
