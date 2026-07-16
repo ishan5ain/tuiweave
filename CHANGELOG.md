@@ -9,6 +9,9 @@ before v1, a minor release may contain breaking changes when clearly called out.
   IME contract work into its own evidence-driven follow-up.
 - Added direct regression coverage for shared grapheme protection and named
   modal scenarios with explicit command-result delivery.
+- Classified documented one-line components as width-bounded so
+  `layout.SizeModeOf` reflects their natural one-row height.
+- Stopped `SnapCells` goldens from emitting trailing whitespace for empty rows.
 - Added a compile-checked `snaptest` tutorial covering readable, role-aware,
   and scenario goldens with explicit command delivery.
 - Added an end-to-end semantic inspection and action-routing workflow in

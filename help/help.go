@@ -11,6 +11,7 @@ import (
 	"github.com/charmbracelet/x/ansi"
 
 	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/layout"
 )
 
 // Binding is one key hint.
@@ -42,6 +43,10 @@ func New(theme tuiweave.Theme) Model {
 func (m *Model) SetSize(width, height int) {
 	m.width, m.height = width, height
 }
+
+// SizeMode reports that the help bar is width-constrained and renders at
+// most one natural row.
+func (m Model) SizeMode() layout.SizeMode { return layout.SizeWidthBounded }
 
 // SetBindings replaces the displayed hints.
 func (m *Model) SetBindings(bindings ...Binding) {

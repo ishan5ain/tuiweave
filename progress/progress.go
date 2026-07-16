@@ -13,6 +13,7 @@ import (
 	"github.com/charmbracelet/x/ansi"
 
 	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/layout"
 )
 
 // Status selects the semantic role used for the filled portion of the bar.
@@ -68,6 +69,10 @@ func New(theme tuiweave.Theme) Model {
 func (m *Model) SetSize(width, height int) {
 	m.width, m.height = width, height
 }
+
+// SizeMode reports that the progress indicator is width-constrained with a
+// natural height of one row.
+func (m Model) SizeMode() layout.SizeMode { return layout.SizeWidthBounded }
 
 // SetLabel sets the optional task label shown before the bar.
 func (m *Model) SetLabel(label string) { m.label = label }

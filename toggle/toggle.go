@@ -12,6 +12,7 @@ import (
 
 	"github.com/ishan5ain/tuiweave"
 	"github.com/ishan5ain/tuiweave/inspect"
+	"github.com/ishan5ain/tuiweave/layout"
 )
 
 const (
@@ -83,6 +84,10 @@ func New(theme tuiweave.Theme) Model {
 func (m *Model) SetSize(width, height int) {
 	m.width, m.height = width, height
 }
+
+// SizeMode reports that the toggle is width-constrained with a natural
+// height of one row.
+func (m Model) SizeMode() layout.SizeMode { return layout.SizeWidthBounded }
 
 // SetLabel sets the setting label shown beside the checkbox.
 func (m *Model) SetLabel(label string) { m.label = label }

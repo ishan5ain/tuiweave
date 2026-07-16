@@ -1,7 +1,6 @@
 package snaptest
 
 import (
-	"fmt"
 	"image/color"
 	"strings"
 	"testing"
@@ -54,6 +53,13 @@ func TestSnapCellsUnstyled(t *testing.T) {
 	}
 }
 
+func TestSnapCellsEmptyRowHasNoTrailingWhitespace(t *testing.T) {
+	out := captureCellsGolden(t, "x\n ")
+	if !strings.Contains(out, "2:\n") {
+		t.Fatalf("empty row contains trailing content: %q", out)
+	}
+}
+
 func TestSnapCellsPreservesCombiningGraphemes(t *testing.T) {
 	out := captureCellsGolden(t, "e\u0301")
 	if !strings.Contains(out, "\"e\u0301\"") {
@@ -72,10 +78,5 @@ func TestSnapCellsPreservesStyledCombiningGraphemes(t *testing.T) {
 func captureCellsGolden(t *testing.T, view string) string {
 	t.Helper()
 	buf := renderToGrid(view)
-
-	var b strings.Builder
-	for y := range buf.Height() {
-		fmt.Fprintf(&b, "%d: %s\n", y+1, formatRuns(buf, y, config{roles: map[rgba]string{}}))
-	}
-	return b.String()
+	return formatGrid(buf, config{roles: map[rgba]string{}})
 }

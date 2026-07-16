@@ -10,6 +10,7 @@ import (
 	"github.com/charmbracelet/x/ansi"
 
 	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/layout"
 )
 
 // Model is a text input component. Create one with New.
@@ -51,6 +52,10 @@ func New(theme tuiweave.Theme) Model {
 func (m *Model) SetSize(width, height int) {
 	m.width, m.height = width, height
 }
+
+// SizeMode reports that the input is width-constrained with a natural height
+// of one row.
+func (m Model) SizeMode() layout.SizeMode { return layout.SizeWidthBounded }
 
 // Focus makes the input accept keys and show its cursor.
 func (m *Model) Focus() { m.focused = true }

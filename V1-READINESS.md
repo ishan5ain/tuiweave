@@ -15,7 +15,7 @@ stable v1 release. It is a decision aid, not a release schedule.
 
 ## Component contracts
 
-- [ ] Verify every bounded component's `SetSize` and exact-width/height behavior
+- [x] Verify every bounded component's `SetSize` and exact-width/height behavior
       across narrow, empty, focused, and blurred states.
 - [x] Complete the cell-width expectations for the audited text-bearing
       components; see [Issue #10](https://github.com/ishan5ain/tuiweave/issues/10).

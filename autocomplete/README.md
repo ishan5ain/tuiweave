@@ -1,6 +1,8 @@
 # autocomplete
 
-`autocomplete` is a bounded suggestion window placed beside an application-owned input.
+`autocomplete` is a conditional, width-bounded suggestion window placed beside
+an application-owned input. It fills the assigned height while matches exist
+and renders empty when there are no matches.
 
 ```go
 ac := autocomplete.New(theme)

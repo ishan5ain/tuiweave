@@ -82,9 +82,11 @@ to tuiweave require explicit authorization.
    ```
    Dropping either is a bug even when it appears to work.
 5. **Every change to rendering is verified through snaptest goldens.** After
-   an intentional visual change: `go test ./... -update`, then read the golden
-   diff in git and confirm it matches your intent before considering the task
-   done. Never regenerate goldens to silence a failure you don't understand.
+   an intentional visual change, run `go test ./path/to/changed/package -update`
+   for each affected snapshot-bearing package, then `go test ./...`. Read the
+   golden diff in git and confirm it matches your intent before considering
+   the task done. Never regenerate goldens to silence a failure you don't
+   understand.
 6. **Every new component ships with:** golden tests, coverage in a runnable
    example app under `examples/`, and a recipe entry in this file.
 7. **Classify additions before implementing them:** domain-neutral primitives
@@ -125,10 +127,13 @@ case tea.WindowSizeMsg:
 ```
 
 Components are bounded by default. Use `layout.SizeModeOf(component)` when a
-composition includes an exception: `spinner` is `SizeIntrinsic`, while
-`dialog` and `permission` are `SizeWidthBounded` (width-constrained with
-natural content height). Do not assume every `SetSize` height is rendered as
-rows for those documented modes.
+composition includes an exception: `spinner` is `SizeIntrinsic`; one-line
+components (`button`, `toggle`, `tabs`, `toolbar`, `progress`, `help`,
+`statusbar`, `textinput`, and `agentic/usagebar`) are `SizeWidthBounded` with a
+natural height of one row; `autocomplete` is `SizeWidthBounded` because it
+fills the assigned height only while matches exist; and `dialog` and
+`permission` are `SizeWidthBounded` with natural content height. Do not assume
+every `SetSize` height is rendered as rows for those documented modes.
 
 Compose the final frame with `lipgloss.JoinVertical` / `JoinHorizontal` and
 wrap it once, at the root: `return tea.NewView(view)`. Full-screen apps set

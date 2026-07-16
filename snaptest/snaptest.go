@@ -23,7 +23,7 @@
 //
 // Regenerate goldens after an intentional change with:
 //
-//	go test ./... -run TestStatusbarDefault -update
+//	go test ./statusbar -run TestStatusbarDefault -update
 //
 // then read the golden diff in git to confirm the change is what you meant.
 package snaptest
