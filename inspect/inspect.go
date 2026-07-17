@@ -40,7 +40,9 @@ type Scroll struct {
 
 // Action describes an intent a node can expose independently of a key
 // binding. IDs are local to a component report; Bind prefixes them with the
-// application's node ID in the assembled inspection tree.
+// application's node ID in the assembled inspection tree. Enabled reports
+// whether the intent is currently permitted; applications should validate it
+// against the current visible tree immediately before routing.
 type Action struct {
 	ID          string `json:"id"`
 	Label       string `json:"label"`
@@ -58,9 +60,12 @@ type ActionMsg struct {
 // Invoke constructs a semantic action message for a component.
 func Invoke(id string) ActionMsg { return ActionMsg{ID: id} }
 
-// Node is one semantic UI element. Attributes are deliberately string-valued:
-// component packages can expose small, stable facts without making inspect a
-// second domain model or leaking backend-specific types into the core.
+// Node is one semantic UI element. Component bounds are local until BindAt
+// applies application-owned screen coordinates. Optional fields are omitted
+// when they do not apply or are intentionally undisclosed. Attributes are
+// deliberately string-valued: component packages can expose small, stable
+// facts without making inspect a second domain model or leaking
+// backend-specific types into the core.
 type Node struct {
 	ID         string            `json:"id"`
 	Kind       string            `json:"kind"`

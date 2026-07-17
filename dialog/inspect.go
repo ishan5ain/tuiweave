@@ -48,6 +48,7 @@ func (m Model) Inspect() inspect.Node {
 		Kind:    "dialog",
 		Bounds:  inspect.Bounds{Width: m.width, Height: m.height},
 		Label:   m.Title,
+		Focused: true,
 		Status:  "awaiting_input",
 		Actions: m.Actions(),
 		Selected: &inspect.Selection{

@@ -160,7 +160,7 @@
         "height": 10
       },
       "label": "Quit demo?",
-      "focused": false,
+      "focused": true,
       "status": "awaiting_input",
       "selected": {
         "index": 0,

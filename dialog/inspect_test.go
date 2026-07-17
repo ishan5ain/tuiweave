@@ -10,6 +10,9 @@ import (
 func TestSemanticCancelProducesResultCommand(t *testing.T) {
 	m := New(tuiweave.Dark())
 	m.ID = "quit"
+	if node := m.Inspect(); !node.Focused || node.Status != "awaiting_input" {
+		t.Fatalf("visible dialog inspection = %+v", node)
+	}
 	next, cmd := m.Update(inspect.Invoke(ActionCancel))
 	if next.Title != m.Title {
 		t.Fatal("semantic cancel unexpectedly changed dialog content")

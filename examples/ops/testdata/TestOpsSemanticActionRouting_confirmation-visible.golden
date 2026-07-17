@@ -436,7 +436,7 @@
         "height": 9
       },
       "label": "Restart service?",
-      "focused": false,
+      "focused": true,
       "status": "awaiting_input",
       "selected": {
         "index": 0,

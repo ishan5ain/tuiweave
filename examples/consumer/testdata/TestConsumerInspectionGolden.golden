@@ -1,0 +1,72 @@
+{
+  "id": "consumer",
+  "kind": "application",
+  "bounds": {
+    "x": 0,
+    "y": 0,
+    "width": 48,
+    "height": 8
+  },
+  "focused": false,
+  "children": [
+    {
+      "id": "items",
+      "kind": "list",
+      "bounds": {
+        "x": 1,
+        "y": 1,
+        "width": 46,
+        "height": 5
+      },
+      "focused": true,
+      "selected": {
+        "index": 0,
+        "count": 4,
+        "label": "layout"
+      },
+      "scroll": {
+        "total": 4,
+        "visible": 5,
+        "offset": 0
+      },
+      "actions": [
+        {
+          "id": "items.focus",
+          "label": "Focus list",
+          "enabled": false
+        },
+        {
+          "id": "items.blur",
+          "label": "Blur list",
+          "enabled": true
+        },
+        {
+          "id": "items.next",
+          "label": "Next item",
+          "description": "Select the next visible item",
+          "enabled": true
+        },
+        {
+          "id": "items.previous",
+          "label": "Previous item",
+          "description": "Select the previous visible item",
+          "enabled": false
+        },
+        {
+          "id": "items.first",
+          "label": "First item",
+          "enabled": false
+        },
+        {
+          "id": "items.last",
+          "label": "Last item",
+          "enabled": true
+        }
+      ],
+      "attributes": {
+        "filtered_count": "4",
+        "item_count": "4"
+      }
+    }
+  ]
+}
