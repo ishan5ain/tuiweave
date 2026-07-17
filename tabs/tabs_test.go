@@ -78,6 +78,108 @@ func TestTabsWidthAndEmptyStates(t *testing.T) {
 	}
 }
 
+func TestTabsIndexAtWideStripBoundaries(t *testing.T) {
+	m := newTestTabs(30)
+	tests := []struct {
+		name  string
+		x     int
+		index int
+		ok    bool
+	}{
+		{name: "before strip", x: -1, index: -1},
+		{name: "overview start", x: 0, index: 0, ok: true},
+		{name: "overview end", x: 9, index: 0, ok: true},
+		{name: "first separator", x: 10, index: -1},
+		{name: "logs start", x: 11, index: 1, ok: true},
+		{name: "logs end", x: 16, index: 1, ok: true},
+		{name: "second separator", x: 17, index: -1},
+		{name: "settings start", x: 18, index: 2, ok: true},
+		{name: "settings end", x: 27, index: 2, ok: true},
+		{name: "trailing padding", x: 28, index: -1},
+		{name: "past strip", x: 30, index: -1},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			index, ok := m.IndexAt(test.x)
+			if index != test.index || ok != test.ok {
+				t.Fatalf("IndexAt(%d) = (%d, %v), want (%d, %v)", test.x, index, ok, test.index, test.ok)
+			}
+		})
+	}
+}
+
+func TestTabsIndexAtNarrowVisibleWindow(t *testing.T) {
+	m := New(tuiweave.Dark())
+	m.SetSize(16, 1)
+	m.SetTabs(
+		Tab{ID: "one", Label: "Overview"},
+		Tab{ID: "two", Label: "Logs"},
+		Tab{ID: "three", Label: "Settings"},
+		Tab{ID: "four", Label: "Deploy"},
+	)
+	m.Select(3)
+
+	for _, x := range []int{0, 7} {
+		if index, ok := m.IndexAt(x); !ok || index != 3 {
+			t.Fatalf("IndexAt(%d) = (%d, %v), want visible Deploy index 3", x, index, ok)
+		}
+	}
+	if index, ok := m.IndexAt(8); ok || index != -1 {
+		t.Fatalf("IndexAt(8) = (%d, %v), want trailing-padding miss", index, ok)
+	}
+
+	m.SetSize(3, 1)
+	for x := 0; x < 3; x++ {
+		if index, ok := m.IndexAt(x); !ok || index != 3 {
+			t.Fatalf("truncated IndexAt(%d) = (%d, %v), want index 3", x, index, ok)
+		}
+	}
+}
+
+func TestTabsIndexAtUsesTerminalCellWidths(t *testing.T) {
+	m := New(tuiweave.Dark())
+	m.SetSize(12, 1)
+	m.SetTabs(
+		Tab{ID: "wide", Label: "界"},
+		Tab{ID: "combining", Label: "e\u0301"},
+	)
+
+	// The wide tab occupies four cells (padding + two-cell glyph + padding),
+	// followed by one separator. The combining tab occupies three cells.
+	for _, test := range []struct {
+		x     int
+		index int
+		ok    bool
+	}{
+		{x: 3, index: 0, ok: true},
+		{x: 4, index: -1},
+		{x: 5, index: 1, ok: true},
+		{x: 7, index: 1, ok: true},
+		{x: 8, index: -1},
+	} {
+		index, ok := m.IndexAt(test.x)
+		if index != test.index || ok != test.ok {
+			t.Errorf("IndexAt(%d) = (%d, %v), want (%d, %v)", test.x, index, ok, test.index, test.ok)
+		}
+	}
+}
+
+func TestTabsIndexAtEmptyAndNonRenderingStates(t *testing.T) {
+	empty := New(tuiweave.Dark())
+	empty.SetSize(10, 1)
+	if index, ok := empty.IndexAt(0); ok || index != -1 {
+		t.Fatalf("empty IndexAt(0) = (%d, %v)", index, ok)
+	}
+
+	for _, size := range []struct{ width, height int }{{0, 1}, {10, 0}} {
+		m := newTestTabs(10)
+		m.SetSize(size.width, size.height)
+		if index, ok := m.IndexAt(0); ok || index != -1 {
+			t.Fatalf("size %dx%d IndexAt(0) = (%d, %v)", size.width, size.height, index, ok)
+		}
+	}
+}
+
 func TestTabsNavigationAndReplacement(t *testing.T) {
 	m := newTestTabs(30)
 	m.Focus()

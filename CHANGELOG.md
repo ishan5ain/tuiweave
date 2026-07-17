@@ -5,6 +5,8 @@ before v1, a minor release may contain breaking changes when clearly called out.
 
 ## [Unreleased]
 
+- Added cell-aware `tabs.IndexAt` local-coordinate hit-testing and used it for
+  mouse-selectable tabs in the canonical operations example.
 - Polished `examples/ops` as the canonical non-agentic reference application,
   with app-owned mouse routing, role-aware goldens, and a README walkthrough.
 - Added named focus, navigation, filtering, scrolling, editing, and narrow-state
