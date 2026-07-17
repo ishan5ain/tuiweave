@@ -45,18 +45,22 @@ func (m Model) Inspect() inspect.Node {
 			Label: m.items[m.selected].Label,
 		}
 	}
+	attributes := map[string]string{
+		"item_count":    strconv.Itoa(len(m.items)),
+		"enabled_count": strconv.Itoa(action.EnabledCount(m.items)),
+	}
+	if id := m.SelectedID(); id != "" {
+		attributes["selected_id"] = id
+	}
 	return inspect.Node{
-		Kind:     "toolbar",
-		Bounds:   inspect.Bounds{Width: m.width, Height: m.height},
-		Label:    m.SelectedItem().Label,
-		Focused:  m.focused,
-		Selected: selected,
-		Scroll:   &inspect.Scroll{Total: len(m.items), Visible: m.visibleCount(), Offset: m.off},
-		Actions:  m.Actions(),
-		Attributes: map[string]string{
-			"item_count":    strconv.Itoa(len(m.items)),
-			"enabled_count": strconv.Itoa(action.EnabledCount(m.items)),
-		},
+		Kind:       "toolbar",
+		Bounds:     inspect.Bounds{Width: m.width, Height: m.height},
+		Label:      m.SelectedItem().Label,
+		Focused:    m.focused,
+		Selected:   selected,
+		Scroll:     &inspect.Scroll{Total: len(m.items), Visible: m.visibleCount(), Offset: m.off},
+		Actions:    m.Actions(),
+		Attributes: attributes,
 	}
 }
 

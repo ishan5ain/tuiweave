@@ -7,6 +7,7 @@ import (
 	tea "charm.land/bubbletea/v2"
 
 	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/inspect"
 	"github.com/ishan5ain/tuiweave/snaptest"
 )
 
@@ -43,6 +44,31 @@ func TestModelScrolls(t *testing.T) {
 	}
 }
 
+func TestModelInspectionAndSemanticScrolling(t *testing.T) {
+	m := New(tuiweave.Dark())
+	m.SetSize(40, 4)
+	m.SetDiff(sample)
+
+	node := m.Inspect()
+	if node.Kind != "diffview" || node.Bounds.Width != 40 || node.Bounds.Height != 4 || node.Scroll == nil {
+		t.Fatalf("unexpected inspection node: %+v", node)
+	}
+	if node.Scroll.Total != m.TotalLines() || !actionEnabled(node.Actions, ActionBottom) {
+		t.Fatalf("inspection scroll/actions: scroll=%+v actions=%+v", node.Scroll, node.Actions)
+	}
+	if node.Label != "" || node.Attributes != nil || len(node.Children) != 0 {
+		t.Fatalf("inspection exposed diff content: %+v", node)
+	}
+
+	next, cmd := m.Update(inspect.Invoke(ActionBottom))
+	if cmd != nil || next.YOffset() == 0 {
+		t.Fatalf("semantic bottom: offset=%d command=%v", next.YOffset(), cmd != nil)
+	}
+	if actionEnabled(next.Actions(), ActionBottom) {
+		t.Fatal("bottom action remained enabled at the bottom")
+	}
+}
+
 func TestSprintTruncates(t *testing.T) {
 	long := "+" + strings.Repeat("x", 100)
 	out := Sprint(tuiweave.Dark(), long, 20)
@@ -70,4 +96,13 @@ func stripAnsi(s string) string {
 		}
 	}
 	return b.String()
+}
+
+func actionEnabled(actions []inspect.Action, id string) bool {
+	for _, action := range actions {
+		if action.ID == id {
+			return action.Enabled
+		}
+	}
+	return false
 }

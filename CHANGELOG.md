@@ -5,6 +5,9 @@ before v1, a minor release may contain breaking changes when clearly called out.
 
 ## [Unreleased]
 
+- Defined the cross-component inspection and accessibility contract, added a
+  consumer-shaped qualified-action example, completed diffview inspection,
+  and aligned modal focus and toolbar selection-ID reporting.
 - Added cell-aware `tabs.IndexAt` local-coordinate hit-testing and used it for
   mouse-selectable tabs in the canonical operations example.
 - Polished `examples/ops` as the canonical non-agentic reference application,

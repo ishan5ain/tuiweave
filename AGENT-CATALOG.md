@@ -76,7 +76,7 @@ failure modes below as an audit checklist.
 | `layout` | Converting window space to component boxes | `layout.Vertical(...).Apply(area, &components...)`; `SizeModeOf` for sizing exceptions |
 | `mouse` | Normalizing wheel input or hit-testing app-owned bounds | `WheelDelta`, `Position`, `InBounds`; no global router |
 | [`snaptest`](snaptest/README.md) | Verifying rendering or interactions | `Snap`, grapheme-preserving `SnapCells`, `RunScenario`, `SnapScenario`; follow the compile-checked tutorial |
-| `inspect` | Describing UI semantics for tests/tools/agents | `Inspect()`, `Bind`, `BindAt`, `Group`, `Marshal` |
+| `inspect` | Describing UI semantics for tests/tools/agents | `Inspect()`, `Bind`, `BindAt`, `Group`, `Marshal`; follow the field/action contract in `inspect/README.md` |
 | `action` | Sharing selectable action definitions and semantic IDs | `Item{ID, Label, Description, Disabled}`; `SelectID`, `ParseSelectID` |
 | `focus` | Managing tab order and nested modal scopes across copied MVU models | `NewManager(n)`, `NewScope(n)`, or `NewStack(n)`; apply fresh addresses after changes |
 | `overlay` | Compositing a modal or popover | `overlay.Center(base, over)` or `Place`; preserves wide/combining graphemes |

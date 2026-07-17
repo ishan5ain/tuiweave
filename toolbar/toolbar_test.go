@@ -91,6 +91,9 @@ func TestToolbarSemanticActionsAndInspection(t *testing.T) {
 	if node.Kind != "toolbar" || node.Selected == nil || node.Selected.Label != "Settings" {
 		t.Fatalf("unexpected inspection node: %+v", node)
 	}
+	if node.Attributes["selected_id"] != "settings" {
+		t.Fatalf("selected_id = %q, want settings", node.Attributes["selected_id"])
+	}
 	if node.Scroll == nil || node.Scroll.Total != 4 || node.Scroll.Visible == 0 {
 		t.Fatalf("unexpected scroll metadata: %+v", node.Scroll)
 	}

@@ -249,6 +249,11 @@ receives a tree-level action owns the lookup and routing to the target model.
 Prefer semantic actions in tests and automation when available instead of
 simulating equivalent key presses.
 
+The stable meanings of node fields, common action IDs, component attributes,
+privacy omissions, and application-owned routing are defined in the
+[inspect contract](inspect/README.md). Validate a qualified action against the
+current visible tree immediately before forwarding its local suffix.
+
 Two gotchas in hand-written assertions:
 
 - Strip ANSI before `strings.Contains` — renderers style words as separate
