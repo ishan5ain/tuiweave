@@ -129,7 +129,7 @@ Per AGENTS.md rule #2, exactly three packages:
 
 | Package | Import | What it uses |
 |---|---|---|
-| `layout/layout.go` | `uvlayout` | Constraint solver and provisional public constraint identity |
+| `layout/layout.go` | `uvlayout` | Constraint solver behind tuiweave's owned constraint adapter |
 | `overlay/overlay.go` | `uv` | Cell-level overlay composition |
 | `snaptest/cells.go` | `uv` | Style-run golden testing |
 

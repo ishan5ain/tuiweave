@@ -19,6 +19,8 @@ See the [demo](../examples/demo) and [layout conventions](../AGENTS.md#wiring-an
 
 - `Vertical` and `Horizontal` create split layouts.
 - `Len`, `Min`, `Max`, `Percent`, `Ratio`, and `Fill` create constraints.
+- `Constraint` is a tuiweave-owned sealed interface; the solver adapter remains
+  internal to this package.
 - `Apply` assigns rectangles and sizes `layout.Sizable` components.
 - `SizeModeOf` reports bounded, width-bounded, or intrinsic sizing.
 

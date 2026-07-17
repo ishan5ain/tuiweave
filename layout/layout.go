@@ -22,6 +22,7 @@
 package layout
 
 import (
+	"fmt"
 	"image"
 
 	uvlayout "github.com/charmbracelet/ultraviolet/layout"
@@ -37,27 +38,107 @@ func NewRect(x, y, w, h int) Rect {
 }
 
 // Constraint describes how one segment of a split should be sized.
-// Constraints are produced by Len, Min, Max, Percent, Ratio, and Fill.
-type Constraint = uvlayout.Constraint
+// Constraints are produced by Len, Min, Max, Percent, Ratio, and Fill. The
+// interface is sealed so layout can preserve its representation independently
+// of the internal solver.
+type Constraint interface {
+	isConstraint()
+}
+
+type constraintKind uint8
+
+const (
+	constraintLen constraintKind = iota
+	constraintMin
+	constraintMax
+	constraintPercent
+	constraintRatio
+	constraintFill
+)
+
+type constraint struct {
+	kind  constraintKind
+	value int
+	den   int
+}
+
+func (constraint) isConstraint() {}
+
+func (c constraint) String() string {
+	switch c.kind {
+	case constraintLen:
+		return fmt.Sprintf("Len(%d)", c.value)
+	case constraintMin:
+		return fmt.Sprintf("Min(%d)", c.value)
+	case constraintMax:
+		return fmt.Sprintf("Max(%d)", c.value)
+	case constraintPercent:
+		return fmt.Sprintf("Percent(%d)", c.value)
+	case constraintRatio:
+		return fmt.Sprintf("Ratio(%d / %d)", c.value, c.den)
+	case constraintFill:
+		return fmt.Sprintf("Fill(%d)", c.value)
+	default:
+		return "Constraint(?)"
+	}
+}
 
 // Len fixes a segment to exactly n cells.
-func Len(n int) Constraint { return uvlayout.Len(n) }
+func Len(n int) Constraint { return constraint{kind: constraintLen, value: n} }
 
 // Min gives a segment at least n cells.
-func Min(n int) Constraint { return uvlayout.Min(n) }
+func Min(n int) Constraint { return constraint{kind: constraintMin, value: n} }
 
 // Max caps a segment at n cells.
-func Max(n int) Constraint { return uvlayout.Max(n) }
+func Max(n int) Constraint { return constraint{kind: constraintMax, value: n} }
 
 // Percent sizes a segment as a percentage (0–100) of the total area.
-func Percent(p int) Constraint { return uvlayout.Percent(p) }
+func Percent(p int) Constraint { return constraint{kind: constraintPercent, value: p} }
 
 // Ratio sizes a segment as num/den of the total area.
-func Ratio(num, den int) Constraint { return uvlayout.Ratio{Num: num, Den: den} }
+func Ratio(num, den int) Constraint {
+	return constraint{kind: constraintRatio, value: num, den: den}
+}
 
 // Fill distributes leftover space among Fill segments proportionally to
 // weight, like flex-grow.
-func Fill(weight int) Constraint { return uvlayout.Fill(weight) }
+func Fill(weight int) Constraint { return constraint{kind: constraintFill, value: weight} }
+
+func toUltravioletConstraints(constraints []Constraint) []uvlayout.Constraint {
+	converted := make([]uvlayout.Constraint, len(constraints))
+	for i, c := range constraints {
+		converted[i] = toUltravioletConstraint(c)
+	}
+	return converted
+}
+
+func toUltravioletConstraint(c Constraint) uvlayout.Constraint {
+	if c == nil {
+		return nil
+	}
+
+	owned, ok := c.(constraint)
+	if !ok {
+		panic("layout: unsupported constraint implementation")
+	}
+
+	switch owned.kind {
+	case constraintLen:
+		return uvlayout.Len(owned.value)
+	case constraintMin:
+		return uvlayout.Min(owned.value)
+	case constraintMax:
+		return uvlayout.Max(owned.value)
+	case constraintPercent:
+		return uvlayout.Percent(owned.value)
+	case constraintRatio:
+		return uvlayout.Ratio{Num: owned.value, Den: owned.den}
+	case constraintFill:
+		return uvlayout.Fill(owned.value)
+	default:
+		panic("layout: unknown constraint kind")
+	}
+}
 
 // Layout splits an area into segments along one direction.
 type Layout struct {
@@ -66,12 +147,12 @@ type Layout struct {
 
 // Vertical returns a Layout that stacks segments top to bottom.
 func Vertical(constraints ...Constraint) Layout {
-	return Layout{inner: uvlayout.Vertical(constraints...)}
+	return Layout{inner: uvlayout.Vertical(toUltravioletConstraints(constraints)...)}
 }
 
 // Horizontal returns a Layout that arranges segments left to right.
 func Horizontal(constraints ...Constraint) Layout {
-	return Layout{inner: uvlayout.Horizontal(constraints...)}
+	return Layout{inner: uvlayout.Horizontal(toUltravioletConstraints(constraints)...)}
 }
 
 // WithSpacing sets the gap, in cells, between adjacent segments.

@@ -5,6 +5,9 @@ before v1, a minor release may contain breaking changes when clearly called out.
 
 ## [Unreleased]
 
+- Replaced the public Ultraviolet `layout.Constraint` alias with a
+  tuiweave-owned sealed representation while preserving every documented
+  constructor and layout call site.
 - Defined the tested v1 compatibility and migration policy, kept the agentic
   packages in the main module at the Go 1.25.8 floor, and made `layout.Rect`
   depend directly on the standard-library rectangle identity.

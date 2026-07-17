@@ -497,11 +497,10 @@ The architectural constraints behind the compatibility policy are:
    upgrades are deliberate dependency events, not transparent implementation
    updates.
 3. `layout.Rect` aliases `image.Rectangle` directly and that standard-library
-   geometry identity is part of the v1 contract. `layout.Constraint` currently
-   aliases Ultraviolet's sealed interface, but only tuiweave's constraint name,
-   constructors, and layout behavior are intended to stabilize. The
-   Ultraviolet identity will be removed in a separately reviewed pre-v1
-   migration tracked by [Issue #28](https://github.com/ishan5ain/tuiweave/issues/28).
+   geometry identity is part of the v1 contract. `layout.Constraint` is a
+   tuiweave-owned sealed interface; its constructors and layout behavior form
+   the public contract, while translation to Ultraviolet constraints remains
+   inside the layout implementation.
 4. Ultraviolet remains internal to `layout`'s solver, `overlay`, and
    `snaptest`. Its pseudo-version is upgraded only with layout, overlay, and
    SnapCells regression coverage.
