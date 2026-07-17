@@ -39,7 +39,7 @@ stable v1 release. It is a decision aid, not a release schedule.
 
 ## Adoption
 
-- [ ] Present one polished non-agentic reference application in the README.
+- [x] Present one polished non-agentic reference application in the README.
 - [x] Give newcomers a short package-learning path and a clear comparison with
       Bubbles and framework-style alternatives.
 - [ ] Convert the remaining roadmap areas into scoped issues with acceptance

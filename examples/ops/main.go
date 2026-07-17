@@ -26,6 +26,7 @@ import (
 	"github.com/ishan5ain/tuiweave/layout"
 	"github.com/ishan5ain/tuiweave/line"
 	"github.com/ishan5ain/tuiweave/menu"
+	"github.com/ishan5ain/tuiweave/mouse"
 	"github.com/ishan5ain/tuiweave/overlay"
 	"github.com/ishan5ain/tuiweave/palette"
 	"github.com/ishan5ain/tuiweave/progress"
@@ -228,6 +229,13 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.notice = fmt.Sprintf("%s %v", msg.ID, msg.Checked)
 	case button.PressedMsg:
 		m.notice = "opened logs"
+	case tea.MouseClickMsg:
+		// Nested layers own all input while visible. In particular, a click on
+		// the dimmed application must not move root focus or activate controls.
+		if m.showConfirm || m.showPalette || msg.Button != tea.MouseLeft {
+			break
+		}
+		cmds = append(cmds, m.routeRootClick(msg))
 	case tea.KeyPressMsg:
 		if m.showConfirm {
 			m.confirm, cmd = m.confirm.Update(msg)
@@ -275,6 +283,44 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	}
 	m.syncStatus()
 	return m, tea.Batch(cmds...)
+}
+
+// routeRootClick uses the same screen-space rectangles retained by layout and
+// Inspect. Components render local strings, so the application translates a
+// global click into local selection, focus, and activation decisions.
+func (m *model) routeRootClick(msg tea.MouseClickMsg) tea.Cmd {
+	switch {
+	case mouse.InBounds(msg, m.tabsArea.Min.X, m.tabsArea.Min.Y, m.tabsArea.Dx(), m.tabsArea.Dy()):
+		m.focusRoot(0)
+	case mouse.InBounds(msg, m.actionsArea.Min.X, m.actionsArea.Min.Y, m.actionsArea.Dx(), m.actionsArea.Dy()):
+		m.actions.Select(m.actions.YOffset() + msg.Y - m.actionsArea.Min.Y)
+		m.focusRoot(1)
+	case mouse.InBounds(msg, m.rowsArea.Min.X, m.rowsArea.Min.Y, m.rowsArea.Dx(), m.rowsArea.Dy()):
+		// The table header and rule occupy its first two rows. Clicking either
+		// focuses the table without changing its selected data row.
+		if row := msg.Y - m.rowsArea.Min.Y - 2; row >= 0 {
+			if index := m.rows.YOffset() + row; index < m.rows.TotalLines() {
+				m.rows.Select(index)
+			}
+		}
+		m.focusRoot(2)
+	case mouse.InBounds(msg, m.autoRefreshArea.Min.X, m.autoRefreshArea.Min.Y, m.autoRefreshArea.Dx(), m.autoRefreshArea.Dy()):
+		m.focusRoot(3)
+		next, cmd := m.autoRefresh.Update(inspect.Invoke(toggle.ActionToggle))
+		m.autoRefresh = next
+		return cmd
+	case mouse.InBounds(msg, m.openLogsArea.Min.X, m.openLogsArea.Min.Y, m.openLogsArea.Dx(), m.openLogsArea.Dy()):
+		m.focusRoot(4)
+		next, cmd := m.openLogs.Update(inspect.Invoke(button.ActionActivate))
+		m.openLogs = next
+		return cmd
+	}
+	return nil
+}
+
+func (m *model) focusRoot(index int) {
+	m.fm.Set(index)
+	m.applyFocus()
 }
 
 func (m *model) layout() {
@@ -483,6 +529,7 @@ func (m model) Inspect() inspect.Node {
 func (m model) View() tea.View {
 	v := tea.NewView(m.render())
 	v.AltScreen = true
+	v.MouseMode = tea.MouseModeCellMotion
 	return v
 }
 

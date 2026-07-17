@@ -1,0 +1,174 @@
+## initial
+command: no
+ OPS  operations console                                         ctrl+p commands
+▸Services   Jobs   Audit
+╭ Actions ─────────────────────────────╮│╭ Operations ─────────────────────────╮
+│                                      │││                                     │
+│ ▸ Restart service                    │││ Service     State      Region       │
+│   Drain traffic                      │││ ─────────────────────────────────── │
+│   Acknowledge alert                  │││ api         healthy    us-west-2    │
+│   Delete service                     │││ worker      busy       us-west-2    │
+│                                      │││ scheduler   degraded   us-east-1    │
+│                                      │││                                     │
+│                                      │││                                     │
+│                                      │││                                     │
+│                                      │││                                     │
+│                                      │││                                     │
+│                                      │││                                     │
+│                                      │││                                     │
+│                                      │││ Deploy ████████████████░░░░░░░  72% │
+│                                      │││ [x] Auto-refresh                    │
+│                                      │││ [ Open logs                       ] │
+│                                      │││                                     │
+╰──────────────────────────────────────╯│╰─────────────────────────────────────╯
+─────────────────────────────────────────── tab focus · ctrl+p commands · q quit
+
+## select drain action
+command: no
+ OPS  operations console                                         ctrl+p commands
+▸Services   Jobs   Audit
+╭ Actions ─────────────────────────────╮│╭ Operations ─────────────────────────╮
+│                                      │││                                     │
+│   Restart service                    │││ Service     State      Region       │
+│ ▸ Drain traffic                      │││ ─────────────────────────────────── │
+│   Acknowledge alert                  │││ api         healthy    us-west-2    │
+│   Delete service                     │││ worker      busy       us-west-2    │
+│                                      │││ scheduler   degraded   us-east-1    │
+│                                      │││                                     │
+│                                      │││                                     │
+│                                      │││                                     │
+│                                      │││                                     │
+│                                      │││                                     │
+│                                      │││                                     │
+│                                      │││                                     │
+│                                      │││ Deploy ████████████████░░░░░░░  72% │
+│                                      │││ [x] Auto-refresh                    │
+│                                      │││ [ Open logs                       ] │
+│                                      │││                                     │
+╰──────────────────────────────────────╯│╰─────────────────────────────────────╯
+─────────────────────────────────────────── tab focus · ctrl+p commands · q quit
+
+## select worker row
+command: no
+ OPS  operations console                                         ctrl+p commands
+▸Services   Jobs   Audit
+╭ Actions ─────────────────────────────╮│╭ Operations ─────────────────────────╮
+│                                      │││                                     │
+│   Restart service                    │││ Service     State      Region       │
+│ ▸ Drain traffic                      │││ ─────────────────────────────────── │
+│   Acknowledge alert                  │││ api         healthy    us-west-2    │
+│   Delete service                     │││ worker      busy       us-west-2    │
+│                                      │││ scheduler   degraded   us-east-1    │
+│                                      │││                                     │
+│                                      │││                                     │
+│                                      │││                                     │
+│                                      │││                                     │
+│                                      │││                                     │
+│                                      │││                                     │
+│                                      │││                                     │
+│                                      │││ Deploy ████████████████░░░░░░░  72% │
+│                                      │││ [x] Auto-refresh                    │
+│                                      │││ [ Open logs                       ] │
+│                                      │││                                     │
+╰──────────────────────────────────────╯│╰─────────────────────────────────────╯
+─────────────────────────────────────────── tab focus · ctrl+p commands · q quit
+
+## toggle auto refresh
+command: yes
+ OPS  operations console                                         ctrl+p commands
+▸Services   Jobs   Audit
+╭ Actions ─────────────────────────────╮│╭ Operations ─────────────────────────╮
+│                                      │││                                     │
+│   Restart service                    │││ Service     State      Region       │
+│ ▸ Drain traffic                      │││ ─────────────────────────────────── │
+│   Acknowledge alert                  │││ api         healthy    us-west-2    │
+│   Delete service                     │││ worker      busy       us-west-2    │
+│                                      │││ scheduler   degraded   us-east-1    │
+│                                      │││                                     │
+│                                      │││                                     │
+│                                      │││                                     │
+│                                      │││                                     │
+│                                      │││                                     │
+│                                      │││                                     │
+│                                      │││                                     │
+│                                      │││ Deploy ████████████████░░░░░░░  72% │
+│                                      │││ [ ] Auto-refresh                    │
+│                                      │││ [ Open logs                       ] │
+│                                      │││                                     │
+╰──────────────────────────────────────╯│╰─────────────────────────────────────╯
+─────────────────────────────────────────── tab focus · ctrl+p commands · q quit
+
+## deliver toggle result
+command: no
+ OPS  operations console                                         ctrl+p commands
+▸Services   Jobs   Audit
+╭ Actions ─────────────────────────────╮│╭ Operations ─────────────────────────╮
+│                                      │││                                     │
+│   Restart service                    │││ Service     State      Region       │
+│ ▸ Drain traffic                      │││ ─────────────────────────────────── │
+│   Acknowledge alert                  │││ api         healthy    us-west-2    │
+│   Delete service                     │││ worker      busy       us-west-2    │
+│                                      │││ scheduler   degraded   us-east-1    │
+│                                      │││                                     │
+│                                      │││                                     │
+│                                      │││                                     │
+│                                      │││                                     │
+│                                      │││                                     │
+│                                      │││                                     │
+│                                      │││                                     │
+│                                      │││ Deploy ████████████████░░░░░░░  72% │
+│                                      │││ [ ] Auto-refresh                    │
+│                                      │││ [ Open logs                       ] │
+│                                      │││                                     │
+╰──────────────────────────────────────╯│╰─────────────────────────────────────╯
+─────────────────────────────────────────── tab focus · ctrl+p commands · q quit
+
+## open commands
+command: no
+ OPS  operations console                                         ctrl+p commands
+▸Services   Jobs   Audit
+╭ Actions ─────────────────────────────╮│╭ Operations ─────────────────────────╮
+│                                      │││                                     │
+│   Restart service                    │││ Service     State      Region       │
+│ ▸ Drain traffic                      │││ ─────────────────────────────────── │
+│   Acknowledge alert                  │││ api         healthy    us-west-2    │
+│   Delete s╭ Command palette ─────────────────────────────────────╮-west-2    │
+│           │                                                      │-east-1    │
+│           │ ›                                                    │           │
+│           │ ▸ Restart service  Restart the selected service      │           │
+│           │   Drain traffic  Remove a service from rotation      │           │
+│           │   Acknowledge alert  Mark the current alert handled  │           │
+│           │                                                      │           │
+│           ╰──────────────────────────────────────────────────────╯           │
+│                                      │││                                     │
+│                                      │││ Deploy ████████████████░░░░░░░  72% │
+│                                      │││ [ ] Auto-refresh                    │
+│                                      │││ [ Open logs                       ] │
+│                                      │││                                     │
+╰──────────────────────────────────────╯│╰─────────────────────────────────────╯
+─────────────────────────────────────────── tab focus · ctrl+p commands · q quit
+
+## ignore background click
+command: no
+ OPS  operations console                                         ctrl+p commands
+▸Services   Jobs   Audit
+╭ Actions ─────────────────────────────╮│╭ Operations ─────────────────────────╮
+│                                      │││                                     │
+│   Restart service                    │││ Service     State      Region       │
+│ ▸ Drain traffic                      │││ ─────────────────────────────────── │
+│   Acknowledge alert                  │││ api         healthy    us-west-2    │
+│   Delete s╭ Command palette ─────────────────────────────────────╮-west-2    │
+│           │                                                      │-east-1    │
+│           │ ›                                                    │           │
+│           │ ▸ Restart service  Restart the selected service      │           │
+│           │   Drain traffic  Remove a service from rotation      │           │
+│           │   Acknowledge alert  Mark the current alert handled  │           │
+│           │                                                      │           │
+│           ╰──────────────────────────────────────────────────────╯           │
+│                                      │││                                     │
+│                                      │││ Deploy ████████████████░░░░░░░  72% │
+│                                      │││ [ ] Auto-refresh                    │
+│                                      │││ [ Open logs                       ] │
+│                                      │││                                     │
+╰──────────────────────────────────────╯│╰─────────────────────────────────────╯
+─────────────────────────────────────────── tab focus · ctrl+p commands · q quit

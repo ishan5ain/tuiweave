@@ -74,6 +74,48 @@ in top-level packages such as `layout`, `frame`, `tabs`, `menu`, `viewport`,
 `textinput`, and `textarea`; optional domain packages live under `agentic/`.
 The [agent catalog](AGENT-CATALOG.md) maps common tasks to packages and examples.
 
+### Canonical non-agentic reference app
+
+[`examples/ops`](examples/ops) is the complete non-agentic reference app. It
+composes tabs, menus, tables, status controls, nested overlays, semantic
+inspection, mouse routing, and deterministic interaction tests into a small
+operations console:
+
+```sh
+go run ./examples/ops
+```
+
+Use `tab` and `shift+tab` to move focus, arrow keys to navigate the focused
+component, `ctrl+p` to open the command palette, and `q` to quit. Mouse clicks
+focus controls and select menu or table rows; clicking the toggle or button
+also emits its normal typed result command. While a palette or confirmation is
+open, the application keeps background controls inert.
+
+The example keeps ownership boundaries explicit:
+
+| Concern | Owner in `examples/ops` |
+|---|---|
+| Layout and sizing | The app splits every window size into rectangles and calls each component's `SetSize`. |
+| Focus | The app retains a `focus.Stack`, reapplies fresh component addresses, and restores the parent index after an overlay closes. |
+| Mouse input | The app hit-tests its retained rectangles, then translates global clicks into local focus, selection, or activation. |
+| Modal routing | The app owns visibility and sends input only to the top visible layer; `overlay` only composites rendered strings. |
+| Commands and side effects | Components emit typed messages; the app handles delivered results and owns the resulting notice/state change. |
+| Semantic actions | The app assembles absolute inspection bounds, validates visible enabled actions, and forwards only the local action suffix. |
+
+The layout intentionally has a narrow-terminal fallback, and its important
+focus, modal, mouse, command-delivery, semantic-routing, and narrow states are
+captured as readable and role-aware goldens:
+
+```sh
+go test ./examples/ops
+```
+
+Read [`examples/ops/main.go`](examples/ops/main.go) for the application wiring
+and [`examples/ops/main_test.go`](examples/ops/main_test.go) for the snapshot and
+scenario workflow. [`examples/consumer`](examples/consumer) remains the smaller
+public-API smoke example, while the other runnable examples continue to teach
+individual packages.
+
 ### Start with five packages
 
 For a small interactive application, start with `layout`, `focus`, `frame`, one

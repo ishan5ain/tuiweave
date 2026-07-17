@@ -5,6 +5,8 @@ before v1, a minor release may contain breaking changes when clearly called out.
 
 ## [Unreleased]
 
+- Polished `examples/ops` as the canonical non-agentic reference application,
+  with app-owned mouse routing, role-aware goldens, and a README walkthrough.
 - Added named focus, navigation, filtering, scrolling, editing, and narrow-state
   scenarios for list, table, viewport, and text input components.
 - Completed the cross-component cell-width audit and separated the remaining
