@@ -5,6 +5,8 @@ before v1, a minor release may contain breaking changes when clearly called out.
 
 ## [Unreleased]
 
+- Completed representative paired plain-text and role-aware golden coverage,
+  with documented exclusions for styling pass-through utilities.
 - Replaced the public Ultraviolet `layout.Constraint` alias with a
   tuiweave-owned sealed representation while preserving every documented
   constructor and layout call site.

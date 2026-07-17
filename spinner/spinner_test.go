@@ -38,6 +38,7 @@ func TestSpinnerIgnoresForeignAndStaleTicks(t *testing.T) {
 
 func TestSpinnerGolden(t *testing.T) {
 	s := New(tuiweave.Dark())
+	snaptest.Snap(t, s.View())
 	snaptest.SnapCells(t, s.View(), snaptest.WithRoles(tuiweave.Dark()))
 }
 

@@ -31,7 +31,9 @@ func TestTranscriptGolden(t *testing.T) {
 	c.Append(a)
 	c.Invalidate()
 
-	snaptest.Snap(t, c.View())
+	view := c.View()
+	snaptest.Snap(t, view)
+	snaptest.SnapCells(t, view, snaptest.WithRoles(tuiweave.Dark()))
 }
 
 func TestAutoFollowStreaming(t *testing.T) {
