@@ -68,6 +68,12 @@ raw ANSI `.styled.golden`, but exact escape-byte assertions are rarely useful;
 reserve it for behavior that cannot be expressed by readable layout and
 role-aware cell runs.
 
+Theme-owning renderers should keep representative `Snap` and `SnapCells`
+artifacts together. Pure composition and pass-through utilities that do not
+assign theme roles, currently `line` and `viewport`, need readable layout and
+behavior coverage but not role-aware goldens. Add `SnapCells` if either package
+begins assigning styles of its own.
+
 ## 3. Execute command results explicitly
 
 An MVU command is a function that produces a later message. Deterministic tests

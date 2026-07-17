@@ -31,8 +31,9 @@ stable v1 release. It is a decision aid, not a release schedule.
 
 ## Verification and operability
 
-- [ ] Maintain plain-text and role-aware goldens for intentional rendering
-      behavior.
+- [x] Maintain paired plain-text and role-aware goldens for representative
+      theme-owned rendering behavior, with documented exclusions for styling
+      pass-through utilities; see [Issue #31](https://github.com/ishan5ain/tuiweave/issues/31).
 - [x] Cover important transitions with named scenarios, including emitted
       commands and explicitly delivered command results.
 - [x] Demonstrate semantic inspection and action routing end to end in a small,

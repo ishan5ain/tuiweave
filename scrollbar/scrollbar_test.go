@@ -64,5 +64,6 @@ func TestForViewportGolden(t *testing.T) {
 	if got := len(strings.Split(b, "\n")); got != 6 {
 		t.Fatalf("bar height = %d, want 6 (match viewport)", got)
 	}
+	snaptest.Snap(t, b)
 	snaptest.SnapCells(t, b, snaptest.WithRoles(tuiweave.Dark()))
 }

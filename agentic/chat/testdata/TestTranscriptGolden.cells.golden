@@ -1,0 +1,14 @@
+1: "session started" [fg=TextFaint italic]
+2:
+3: "❯ you" [fg=Accent bold]
+4: "  " | "explain the layout package" [fg=Text]
+5:
+6: "✦ assistant" [fg=TextMuted bold]
+7: "The " [fg=Text] | "layout" [fg=Text bold] | " package splits space with:       " [fg=Text]
+8: "                                            " [fg=Text]
+9: "• " [fg=Text] | "Len" [fg=Accent] | " fixed                                 " [fg=Text]
+10: "• " [fg=Text] | "Fill" [fg=Accent] | " grow                                 " [fg=Text]
+11:
+12:
+13:
+14:

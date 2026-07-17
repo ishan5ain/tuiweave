@@ -210,6 +210,11 @@ may appear as `Surface` in the default themes.)
 and a cells golden disagree about a combining mark, inspect the snapshot
 harness before changing the component renderer.
 
+Keep representative plain and role-aware goldens paired for renderers that
+assign theme roles. Pure composition and styling-pass-through utilities that
+do not assign roles (currently `line` and `viewport`) need plain and behavioral
+coverage, but do not need `SnapCells` until they own styling.
+
 Snapshot states, not just defaults: focused/blurred, empty/full, truncation
 at small sizes. The plain `.golden` file is the artifact to read when judging
 whether output is correct.
