@@ -5,6 +5,9 @@ before v1, a minor release may contain breaking changes when clearly called out.
 
 ## [Unreleased]
 
+- Reconciled the v1 roadmap around scoped IME and streaming-Markdown
+  investigations, recording completed foundations and deferring speculative
+  APIs until applications provide evidence.
 - Completed representative paired plain-text and role-aware golden coverage,
   with documented exclusions for styling pass-through utilities.
 - Replaced the public Ultraviolet `layout.Constraint` alias with a

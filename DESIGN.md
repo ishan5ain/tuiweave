@@ -529,9 +529,11 @@ immutable.
   chat-cell headers and tool-call output to their assigned width. Dialog and
   permission panels apply the same bounded-width rule to their outer frame and
   inner action/content rows.
-- **Streaming markdown renderer design:** incremental block parser vs
-  full-document reparse with damage hints — decide when glamour's limits are
-  measured, not guessed.
+- **Streaming markdown renderer design:** measure realistic cumulative
+  append-and-render workloads in
+  [Issue #33](https://github.com/ishan5ain/tuiweave/issues/33), then retain
+  full-document rendering or scope an incremental design from evidence rather
+  than assumptions about Glamour.
 - **Inspection/action schema hardening:** evolve the initial data-only schema
   without turning tuiweave into a framework; preserve stable IDs as APIs mature.
 - **Scenario format expansion:** the initial Go-native plain golden is in place;

@@ -46,5 +46,8 @@ stable v1 release. It is a decision aid, not a release schedule.
 - [x] Present one polished non-agentic reference application in the README.
 - [x] Give newcomers a short package-learning path and a clear comparison with
       Bubbles and framework-style alternatives.
-- [ ] Convert the remaining roadmap areas into scoped issues with acceptance
-      tests, non-goals, and an explanation of which applications need them.
+- [x] Convert active roadmap areas into scoped, evidence-driven issues with
+      acceptance tests, non-goals, and affected applications; see
+      [Issue #19](https://github.com/ishan5ain/tuiweave/issues/19),
+      [Issue #33](https://github.com/ishan5ain/tuiweave/issues/33), and
+      [ROADMAP.md](ROADMAP.md).
