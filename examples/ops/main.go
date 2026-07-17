@@ -291,7 +291,14 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (m *model) routeRootClick(msg tea.MouseClickMsg) tea.Cmd {
 	switch {
 	case mouse.InBounds(msg, m.tabsArea.Min.X, m.tabsArea.Min.Y, m.tabsArea.Dx(), m.tabsArea.Dy()):
+		before := m.tabs.SelectedID()
+		if index, ok := m.tabs.IndexAt(msg.X - m.tabsArea.Min.X); ok {
+			m.tabs.Select(index)
+		}
 		m.focusRoot(0)
+		if before != m.tabs.SelectedID() {
+			m.syncRows()
+		}
 	case mouse.InBounds(msg, m.actionsArea.Min.X, m.actionsArea.Min.Y, m.actionsArea.Dx(), m.actionsArea.Dy()):
 		m.actions.Select(m.actions.YOffset() + msg.Y - m.actionsArea.Min.Y)
 		m.focusRoot(1)

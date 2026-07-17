@@ -56,6 +56,13 @@ type Model struct {
 	separatorStyle       lipgloss.Style
 }
 
+type visibleTab struct {
+	index     int
+	start     int
+	width     int
+	truncated bool
+}
+
 // New returns an empty tab strip styled from the theme's roles.
 func New(theme tuiweave.Theme) Model {
 	bar := lipgloss.NewStyle().Background(theme.SurfaceRaised)
@@ -149,6 +156,23 @@ func (m Model) SelectedTab() Tab {
 // there is no selection or the selected tab has no ID.
 func (m Model) SelectedID() string { return m.SelectedTab().ID }
 
+// IndexAt returns the configured-tab index rendered at localX, where localX is
+// a zero-based terminal-cell coordinate relative to the tab strip. Separators,
+// trailing padding, coordinates outside the rendered box, and empty states do
+// not hit a tab. Applications remain responsible for global mouse hit-testing
+// and for translating a screen coordinate into this local coordinate.
+func (m Model) IndexAt(localX int) (int, bool) {
+	if localX < 0 || localX >= m.width {
+		return -1, false
+	}
+	for _, tab := range m.visibleTabs() {
+		if localX >= tab.start && localX < tab.start+tab.width {
+			return tab.index, true
+		}
+	}
+	return -1, false
+}
+
 // Focus makes the tab strip respond to navigation keys and applies focused
 // selection styling.
 func (m *Model) Focus() { m.focused = true }
@@ -196,42 +220,67 @@ func (m Model) View() string {
 		return m.barStyle.Render(strings.Repeat(" ", m.width))
 	}
 
-	parts := make([]string, 0, len(m.tabs)-m.off)
+	visible := m.visibleTabs()
+	parts := make([]string, 0, len(visible)*2+1)
 	used := 0
-	for i := m.off; i < len(m.tabs); i++ {
-		tab := m.renderTab(i)
-		separator := 0
-		if len(parts) > 0 {
-			separator = 1
-		}
-		if used+separator+lipgloss.Width(tab) > m.width {
-			break
-		}
-		if separator > 0 {
+	for _, tab := range visible {
+		if tab.start > used {
 			parts = append(parts, m.separatorStyle.Render(" "))
-			used++
 		}
-		parts = append(parts, tab)
-		used += lipgloss.Width(tab)
-	}
-
-	if len(parts) == 0 {
-		selected := m.selected
-		if selected < 0 {
-			selected = 0
+		if tab.truncated {
+			prefix := " "
+			if tab.index == m.selected {
+				prefix = "▸"
+			}
+			label := ansi.Truncate(prefix+m.tabs[tab.index].Label+" ", tab.width, "…")
+			parts = append(parts, m.styleFor(tab.index).Render(label))
+		} else {
+			parts = append(parts, m.renderTab(tab.index))
 		}
-		prefix := " "
-		if selected == m.selected {
-			prefix = "▸"
-		}
-		label := ansi.Truncate(prefix+m.tabs[selected].Label+" ", m.width, "…")
-		parts = append(parts, m.styleFor(selected).Render(label))
-		used = lipgloss.Width(parts[0])
+		used = tab.start + tab.width
 	}
 	if used < m.width {
 		parts = append(parts, m.barStyle.Render(strings.Repeat(" ", m.width-used)))
 	}
 	return strings.Join(parts, "")
+}
+
+// visibleTabs is the shared cell geometry for rendering and local-coordinate
+// hit-testing. Whole tabs are shown while they fit; if none fits, the selected
+// tab occupies the full width through the same truncation fallback as View.
+func (m Model) visibleTabs() []visibleTab {
+	if m.width <= 0 || m.height <= 0 || len(m.tabs) == 0 {
+		return nil
+	}
+
+	tabs := make([]visibleTab, 0, len(m.tabs)-m.off)
+	used := 0
+	for i := m.off; i < len(m.tabs); i++ {
+		width := m.tabWidth(i)
+		separator := 0
+		if len(tabs) > 0 {
+			separator = 1
+		}
+		if used+separator+width > m.width {
+			break
+		}
+		used += separator
+		tabs = append(tabs, visibleTab{index: i, start: used, width: width})
+		used += width
+	}
+
+	if len(tabs) == 0 {
+		selected := m.selected
+		if selected < 0 {
+			selected = 0
+		}
+		tabs = append(tabs, visibleTab{
+			index:     selected,
+			width:     m.width,
+			truncated: true,
+		})
+	}
+	return tabs
 }
 
 func (m Model) styleFor(index int) lipgloss.Style {

@@ -316,6 +316,9 @@ nav.Focus()
   meaningful.
 - It renders one exact-width row, keeps the selected tab visible when narrow,
   and drops earlier tabs from the visible window as selection moves right.
+- For mouse selection, the app first hit-tests the tab strip's global layout
+  rectangle, then passes `x-area.Min.X` to `IndexAt`. The returned index follows
+  the rendered narrow-width window; separators and trailing padding are misses.
 - The tab strip is navigation chrome, not a container for the tab bodies; use
   the app's layout and render the selected view separately.
 

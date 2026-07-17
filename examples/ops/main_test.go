@@ -108,6 +108,52 @@ func TestOpsMouseRoutesRootControls(t *testing.T) {
 	}
 }
 
+func TestOpsMouseSelectsTabsAndSynchronizesRows(t *testing.T) {
+	for _, test := range []struct {
+		name      string
+		localX    int
+		selected  string
+		firstCell string
+	}{
+		{name: "services", localX: 1, selected: "services", firstCell: "api"},
+		{name: "jobs", localX: 12, selected: "jobs", firstCell: "nightly-backup"},
+		{name: "audit", localX: 19, selected: "audit", firstCell: "deploy completed"},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			m := sized(t)
+			m, _ = update(t, m, click(m.tabsArea.Min.X+test.localX, m.tabsArea.Min.Y))
+			row := m.rows.SelectedRow()
+			if m.fm.Index() != 0 || !m.tabs.Focused() || m.tabs.SelectedID() != test.selected || len(row) == 0 || row[0] != test.firstCell {
+				t.Fatalf("tab click: focus=%d focused=%v selected=%q row=%v", m.fm.Index(), m.tabs.Focused(), m.tabs.SelectedID(), row)
+			}
+		})
+	}
+}
+
+func TestOpsMouseTabMissesAndNarrowWindow(t *testing.T) {
+	m := sized(t)
+	m, _ = update(t, m, click(m.actionsArea.Min.X, m.actionsArea.Min.Y))
+	for _, localX := range []int{10, 30} { // separator, then trailing padding
+		m, _ = update(t, m, click(m.tabsArea.Min.X+localX, m.tabsArea.Min.Y))
+		if m.fm.Index() != 0 || !m.tabs.Focused() || m.tabs.SelectedID() != "services" {
+			t.Fatalf("tab miss at %d: focus=%d focused=%v selected=%q", localX, m.fm.Index(), m.tabs.Focused(), m.tabs.SelectedID())
+		}
+	}
+
+	m = sizedAt(t, 20, 10)
+	m, _ = update(t, m, click(m.tabsArea.Min.X+12, m.tabsArea.Min.Y))
+	if m.tabs.SelectedID() != "jobs" || m.rows.SelectedRow()[0] != "nightly-backup" {
+		t.Fatalf("narrow Jobs click: selected=%q row=%v", m.tabs.SelectedID(), m.rows.SelectedRow())
+	}
+	m.tabs.SelectID("audit")
+	m.syncRows()
+	m.focusRoot(1)
+	m, _ = update(t, m, click(m.tabsArea.Min.X, m.tabsArea.Min.Y))
+	if m.tabs.SelectedID() != "audit" || !m.tabs.Focused() || m.rows.SelectedRow()[0] != "deploy completed" {
+		t.Fatalf("narrow offset click: selected=%q focused=%v row=%v", m.tabs.SelectedID(), m.tabs.Focused(), m.rows.SelectedRow())
+	}
+}
+
 func TestOpsMouseDoesNotReachBackgroundUnderOverlays(t *testing.T) {
 	m := sized(t)
 	m, _ = update(t, m, tea.KeyPressMsg{Code: 'p', Mod: tea.ModCtrl})
@@ -309,6 +355,7 @@ func TestOpsNarrowScenarioGolden(t *testing.T) {
 func TestOpsMouseScenarioGolden(t *testing.T) {
 	m := sized(t)
 	result := snaptest.RunScenario(m,
+		snaptest.ScenarioStep{Name: "select jobs tab", Msg: click(m.tabsArea.Min.X+12, m.tabsArea.Min.Y)},
 		snaptest.ScenarioStep{Name: "select drain action", Msg: click(m.actionsArea.Min.X, m.actionsArea.Min.Y+1)},
 		snaptest.ScenarioStep{Name: "select worker row", Msg: click(m.rowsArea.Min.X, m.rowsArea.Min.Y+3)},
 		snaptest.ScenarioStep{Name: "toggle auto refresh", Msg: click(m.autoRefreshArea.Min.X, m.autoRefreshArea.Min.Y)},

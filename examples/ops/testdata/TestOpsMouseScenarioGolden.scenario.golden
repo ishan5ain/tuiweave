@@ -23,17 +23,42 @@ command: no
 ╰──────────────────────────────────────╯│╰─────────────────────────────────────╯
 ─────────────────────────────────────────── tab focus · ctrl+p commands · q quit
 
+## select jobs tab
+command: no
+ OPS  operations console                                         ctrl+p commands
+ Services  ▸Jobs   Audit
+╭ Actions ─────────────────────────────╮│╭ Operations ─────────────────────────╮
+│                                      │││                                     │
+│ ▸ Restart service                    │││ Job         State      Owner        │
+│   Drain traffic                      │││ ─────────────────────────────────── │
+│   Acknowledge alert                  │││ nightly-ba… running    platform     │
+│   Delete service                     │││ index-rebu… queued     search       │
+│                                      │││ billing-ro… healthy    finance      │
+│                                      │││                                     │
+│                                      │││                                     │
+│                                      │││                                     │
+│                                      │││                                     │
+│                                      │││                                     │
+│                                      │││                                     │
+│                                      │││                                     │
+│                                      │││ Deploy ████████████████░░░░░░░  72% │
+│                                      │││ [x] Auto-refresh                    │
+│                                      │││ [ Open logs                       ] │
+│                                      │││                                     │
+╰──────────────────────────────────────╯│╰─────────────────────────────────────╯
+─────────────────────────────────────────── tab focus · ctrl+p commands · q quit
+
 ## select drain action
 command: no
  OPS  operations console                                         ctrl+p commands
-▸Services   Jobs   Audit
+ Services  ▸Jobs   Audit
 ╭ Actions ─────────────────────────────╮│╭ Operations ─────────────────────────╮
 │                                      │││                                     │
-│   Restart service                    │││ Service     State      Region       │
+│   Restart service                    │││ Job         State      Owner        │
 │ ▸ Drain traffic                      │││ ─────────────────────────────────── │
-│   Acknowledge alert                  │││ api         healthy    us-west-2    │
-│   Delete service                     │││ worker      busy       us-west-2    │
-│                                      │││ scheduler   degraded   us-east-1    │
+│   Acknowledge alert                  │││ nightly-ba… running    platform     │
+│   Delete service                     │││ index-rebu… queued     search       │
+│                                      │││ billing-ro… healthy    finance      │
 │                                      │││                                     │
 │                                      │││                                     │
 │                                      │││                                     │
@@ -51,14 +76,14 @@ command: no
 ## select worker row
 command: no
  OPS  operations console                                         ctrl+p commands
-▸Services   Jobs   Audit
+ Services  ▸Jobs   Audit
 ╭ Actions ─────────────────────────────╮│╭ Operations ─────────────────────────╮
 │                                      │││                                     │
-│   Restart service                    │││ Service     State      Region       │
+│   Restart service                    │││ Job         State      Owner        │
 │ ▸ Drain traffic                      │││ ─────────────────────────────────── │
-│   Acknowledge alert                  │││ api         healthy    us-west-2    │
-│   Delete service                     │││ worker      busy       us-west-2    │
-│                                      │││ scheduler   degraded   us-east-1    │
+│   Acknowledge alert                  │││ nightly-ba… running    platform     │
+│   Delete service                     │││ index-rebu… queued     search       │
+│                                      │││ billing-ro… healthy    finance      │
 │                                      │││                                     │
 │                                      │││                                     │
 │                                      │││                                     │
@@ -76,14 +101,14 @@ command: no
 ## toggle auto refresh
 command: yes
  OPS  operations console                                         ctrl+p commands
-▸Services   Jobs   Audit
+ Services  ▸Jobs   Audit
 ╭ Actions ─────────────────────────────╮│╭ Operations ─────────────────────────╮
 │                                      │││                                     │
-│   Restart service                    │││ Service     State      Region       │
+│   Restart service                    │││ Job         State      Owner        │
 │ ▸ Drain traffic                      │││ ─────────────────────────────────── │
-│   Acknowledge alert                  │││ api         healthy    us-west-2    │
-│   Delete service                     │││ worker      busy       us-west-2    │
-│                                      │││ scheduler   degraded   us-east-1    │
+│   Acknowledge alert                  │││ nightly-ba… running    platform     │
+│   Delete service                     │││ index-rebu… queued     search       │
+│                                      │││ billing-ro… healthy    finance      │
 │                                      │││                                     │
 │                                      │││                                     │
 │                                      │││                                     │
@@ -101,14 +126,14 @@ command: yes
 ## deliver toggle result
 command: no
  OPS  operations console                                         ctrl+p commands
-▸Services   Jobs   Audit
+ Services  ▸Jobs   Audit
 ╭ Actions ─────────────────────────────╮│╭ Operations ─────────────────────────╮
 │                                      │││                                     │
-│   Restart service                    │││ Service     State      Region       │
+│   Restart service                    │││ Job         State      Owner        │
 │ ▸ Drain traffic                      │││ ─────────────────────────────────── │
-│   Acknowledge alert                  │││ api         healthy    us-west-2    │
-│   Delete service                     │││ worker      busy       us-west-2    │
-│                                      │││ scheduler   degraded   us-east-1    │
+│   Acknowledge alert                  │││ nightly-ba… running    platform     │
+│   Delete service                     │││ index-rebu… queued     search       │
+│                                      │││ billing-ro… healthy    finance      │
 │                                      │││                                     │
 │                                      │││                                     │
 │                                      │││                                     │
@@ -126,14 +151,14 @@ command: no
 ## open commands
 command: no
  OPS  operations console                                         ctrl+p commands
-▸Services   Jobs   Audit
+ Services  ▸Jobs   Audit
 ╭ Actions ─────────────────────────────╮│╭ Operations ─────────────────────────╮
 │                                      │││                                     │
-│   Restart service                    │││ Service     State      Region       │
+│   Restart service                    │││ Job         State      Owner        │
 │ ▸ Drain traffic                      │││ ─────────────────────────────────── │
-│   Acknowledge alert                  │││ api         healthy    us-west-2    │
-│   Delete s╭ Command palette ─────────────────────────────────────╮-west-2    │
-│           │                                                      │-east-1    │
+│   Acknowledge alert                  │││ nightly-ba… running    platform     │
+│   Delete s╭ Command palette ─────────────────────────────────────╮arch       │
+│           │                                                      │nance      │
 │           │ ›                                                    │           │
 │           │ ▸ Restart service  Restart the selected service      │           │
 │           │   Drain traffic  Remove a service from rotation      │           │
@@ -151,14 +176,14 @@ command: no
 ## ignore background click
 command: no
  OPS  operations console                                         ctrl+p commands
-▸Services   Jobs   Audit
+ Services  ▸Jobs   Audit
 ╭ Actions ─────────────────────────────╮│╭ Operations ─────────────────────────╮
 │                                      │││                                     │
-│   Restart service                    │││ Service     State      Region       │
+│   Restart service                    │││ Job         State      Owner        │
 │ ▸ Drain traffic                      │││ ─────────────────────────────────── │
-│   Acknowledge alert                  │││ api         healthy    us-west-2    │
-│   Delete s╭ Command palette ─────────────────────────────────────╮-west-2    │
-│           │                                                      │-east-1    │
+│   Acknowledge alert                  │││ nightly-ba… running    platform     │
+│   Delete s╭ Command palette ─────────────────────────────────────╮arch       │
+│           │                                                      │nance      │
 │           │ ›                                                    │           │
 │           │ ▸ Restart service  Restart the selected service      │           │
 │           │   Drain traffic  Remove a service from rotation      │           │

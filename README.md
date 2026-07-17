@@ -87,9 +87,9 @@ go run ./examples/ops
 
 Use `tab` and `shift+tab` to move focus, arrow keys to navigate the focused
 component, `ctrl+p` to open the command palette, and `q` to quit. Mouse clicks
-focus controls and select menu or table rows; clicking the toggle or button
-also emits its normal typed result command. While a palette or confirmation is
-open, the application keeps background controls inert.
+focus controls and select tabs, menu rows, or table rows; clicking the toggle
+or button also emits its normal typed result command. While a palette or
+confirmation is open, the application keeps background controls inert.
 
 The example keeps ownership boundaries explicit:
 

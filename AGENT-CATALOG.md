@@ -96,7 +96,7 @@ failure modes below as an audit checklist.
 | `help` | Showing key hints | Drops whole hints from the right when narrow |
 | `spinner` | Showing activity | Intrinsic-size; start with `Tick`, forward `TickMsg` |
 | `dialog` | Confirming or cancelling | App owns visibility; width-bounded titles, bodies, and buttons; result arrives as `ResultMsg` |
-| `tabs` | Navigating sibling views | `SetTabs`, `Focus`, `SelectedID`; left/right while focused |
+| `tabs` | Navigating sibling views | `SetTabs`, `Focus`, `SelectedID`; `IndexAt` maps a local cell x-coordinate to a rendered tab |
 | `menu` | Choosing application-owned actions | `SetItems([]action.Item...)`, `Focus`, `SelectedMsg`; disabled entries are skipped |
 | `toolbar` | Rendering horizontal actions | `SetItems([]action.Item...)`, `Focus`, `SelectedMsg`; selected action stays visible when narrow |
 | `splitpane` | Composing two width-aware views | `Horizontal(theme, width, Options, left, right)`; natural-height alignment |
