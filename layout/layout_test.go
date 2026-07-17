@@ -1,6 +1,9 @@
 package layout
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 func TestVerticalSplitAssign(t *testing.T) {
 	var header, body, status Rect
@@ -34,6 +37,83 @@ func TestHorizontalPercentFill(t *testing.T) {
 	}
 	if got := rects[1].Dx(); got != 75 {
 		t.Errorf("main width = %d, want 75", got)
+	}
+}
+
+func TestConstraintFormattingRemainsStable(t *testing.T) {
+	tests := []struct {
+		constraint Constraint
+		want       string
+	}{
+		{Len(2), "Len(2)"},
+		{Min(1), "Min(1)"},
+		{Max(4), "Max(4)"},
+		{Percent(10), "Percent(10)"},
+		{Ratio(1, 4), "Ratio(1 / 4)"},
+		{Fill(3), "Fill(3)"},
+	}
+
+	for _, tt := range tests {
+		if got := fmt.Sprint(tt.constraint); got != tt.want {
+			t.Errorf("formatted constraint = %q, want %q", got, tt.want)
+		}
+	}
+}
+
+func TestConstraintPrioritiesRemainStable(t *testing.T) {
+	tests := []struct {
+		name        string
+		constraints []Constraint
+		wantWidths  []int
+	}{
+		{
+			name:        "minimum wins over percentage",
+			constraints: []Constraint{Percent(100), Min(20)},
+			wantWidths:  []int{30, 20},
+		},
+		{
+			name:        "maximum caps a fill sibling",
+			constraints: []Constraint{Fill(1), Max(20)},
+			wantWidths:  []int{30, 20},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			rects := Horizontal(tt.constraints...).Split(NewRect(0, 0, 50, 4))
+			for i, want := range tt.wantWidths {
+				if got := rects[i].Dx(); got != want {
+					t.Errorf("segment %d width = %d, want %d", i, got, want)
+				}
+			}
+		})
+	}
+}
+
+func TestRatioAndWeightedFillRemainStable(t *testing.T) {
+	rects := Horizontal(Ratio(1, 4), Fill(1), Fill(2)).Split(NewRect(0, 0, 100, 4))
+	want := []int{25, 25, 50}
+	for i, width := range want {
+		if got := rects[i].Dx(); got != width {
+			t.Errorf("segment %d width = %d, want %d", i, got, width)
+		}
+	}
+}
+
+func TestPaddingAndSpacingRemainStable(t *testing.T) {
+	rects := Horizontal(Len(10), Fill(1)).
+		WithPadding(2).
+		WithSpacing(3).
+		Split(NewRect(0, 0, 40, 10))
+
+	want := []Rect{
+		NewRect(2, 2, 10, 6),
+		NewRect(15, 2, 23, 6),
+	}
+	for i := range want {
+		if rects[i] != want[i] {
+			t.Errorf("segment %d = %v, want %v", i, rects[i], want[i])
+		}
 	}
 }
 

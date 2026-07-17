@@ -9,10 +9,10 @@ stable v1 release. It is a decision aid, not a release schedule.
       versions as a tested compatibility matrix.
 - [x] Keep Go 1.25.8 as the minimum and the optional `agentic` layer in the
       main module; see [COMPATIBILITY.md](COMPATIBILITY.md#go-version-and-module-boundary).
-- [x] Keep `layout.Rect` as a standard-library alias and preserve the
-      `layout.Constraint` constructor API while removing its Ultraviolet type
-      identity before v1; see [COMPATIBILITY.md](COMPATIBILITY.md#layout-compatibility)
-      and [Issue #28](https://github.com/ishan5ain/tuiweave/issues/28).
+- [x] Keep `layout.Rect` as a standard-library alias and own the
+      `layout.Constraint` representation while preserving its constructor API;
+      see [COMPATIBILITY.md](COMPATIBILITY.md#layout-compatibility) and
+      [Issue #28](https://github.com/ishan5ain/tuiweave/issues/28).
 - [x] Document the deprecation, migration, and removal policy for v1; see
       [COMPATIBILITY.md](COMPATIBILITY.md#release-and-migration-policy).
 

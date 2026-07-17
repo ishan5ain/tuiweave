@@ -2,6 +2,7 @@ package layout_test
 
 import (
 	"image"
+	"reflect"
 	"testing"
 
 	"github.com/ishan5ain/tuiweave/layout"
@@ -38,5 +39,22 @@ func TestDocumentedConstraintConstructorsCompose(t *testing.T) {
 	parts := layout.Horizontal(constraints...).Split(layout.NewRect(0, 0, 40, 3))
 	if len(parts) != len(constraints) {
 		t.Fatalf("split returned %d parts, want %d", len(parts), len(constraints))
+	}
+}
+
+func TestConstraintIdentityIsOwnedByLayout(t *testing.T) {
+	constraints := []layout.Constraint{
+		layout.Len(2),
+		layout.Min(1),
+		layout.Max(4),
+		layout.Percent(10),
+		layout.Ratio(1, 4),
+		layout.Fill(1),
+	}
+
+	for _, c := range constraints {
+		if got, want := reflect.TypeOf(c).PkgPath(), "github.com/ishan5ain/tuiweave/layout"; got != want {
+			t.Errorf("constraint type package = %q, want %q", got, want)
+		}
 	}
 }

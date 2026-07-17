@@ -61,14 +61,12 @@ standard library; Ultraviolet rectangle identity is not part of the contract.
 ### Constraints
 
 The stable application API is the `layout.Constraint` name plus the `Len`,
-`Min`, `Max`, `Percent`, `Ratio`, and `Fill` constructors. The current pre-v1
-implementation aliases Ultraviolet's sealed constraint interface, but that type
-identity is provisional and will not be part of the v1 contract.
+`Min`, `Max`, `Percent`, `Ratio`, and `Fill` constructors. tuiweave owns the
+sealed constraint representation and translates it to the Ultraviolet solver
+only when constructing a `Vertical` or `Horizontal` layout. Ultraviolet
+constraint identity is not part of the v1 contract.
 
-Before v1, tuiweave intends to own the constraint representation while keeping
-the documented constructors and `Vertical`/`Horizontal` call sites intact.
-That migration is tracked in [Issue #28](https://github.com/ishan5ain/tuiweave/issues/28).
-Applications following the documented API should require no migration:
+Applications following the documented API require no migration:
 
 ```go
 parts := []layout.Constraint{
@@ -79,9 +77,11 @@ view := layout.Vertical(parts...)
 ```
 
 Direct construction of, conversion to, or storage as
-`github.com/charmbracelet/ultraviolet/layout.Constraint` is unsupported. An
-application using that pre-v1 implementation detail must replace Ultraviolet
-constraint values with tuiweave's constructors before adopting v1.
+`github.com/charmbracelet/ultraviolet/layout.Constraint` is unsupported and no
+longer type-compatible. An application that used that pre-v1 implementation
+detail must replace Ultraviolet constraint values with tuiweave's constructors.
+This boundary was completed in
+[Issue #28](https://github.com/ishan5ain/tuiweave/issues/28).
 
 ## Release and migration policy
 
