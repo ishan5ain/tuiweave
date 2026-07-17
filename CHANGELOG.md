@@ -5,6 +5,9 @@ before v1, a minor release may contain breaking changes when clearly called out.
 
 ## [Unreleased]
 
+- Defined the tested v1 compatibility and migration policy, kept the agentic
+  packages in the main module at the Go 1.25.8 floor, and made `layout.Rect`
+  depend directly on the standard-library rectangle identity.
 - Defined the cross-component inspection and accessibility contract, added a
   consumer-shaped qualified-action example, completed diffview inspection,
   and aligned modal focus and toolbar selection-ID reporting.

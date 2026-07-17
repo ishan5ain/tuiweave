@@ -22,3 +22,4 @@ See the [chat example](../../examples/chat) and [architecture rationale](../../D
 - [API reference](https://pkg.go.dev/github.com/ishan5ain/tuiweave/agentic/markdown)
 - [Chat example](../../examples/chat)
 - [Markdown architecture](../../DESIGN.md#d7--markdown-glamour-now-custom-later)
+- [Compatibility and module policy](../../COMPATIBILITY.md)
