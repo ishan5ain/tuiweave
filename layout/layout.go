@@ -22,16 +22,19 @@
 package layout
 
 import (
-	uv "github.com/charmbracelet/ultraviolet"
+	"image"
+
 	uvlayout "github.com/charmbracelet/ultraviolet/layout"
 )
 
 // Rect is a rectangular screen region. It aliases image.Rectangle, so the
 // usual Dx/Dy/Intersect methods apply.
-type Rect = uv.Rectangle
+type Rect = image.Rectangle
 
 // NewRect returns the rectangle at origin x, y with the given size.
-func NewRect(x, y, w, h int) Rect { return uv.Rect(x, y, w, h) }
+func NewRect(x, y, w, h int) Rect {
+	return Rect{Min: image.Pt(x, y), Max: image.Pt(x+w, y+h)}
+}
 
 // Constraint describes how one segment of a split should be sized.
 // Constraints are produced by Len, Min, Max, Percent, Ratio, and Fill.

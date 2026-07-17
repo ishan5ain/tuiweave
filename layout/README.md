@@ -26,3 +26,4 @@ See the [demo](../examples/demo) and [layout conventions](../AGENTS.md#wiring-an
 
 - [API reference](https://pkg.go.dev/github.com/ishan5ain/tuiweave/layout)
 - [Canonical wiring](../AGENTS.md#wiring-an-app-the-only-layout-pattern)
+- [Compatibility and layout migration policy](../COMPATIBILITY.md#layout-compatibility)

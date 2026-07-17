@@ -468,12 +468,15 @@ reconstruction remain application-owned.
 
 ## 6. Dependency policy
 
+[COMPATIBILITY.md](COMPATIBILITY.md) is the normative compatibility and
+migration policy. This section records the architectural reasons behind it.
+
 - **Compatibility floor:** the published module currently requires Go 1.25.8.
   This is not only a development-environment choice: `glamour/v2` v2.0.1
   declares the same minimum, while Bubble Tea v2, Lip Gloss v2, and
-  Ultraviolet currently declare Go 1.25.0. Lowering the floor therefore
-  requires an upstream or module-structure change and must be measured rather
-  than promised.
+  Ultraviolet currently declare Go 1.25.0. The v1 policy keeps the top-level
+  and `agentic` packages in one module at that floor; splitting their release
+  and example wiring has no demonstrated application benefit today.
 - `charm.land/bubbletea/v2` (v2.0.8), `charm.land/lipgloss/v2` (v2.0.5) —
   beta; pinned, upgraded deliberately. Note: charm's v2 modules live on
   `charm.land` vanity paths.
@@ -484,7 +487,7 @@ reconstruction remain application-owned.
   only `agentic/markdown` imports it.
 - No dependency on `x/exp/teatest` in the core verification loop.
 
-The compatibility policy for pre-v1 releases is:
+The architectural constraints behind the compatibility policy are:
 
 1. Applications should pin a tagged tuiweave version or commit. The module
    follows semantic-versioning conventions, but minor releases may contain
@@ -493,15 +496,15 @@ The compatibility policy for pre-v1 releases is:
 2. Bubble Tea v2 and Lip Gloss v2 are public runtime and styling contracts;
    upgrades are deliberate dependency events, not transparent implementation
    updates.
-3. `layout.Rect` and `layout.Constraint` currently use public type aliases to
-   Ultraviolet types. Consumers import tuiweave's `layout` package, but the
-   underlying type identity can still affect source compatibility. A future
-   alias removal would be an explicit API migration, not an incidental
-   refactor.
-4. Ultraviolet remains internal to `overlay` and `snaptest`; only its layout
-   types are surfaced through the documented `layout` aliases. Its
-   pseudo-version is upgraded only with layout, overlay, and SnapCells
-   regression coverage.
+3. `layout.Rect` aliases `image.Rectangle` directly and that standard-library
+   geometry identity is part of the v1 contract. `layout.Constraint` currently
+   aliases Ultraviolet's sealed interface, but only tuiweave's constraint name,
+   constructors, and layout behavior are intended to stabilize. The
+   Ultraviolet identity will be removed in a separately reviewed pre-v1
+   migration tracked by [Issue #28](https://github.com/ishan5ain/tuiweave/issues/28).
+4. Ultraviolet remains internal to `layout`'s solver, `overlay`, and
+   `snaptest`. Its pseudo-version is upgraded only with layout, overlay, and
+   SnapCells regression coverage.
 5. The project does not promise compatibility with arbitrary newer upstream
    major or beta versions. Supported versions are the versions in `go.mod`
    plus the stable Go version exercised by CI.

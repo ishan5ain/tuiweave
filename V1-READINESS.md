@@ -7,11 +7,14 @@ stable v1 release. It is a decision aid, not a release schedule.
 
 - [x] Publish the supported Go, Bubble Tea, Lip Gloss, Glamour, and Ultraviolet
       versions as a tested compatibility matrix.
-- [ ] Decide whether Go 1.25.8 remains the minimum or whether the optional
-      `agentic` layer should move to a separate module.
-- [ ] Decide whether `layout.Rect` and `layout.Constraint` aliases remain part
-      of the public contract.
-- [ ] Document the deprecation, migration, and removal policy for v1.
+- [x] Keep Go 1.25.8 as the minimum and the optional `agentic` layer in the
+      main module; see [COMPATIBILITY.md](COMPATIBILITY.md#go-version-and-module-boundary).
+- [x] Keep `layout.Rect` as a standard-library alias and preserve the
+      `layout.Constraint` constructor API while removing its Ultraviolet type
+      identity before v1; see [COMPATIBILITY.md](COMPATIBILITY.md#layout-compatibility)
+      and [Issue #28](https://github.com/ishan5ain/tuiweave/issues/28).
+- [x] Document the deprecation, migration, and removal policy for v1; see
+      [COMPATIBILITY.md](COMPATIBILITY.md#release-and-migration-policy).
 
 ## Component contracts
 

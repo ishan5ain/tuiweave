@@ -63,6 +63,7 @@ func main() {
 - Semantic inspection and actions: [`inspect` contract](inspect) and [`examples/ops`](examples/ops)
 - All runnable examples: [`examples`](examples)
 - Package documentation: [pkg.go.dev](https://pkg.go.dev/github.com/ishan5ain/tuiweave)
+- Compatibility and migration policy: [COMPATIBILITY.md](COMPATIBILITY.md)
 - Architecture: [DESIGN.md](DESIGN.md)
 - Roadmap: [ROADMAP.md](ROADMAP.md)
 - Contributing: [CONTRIBUTING.md](CONTRIBUTING.md)
@@ -160,7 +161,8 @@ application-owned state. See [`examples/statusbar`](examples/statusbar).
 
 - [API reference](https://pkg.go.dev/github.com/ishan5ain/tuiweave)
 - [Architecture](DESIGN.md)
-- [Dependency and compatibility policy](DESIGN.md#6-dependency-policy)
+- [Compatibility and migration policy](COMPATIBILITY.md)
+- [Dependency architecture](DESIGN.md#6-dependency-policy)
 - [v1 readiness checklist](V1-READINESS.md)
 - [Agent catalog](AGENT-CATALOG.md)
 - [Authoring conventions](AGENTS.md)

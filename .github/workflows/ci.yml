@@ -12,17 +12,22 @@ permissions:
 
 jobs:
   test:
+    name: test (${{ matrix.name }})
     strategy:
       fail-fast: false
       matrix:
         include:
-          - os: ubuntu-latest
+          - name: stable-linux
+            os: ubuntu-latest
             go: stable
-          - os: macos-latest
+          - name: stable-macos
+            os: macos-latest
             go: stable
-          - os: windows-latest
+          - name: stable-windows
+            os: windows-latest
             go: stable
-          - os: ubuntu-latest
+          - name: minimum-go-linux
+            os: ubuntu-latest
             go: 1.25.8
     runs-on: ${{ matrix.os }}
     steps:
