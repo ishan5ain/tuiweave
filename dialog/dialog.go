@@ -87,6 +87,32 @@ func New(theme tuiweave.Theme) Model {
 	}
 }
 
+// SetTheme rebuilds all styles from the theme's roles, preserving
+// non-style state such as the title, body, and button labels.
+func (m *Model) SetTheme(theme tuiweave.Theme) {
+	m.panelStyle = lipgloss.NewStyle().
+		Border(lipgloss.RoundedBorder()).
+		BorderForeground(theme.BorderFocused).
+		Background(theme.SurfaceRaised).
+		Padding(1, 2)
+	m.titleStyle = lipgloss.NewStyle().
+		Foreground(theme.Text).
+		Background(theme.SurfaceRaised).
+		Bold(true)
+	m.bodyStyle = lipgloss.NewStyle().
+		Foreground(theme.TextMuted).
+		Background(theme.SurfaceRaised)
+	m.buttonStyle = lipgloss.NewStyle().
+		Foreground(theme.TextMuted).
+		Background(theme.SurfaceSunken).
+		Padding(0, 2)
+	m.selectedStyle = lipgloss.NewStyle().
+		Foreground(theme.TextInverted).
+		Background(theme.Accent).
+		Bold(true).
+		Padding(0, 2)
+}
+
 // SetSize sets the dialog's outer box, border included.
 func (m *Model) SetSize(width, height int) {
 	m.width, m.height = width, height
