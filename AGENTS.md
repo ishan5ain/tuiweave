@@ -111,6 +111,21 @@ application-owned content, selection, focus, and dimensions as appropriate.
 Do not mutate component internals or add app-local colors. The canonical cycling
 example is [examples/statusbar](examples/statusbar/main.go).
 
+When a semantic surface should inherit the terminal or parent background, copy
+the selected theme and assign `lipgloss.NoColor{}` to that role before building
+components:
+
+```go
+theme := tuiweave.Dark()
+theme.SurfaceRaised = lipgloss.NoColor{}
+nav := tabs.New(theme)
+```
+
+`NoColor` means that the role emits no color; it is not a new theme role and
+does not disable selection, accent, or intent fills. Apply the derived theme
+consistently to the relevant composition and reconstruct components after any
+runtime theme change as usual.
+
 ## Wiring an app (the only layout pattern)
 
 Split the window on every `tea.WindowSizeMsg`; let rects size the components:

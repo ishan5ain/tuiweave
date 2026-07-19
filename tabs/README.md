@@ -14,6 +14,18 @@ nav.Focus()
 
 Stable IDs preserve selection across `SetTabs` updates. Arrow and vim-style navigation are focus-gated; Tab remains an application-global focus key. Render the selected body separately using `SelectedID()`.
 
+To let the unselected strip inherit its terminal or parent background, pass a
+derived theme to `New`:
+
+```go
+theme := tuiweave.Dark()
+theme.SurfaceRaised = lipgloss.NoColor{}
+nav := tabs.New(theme)
+```
+
+Focused selection still uses `SelectionBg` and `SelectionFg`; only the raised
+bar surface stops emitting a background color.
+
 See the [frame example](../examples/frame) and [tabs recipe](../AGENTS.md#tabs).
 
 ## API highlights
