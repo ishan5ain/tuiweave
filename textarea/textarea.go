@@ -91,16 +91,6 @@ func New(theme tuiweave.Theme) Model {
 	}
 }
 
-// SetTheme rebuilds all styles from the theme's roles, preserving
-// non-style state such as the content and cursor position.
-func (m *Model) SetTheme(theme tuiweave.Theme) {
-	m.promptStyle = lipgloss.NewStyle().Foreground(theme.Accent)
-	m.textStyle = lipgloss.NewStyle().Foreground(theme.Text)
-	m.selectionStyle = lipgloss.NewStyle().Foreground(theme.SelectionFg).Background(theme.SelectionBg)
-	m.placeholderStyle = lipgloss.NewStyle().Foreground(theme.TextFaint)
-	m.cursorStyle = lipgloss.NewStyle().Foreground(theme.Text).Reverse(true)
-}
-
 // SetSize sets the box the textarea renders in.
 func (m *Model) SetSize(width, height int) {
 	m.width, m.height = width, height

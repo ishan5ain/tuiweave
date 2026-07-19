@@ -82,23 +82,6 @@ func New(theme tuiweave.Theme) Model {
 	}
 }
 
-// SetTheme rebuilds all styles from the theme's roles, preserving
-// non-style state such as the tab list and selection.
-func (m *Model) SetTheme(theme tuiweave.Theme) {
-	bar := lipgloss.NewStyle().Background(theme.SurfaceRaised)
-	m.barStyle = bar
-	m.itemStyle = bar.
-		Foreground(theme.TextMuted)
-	m.selectedStyle = lipgloss.NewStyle().
-		Foreground(theme.SelectionFg).
-		Background(theme.SelectionBg).
-		Bold(true)
-	m.selectedBlurredStyle = bar.
-		Foreground(theme.Accent).
-		Bold(true)
-	m.separatorStyle = bar.Foreground(theme.TextFaint)
-}
-
 // SetSize sets the box the tab strip renders in. It renders one row whenever
 // height is nonzero; height is otherwise ignored like other one-line bars.
 func (m *Model) SetSize(width, height int) {

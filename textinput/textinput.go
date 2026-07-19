@@ -75,15 +75,6 @@ func (m *Model) SetValue(s string) {
 	m.pos = len(m.value)
 }
 
-// SetTheme rebuilds all styles from the theme's roles, preserving
-// non-style state such as the value and cursor position.
-func (m *Model) SetTheme(theme tuiweave.Theme) {
-	m.promptStyle = lipgloss.NewStyle().Foreground(theme.Accent)
-	m.textStyle = lipgloss.NewStyle().Foreground(theme.Text)
-	m.placeholderStyle = lipgloss.NewStyle().Foreground(theme.TextFaint)
-	m.cursorStyle = lipgloss.NewStyle().Foreground(theme.Text).Reverse(true)
-}
-
 // Reset clears the input.
 func (m *Model) Reset() {
 	m.value = nil

@@ -71,25 +71,6 @@ func New(theme tuiweave.Theme) Model {
 	}
 }
 
-// SetTheme rebuilds all styles from the theme's roles, preserving
-// non-style state such as the left/right segments.
-func (m *Model) SetTheme(theme tuiweave.Theme) {
-	base := lipgloss.NewStyle().Background(theme.SurfaceRaised)
-	m.bar = base
-	m.kinds = map[Kind]lipgloss.Style{
-		KindNormal: base.Foreground(theme.Text),
-		KindAccent: lipgloss.NewStyle().
-			Background(theme.Accent).
-			Foreground(theme.TextInverted).
-			Bold(true),
-		KindMuted:   base.Foreground(theme.TextMuted),
-		KindSuccess: base.Foreground(theme.Success),
-		KindWarning: base.Foreground(theme.Warning),
-		KindDanger:  base.Foreground(theme.Danger),
-		KindInfo:    base.Foreground(theme.Info),
-	}
-}
-
 // SetSize sets the box the bar renders in. The bar is one line tall; height
 // only matters as zero (render nothing) or nonzero.
 func (m *Model) SetSize(width, height int) {

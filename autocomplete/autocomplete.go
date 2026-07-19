@@ -97,24 +97,6 @@ func New(theme tuiweave.Theme) Model {
 	}
 }
 
-// SetTheme rebuilds all styles from the theme's roles, preserving
-// non-style state such as the item list, query, and selection.
-func (m *Model) SetTheme(theme tuiweave.Theme) {
-	base := lipgloss.NewStyle().Background(theme.SurfaceRaised)
-	m.itemStyle = base.
-		Foreground(theme.Text)
-	m.descriptionStyle = base.
-		Foreground(theme.TextMuted)
-	m.selectedStyle = lipgloss.NewStyle().
-		Foreground(theme.SelectionFg).
-		Background(theme.SelectionBg)
-	m.selectedBlurredStyle = base.
-		Foreground(theme.Accent).
-		Bold(true)
-	m.disabledStyle = base.
-		Foreground(theme.TextFaint)
-}
-
 // SetSize sets the suggestion window's bounded box. A non-empty window fills
 // its assigned height with visible suggestions and blank rows.
 func (m *Model) SetSize(width, height int) {

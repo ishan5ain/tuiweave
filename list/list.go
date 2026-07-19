@@ -53,18 +53,6 @@ func New(theme tuiweave.Theme) Model {
 	}
 }
 
-// SetTheme rebuilds all styles from the theme's roles, preserving
-// non-style state such as the item list and selection.
-func (m *Model) SetTheme(theme tuiweave.Theme) {
-	m.itemStyle = lipgloss.NewStyle().Foreground(theme.Text)
-	m.selectedStyle = lipgloss.NewStyle().
-		Foreground(theme.SelectionFg).
-		Background(theme.SelectionBg)
-	m.markerStyle = lipgloss.NewStyle().
-		Foreground(theme.Accent).
-		Background(theme.SelectionBg)
-}
-
 // SetSize sets the box the list renders in.
 func (m *Model) SetSize(width, height int) {
 	m.width, m.height = width, height
