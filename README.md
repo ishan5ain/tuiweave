@@ -151,11 +151,26 @@ Components derive styles when constructed, so an app that changes themes
 reconstructs its components from the newly selected `Theme` while preserving
 application-owned state. See [`examples/statusbar`](examples/statusbar).
 
+An app can make a semantic surface inherit the terminal or parent background
+by assigning `lipgloss.NoColor{}` to that role on a copy of its theme:
+
+```go
+theme := tuiweave.Dark()
+theme.SurfaceRaised = lipgloss.NoColor{}
+```
+
+Components constructed with that derived theme omit the raised background
+while selection, accent, and intent fills keep their normal semantic roles.
+This is the supported selective styling pattern; component internals remain
+encapsulated.
+
 ## API highlights
 
 - `Theme` defines the semantic roles consumed by every themed component.
 - `Dark`, `Light`, `Nord`, and other named constructors provide fixed themes.
 - `Presets` and `ThemeForPreset` support application-owned theme selection.
+- Derived themes can use `lipgloss.NoColor{}` when a role should inherit its
+  surrounding color.
 
 ## Related documentation
 

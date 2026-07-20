@@ -1,0 +1,50 @@
+1: "panel"
+2: "╭" [fg=Border] | " Services " [fg=TextMuted] | "────────────────╮" [fg=Border]
+3: "│" [fg=Border] | "                          " | "│" [fg=Border]
+4: "│" [fg=Border] | " " | "Application-owned body" [fg=Text] | "   " | "│" [fg=Border]
+5: "│" [fg=Border] | "                          " | "│" [fg=Border]
+6: "╰──────────────────────────╯" [fg=Border]
+7: "badge"
+8: " " [bg=Success] | "healthy" [fg=Surface bg=Success bold] | " " [bg=Success]
+9: "tabs"
+10: "▸Services " [fg=Text bg=SelectionBg bold] | " " [fg=TextFaint] | " Jobs " [fg=TextMuted]
+11: "statusbar"
+12: " tuiweave " [fg=Surface bg=Accent bold] | "  ready " [fg=Text] | " " | " healthy " [fg=Success]
+13: "autocomplete"
+14: "▸ git status  inspect       " [fg=Text bg=SelectionBg]
+15: "  go test ./...  " [fg=Text] | "verify" [fg=TextMuted] | "     " [fg=Text]
+16: "toolbar"
+17: "▸Open " [fg=Text bg=SelectionBg bold] | " " [fg=TextFaint] | " Refresh " [fg=Text]
+18: "toggle"
+19: "[x]" [fg=Surface bg=Success bold] | " Auto-refresh            " [fg=Text]
+20: "progress"
+21: "Indexing " [fg=TextMuted] | "██████████" [fg=Surface bg=Success] | "░░░░" [fg=TextFaint bg=SurfaceSunken] | "  72%" [fg=TextMuted]
+22: "palette"
+23: "› " [fg=Accent bg=SurfaceSunken] | " " [fg=Text reverse]
+24: "▸ Open  open workspace      " [fg=Text bg=SelectionBg]
+25: "  Refresh  refresh state    " [fg=Text]
+26: "button"
+27: "[ Open workspace           ]" [fg=Text]
+28: "dialog"
+29: "╭──────────────────────────────╮" [fg=Accent]
+30: "│" [fg=Accent] | "                              " | "│" [fg=Accent]
+31: "│" [fg=Accent] | "  " | "Delete workspace?" [fg=Text bold] | "           " | "│" [fg=Accent]
+32: "│" [fg=Accent] | "  " | "This cannot be undone." [fg=TextMuted] | "      " | "│" [fg=Accent]
+33: "│" [fg=Accent] | "                              " | "│" [fg=Accent]
+34: "│" [fg=Accent] | "  " | "        " [fg=TextMuted] | "  " [bg=Accent] | "OK" [fg=Surface bg=Accent bold] | "  " [bg=Accent] | "  " [fg=TextMuted] | "  " [bg=SurfaceSunken] | "Cancel" [fg=TextMuted bg=SurfaceSunken] | "  " [bg=SurfaceSunken] | "  " | "│" [fg=Accent]
+35: "│" [fg=Accent] | "                              " | "│" [fg=Accent]
+36: "╰──────────────────────────────╯" [fg=Accent]
+37: "permission"
+38: "╭──────────────────────────────────╮" [fg=Warning]
+39: "│" [fg=Warning] | "                                  " | "│" [fg=Warning]
+40: "│" [fg=Warning] | "  " | "Run tests?" [fg=Text bold] | "                      " | "│" [fg=Warning]
+41: "│" [fg=Warning] | "  " | "The command reads this" [fg=TextMuted] | "          " | "│" [fg=Warning]
+42: "│" [fg=Warning] | "  " | "repository." [fg=TextMuted] | "                     " | "│" [fg=Warning]
+43: "│" [fg=Warning] | "  " | "Tool: shell" [fg=TextMuted] | "                     " | "│" [fg=Warning]
+44: "│" [fg=Warning] | "  " | "Operation: execute" [fg=TextMuted] | "              " | "│" [fg=Warning]
+45: "│" [fg=Warning] | "                                  " | "│" [fg=Warning]
+46: "│" [fg=Warning] | "  " | " 1 " [fg=TextFaint] | " Allow once " [fg=Surface bg=Accent bold] | "               " [fg=TextMuted] | "  " | "│" [fg=Warning]
+47: "│" [fg=Warning] | "  " | " 2 " [fg=TextFaint] | " Allow always " [fg=Text] | "             " [fg=TextMuted] | "  " | "│" [fg=Warning]
+48: "│" [fg=Warning] | "  " | " 3 " [fg=TextFaint] | " Deny " [fg=Text] | "                     " [fg=TextMuted] | "  " | "│" [fg=Warning]
+49: "│" [fg=Warning] | "                                  " | "│" [fg=Warning]
+50: "╰──────────────────────────────────╯" [fg=Warning]

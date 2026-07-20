@@ -466,6 +466,15 @@ Catppuccin, and Gruvbox variants. Components still receive a plain `Theme` and
 derive styles at construction time; runtime theme selection and component
 reconstruction remain application-owned.
 
+A theme role may be `lipgloss.NoColor{}` when an application wants that role
+to inherit the terminal or parent color. For example, a copy of a preset with
+`SurfaceRaised` set to `NoColor` makes raised panels and component chrome omit
+their background escape sequence. This does not introduce a "transparent"
+semantic role: it is the absence of an emitted color for an existing role.
+Other roles remain intact, so selection and intent fills still communicate
+state. Derived theme copies are the supported selective override boundary;
+components do not expose their internal styles for mutation.
+
 ## 6. Dependency policy
 
 [COMPATIBILITY.md](COMPATIBILITY.md) is the normative compatibility and
