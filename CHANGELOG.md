@@ -5,6 +5,12 @@ before v1, a minor release may contain breaking changes when clearly called out.
 
 ## [Unreleased]
 
+### Changed
+
+- Documented and regression-tested derived themes that use
+  `lipgloss.NoColor{}` for inherited raised surfaces while preserving
+  selection, accent, and intent fills.
+
 ## [0.2.0] - 2026-07-17
 
 ### Compatibility

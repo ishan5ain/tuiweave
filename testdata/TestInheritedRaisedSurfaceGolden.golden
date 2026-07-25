@@ -1,0 +1,50 @@
+panel
+╭ Services ────────────────╮
+│                          │
+│ Application-owned body   │
+│                          │
+╰──────────────────────────╯
+badge
+ healthy
+tabs
+▸Services   Jobs
+statusbar
+ tuiweave   ready   healthy
+autocomplete
+▸ git status  inspect
+  go test ./...  verify
+toolbar
+▸Open   Refresh
+toggle
+[x] Auto-refresh
+progress
+Indexing ██████████░░░░  72%
+palette
+›
+▸ Open  open workspace
+  Refresh  refresh state
+button
+[ Open workspace           ]
+dialog
+╭──────────────────────────────╮
+│                              │
+│  Delete workspace?           │
+│  This cannot be undone.      │
+│                              │
+│            OK      Cancel    │
+│                              │
+╰──────────────────────────────╯
+permission
+╭──────────────────────────────────╮
+│                                  │
+│  Run tests?                      │
+│  The command reads this          │
+│  repository.                     │
+│  Tool: shell                     │
+│  Operation: execute              │
+│                                  │
+│   1  Allow once                  │
+│   2  Allow always                │
+│   3  Deny                        │
+│                                  │
+╰──────────────────────────────────╯

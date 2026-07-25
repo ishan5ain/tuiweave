@@ -11,6 +11,11 @@ import (
 // never use color literals, so swapping the Theme restyles an entire app
 // consistently.
 //
+// Applications that want a role to inherit the terminal or parent color may
+// assign lipgloss.NoColor{} to that role on a copy of a preset Theme. This is
+// an absence of emitted color, not a separate semantic role; components still
+// derive all other styling from the Theme they receive.
+//
 // Adding a role is an API event: it requires justification that no existing
 // role covers the semantics. This is what keeps the theme surface from
 // growing with every new component.
