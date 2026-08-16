@@ -11,6 +11,12 @@ before v1, a minor release may contain breaking changes when clearly called out.
   `lipgloss.NoColor{}` for inherited raised surfaces while preserving
   selection, accent, and intent fills.
 
+### Fixed
+
+- Preserved regional-indicator flag graphemes when table selection repaints
+  under wcwidth terminals by updating `x/ansi` and adding renderer-transition
+  regression coverage.
+
 ## [0.2.0] - 2026-07-17
 
 ### Compatibility

@@ -1,0 +1,34 @@
+## initial
+command: no
+Country
+────────────────────────
+🇨🇦 Canada
+🇯🇵 Japan
+
+## select japan
+command: no
+Country
+────────────────────────
+🇨🇦 Canada
+🇯🇵 Japan
+
+## select canada again
+command: no
+Country
+────────────────────────
+🇨🇦 Canada
+🇯🇵 Japan
+
+## blur table
+command: no
+Country
+────────────────────────
+🇨🇦 Canada
+🇯🇵 Japan
+
+## focus table again
+command: no
+Country
+────────────────────────
+🇨🇦 Canada
+🇯🇵 Japan
