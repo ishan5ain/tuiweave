@@ -96,6 +96,10 @@ func formatGrid(buf uv.ScreenBuffer, cfg config) string {
 
 // renderToGrid parses a rendered ANSI string into a cell grid.
 func renderToGrid(view string) uv.ScreenBuffer {
+	return renderToGridMethod(view, ansi.GraphemeWidth)
+}
+
+func renderToGridMethod(view string, method ansi.Method) uv.ScreenBuffer {
 	protected, replacements := grapheme.Protect(view)
 	ss := uv.NewStyledString(protected)
 	bounds := ss.Bounds()
@@ -103,7 +107,7 @@ func renderToGrid(view string) uv.ScreenBuffer {
 	// Snapshots must retain the complete grapheme in each cell. The buffer's
 	// default WcWidth decoder represents combining marks as separate width-zero
 	// cells, and its ASCII fast path can overwrite them with following padding.
-	buf.Method = ansi.GraphemeWidth
+	buf.Method = method
 	ss.Draw(buf, buf.Bounds())
 	for y := range buf.Height() {
 		for x := range buf.Width() {

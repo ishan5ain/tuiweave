@@ -1,0 +1,4 @@
+1: "Country                 " [fg=TextMuted bold]
+2: "────────────────────────" [fg=BorderMuted]
+3: "🇨🇦 Canada               " [fg=Text]
+4: "🇯🇵 Japan                " [fg=Text bg=SelectionBg]

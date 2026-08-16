@@ -217,6 +217,71 @@ func TestTableUnicodeSelectionScroll(t *testing.T) {
 	}
 }
 
+func TestTableRegionalIndicatorSelectionGolden(t *testing.T) {
+	tb := New(tuiweave.Dark())
+	tb.SetSize(24, 4)
+	tb.SetColumns(Column{Title: "Country", Width: 16})
+	tb.SetRows(
+		[]string{"🇨🇦 Canada"},
+		[]string{"🇯🇵 Japan"},
+	)
+	tb.Focus()
+
+	states := []struct {
+		name string
+		msg  tea.Msg
+	}{
+		{name: "initial"},
+		{name: "selected japan", msg: tea.KeyPressMsg{Code: tea.KeyDown}},
+		{name: "selected canada again", msg: tea.KeyPressMsg{Code: tea.KeyUp}},
+	}
+	for _, state := range states {
+		if state.msg != nil {
+			var cmd tea.Cmd
+			tb, cmd = tb.Update(state.msg)
+			if cmd != nil {
+				t.Fatalf("%s: Update returned unexpected command", state.name)
+			}
+		}
+
+		t.Run(state.name, func(t *testing.T) {
+			view := tb.View()
+			plain := ansi.Strip(view)
+			for _, flag := range []string{"🇨🇦 Canada", "🇯🇵 Japan"} {
+				if !strings.Contains(plain, flag) {
+					t.Fatalf("view lost country grapheme %q: %q", flag, plain)
+				}
+			}
+			for row, line := range strings.Split(plain, "\n") {
+				if got := ansi.StringWidth(line); got != 24 {
+					t.Fatalf("row %d width = %d, want 24: %q", row, got, line)
+				}
+			}
+			snaptest.Snap(t, view)
+			snaptest.SnapCells(t, view, snaptest.WithRoles(tuiweave.Dark()))
+		})
+	}
+}
+
+func TestTableRegionalIndicatorSelectionScenarioGolden(t *testing.T) {
+	tb := New(tuiweave.Dark())
+	tb.SetSize(24, 4)
+	tb.SetColumns(Column{Title: "Country", Width: 16})
+	tb.SetRows(
+		[]string{"🇨🇦 Canada"},
+		[]string{"🇯🇵 Japan"},
+	)
+	tb.Focus()
+
+	result := snaptest.RunScenario(tableScenarioModel{table: tb},
+		snaptest.ScenarioStep{Name: "select japan", Msg: tea.KeyPressMsg{Code: tea.KeyDown}},
+		snaptest.ScenarioStep{Name: "select canada again", Msg: tea.KeyPressMsg{Code: tea.KeyUp}},
+		snaptest.ScenarioStep{Name: "blur table", Msg: inspect.Invoke(ActionBlur)},
+		snaptest.ScenarioStep{Name: "focus table again", Msg: inspect.Invoke(ActionFocus)},
+	)
+	snaptest.SnapScenario(t, result)
+}
+
 func TestTableScenarioGolden(t *testing.T) {
 	tb := newTestTable(24, 5, 8)
 	result := snaptest.RunScenario(tableScenarioModel{table: tb},
