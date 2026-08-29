@@ -3,7 +3,7 @@ module github.com/ishan5ain/tuiweave
 go 1.25.8
 
 require (
-	charm.land/bubbletea/v2 v2.0.8
+	charm.land/bubbletea/v2 v2.0.9
 	charm.land/glamour/v2 v2.0.1
 	charm.land/lipgloss/v2 v2.0.6
 	github.com/charmbracelet/ultraviolet v0.0.0-20260811164956-006e29f97886
