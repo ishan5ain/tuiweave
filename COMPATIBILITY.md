@@ -51,7 +51,7 @@ Until then, all top-level and `agentic/...` packages share one module version.
 
 ### Go 1.26 decision (2026-10-10)
 
-The next pre-v1 release raises the minimum from Go 1.25.8 to Go 1.26.0 to
+tuiweave v0.3.0 raises the minimum from Go 1.25.8 to Go 1.26.0 to
 adopt [Bubble Tea v2.1.0](https://github.com/charmbracelet/bubbletea/releases/tag/v2.1.0).
 The upgrade brings fixes for shutdown signal deadlocks, zero-size terminal
 startup and resizing, and terminal queries issued with input disabled. Its
@@ -60,7 +60,7 @@ These runtime fixes justify revising the earlier Go floor; the review found
 no documented consumer requirement to retain Go 1.25.8. This does not imply
 that every external consumer has been audited.
 
-Consumers must install Go 1.26.0 or newer before adopting the next release.
+Consumers must install Go 1.26.0 or newer before adopting v0.3.0.
 With `GOTOOLCHAIN=local`, Go 1.25 rejects the upgraded module. Existing tags
 retain their original requirements. No tuiweave API migration is required,
 and terminal Program Status Protocol reporting remains application-owned and

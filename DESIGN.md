@@ -480,8 +480,8 @@ components do not expose their internal styles for mutation.
 [COMPATIBILITY.md](COMPATIBILITY.md) is the normative compatibility and
 migration policy. This section records the architectural reasons behind it.
 
-- **Compatibility floor:** the current development version and next release
-  require Go 1.26.0, as declared by Bubble Tea v2.1.0 and the selected
+- **Compatibility floor:** tuiweave v0.3.0 requires Go 1.26.0, as declared
+  by Bubble Tea v2.1.0 and the selected
   Ultraviolet revision. The runtime correctness fixes justify raising the
   earlier Go 1.25.8 floor; the decision and consumer migration are recorded in
   COMPATIBILITY.md. The v1 policy keeps the top-level

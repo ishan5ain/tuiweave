@@ -5,11 +5,13 @@ before v1, a minor release may contain breaking changes when clearly called out.
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-10
+
 ### Compatibility
 
 - Raised the minimum Go version from 1.25.8 to 1.26.0 and upgraded Bubble Tea
   to v2.1.0 for shutdown, terminal-size fallback, and input-disabled query fixes.
-  Consumers must upgrade their Go toolchain before adopting this release; no
+  Consumers must upgrade their Go toolchain before adopting v0.3.0; no
   tuiweave API changes are required. Earlier release tags keep their original
   Go requirements.
 - Updated the required Ultraviolet, ANSI utilities, rune-width, and terminfo
