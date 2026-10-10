@@ -1,6 +1,6 @@
 # Dependency Tracking Report
 
-Generated: 2026-07-17
+Upstream watch generated: 2026-07-17. Pins and upgrade review refreshed: 2026-10-10.
 
 Tracking upstream API changes in tuiweave's core dependencies that may require
 deliberate upgrades to tuiweave.
@@ -9,6 +9,8 @@ This is a dated operational snapshot, not the canonical compatibility policy.
 [COMPATIBILITY.md](COMPATIBILITY.md) is authoritative; DESIGN.md §6 records the
 architectural rationale. The upstream items below are selected for their
 relevance to tuiweave and are not an exhaustive roadmap.
+The open/merged statuses in the upstream watch sections remain observations
+from 2026-07-17; they have not been refreshed by the pin review.
 
 ---
 
@@ -16,21 +18,48 @@ relevance to tuiweave and are not an exhaustive roadmap.
 
 | Dependency | Version | Minimum Go |
 |---|---|---|
-| `charm.land/bubbletea/v2` | `v2.0.8` (tagged) | 1.25.0 |
-| `charm.land/lipgloss/v2` | `v2.0.5` (tagged) | 1.25.0 |
-| `github.com/charmbracelet/ultraviolet` | `v0.0.0-20260703014108-f5a850f9c2b7` (pseudo) | 1.25.0 |
-| `charm.land/glamour/v2` | `v2.0.1` (tagged) | **1.25.8** ← compatibility floor |
-| `github.com/charmbracelet/x/ansi` | `v0.11.7` (tagged) | 1.24.2 |
+| `charm.land/bubbletea/v2` | `v2.1.0` (tagged) | **1.26.0** ← compatibility floor |
+| `charm.land/lipgloss/v2` | `v2.0.6` (tagged) | 1.25.0 |
+| `github.com/charmbracelet/ultraviolet` | `v0.0.0-20261008173134-6b8d4baf91b4` (pseudo) | **1.26.0** |
+| `charm.land/glamour/v2` | `v2.0.1` (tagged) | 1.25.8 |
+| `github.com/charmbracelet/x/ansi` | `v0.11.9` (tagged) | 1.24.2 |
 
-The Go 1.25.8 floor is set by `glamour/v2` v2.0.1. Bubble Tea, Lip Gloss, and
-Ultraviolet declare 1.25.0; `x/ansi` declares 1.24.2. Lowering the floor
+The Go 1.26.0 floor is set by Bubble Tea v2.1.0 and Ultraviolet. Lowering the floor
 requires an upstream or module-structure change (see DESIGN.md §6).
+
+### Bubble Tea v2.1.0 upgrade review (2026-10-10)
+
+Compared with the previous v2.0.9 pin, the upgrade fixes shutdown signal
+deadlocks, supplies positive terminal dimensions when the terminal reports
+zero, and skips response-dependent terminal queries when input is disabled.
+The new `tea.View.ProgramStatus` field and support query are additive and
+opt-in; tuiweave does not automatically emit OSC 7501 reports.
+
+The selected graph changes only five module versions: Bubble Tea, Ultraviolet,
+`x/ansi`, `go-runewidth` (v0.0.24 → v0.0.30), and `terminfo` (the previous
+pseudo-version → v1.0.0). Ultraviolet's layout solver is unchanged by this
+revision range. Its renderer, styled-cell parsing, resizing, and input-loop
+fixes require the existing layout, overlay, SnapCells, grapheme, and application
+scenario coverage to pass without unexplained golden changes.
+
+The compatibility decision and required Go toolchain migration are recorded
+in COMPATIBILITY.md. Historical release notes retain the prior Go floor.
+
+Local validation on macOS arm64 passed on exact Go 1.26.0 and current stable
+Go 1.27.2 with `GOTOOLCHAIN=local`: build, vet, and all tests, including existing
+goldens and scenarios. The stable-toolchain race suite and pinned
+`govulncheck@v1.7.0` gate passed; the scan reported no reachable vulnerabilities.
+No golden files changed. PTY smoke checks of `examples/consumer`, `examples/ops`,
+and `examples/chat` passed normal and zero-size startup, resizing, input, Ctrl+C,
+and SIGTERM shutdown; full-screen examples restored the alternate screen.
+CI retains stable-Go coverage on Linux, macOS, and Windows and tests exact
+Go 1.26.0 on Linux.
 
 ---
 
 ## Stability policy
 
-> `charm.land/bubbletea/v2` (v2.0.8), `charm.land/lipgloss/v2` (v2.0.5) —
+> `charm.land/bubbletea/v2` (v2.1.0), `charm.land/lipgloss/v2` (v2.0.6) —
 > **beta**; pinned, upgraded deliberately.
 >
 > `github.com/charmbracelet/ultraviolet` — **v0**, pseudo-versioned; expect
@@ -120,8 +149,7 @@ could simplify its panel math.
 
 **Status:** v0, pseudo-versioned (per DESIGN.md). **Zero tagged releases.**
 Breaking changes can land without notice. Currently pinned at commit
-`f5a850f9c2b7`. A newer pseudo-version at `4bee1914c0cf` exists but that alone
-is not a reason to upgrade.
+`6b8d4baf91b4`, required by Bubble Tea v2.1.0. See the dated upgrade review above.
 
 ### Where tuiweave touches ultraviolet
 
@@ -170,7 +198,7 @@ contract.
 
 ## 4. ANSI utilities — `github.com/charmbracelet/x/ansi`
 
-**Status:** Tagged direct dependency, currently pinned at `v0.11.7`.
+**Status:** Tagged direct dependency, currently pinned at `v0.11.9`.
 
 tuiweave uses `x/ansi` throughout rendering code and tests for ANSI-safe
 measurement, truncation, wrapping, stripping, and cell-width behavior. Changes
@@ -202,7 +230,7 @@ go mod verify
 
 # 5. Golden file review
 # After intentional visual changes:
-go test ./... -update
+go test ./path/to/affected/package -update
 git diff  # review golden diffs carefully
 ```
 

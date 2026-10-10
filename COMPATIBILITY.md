@@ -10,13 +10,13 @@ watch report, not a support promise.
 
 | Surface | Supported version | Evidence |
 |---|---|---|
-| Go | 1.25.8 minimum | `go.mod`; Linux CI at the exact floor |
+| Go | 1.26.0 minimum | `go.mod`; Linux CI at the exact floor |
 | Go | current stable | Linux, macOS, and Windows CI |
-| Bubble Tea | `charm.land/bubbletea/v2 v2.0.8` | `go.mod`; full CI suite |
-| Lip Gloss | `charm.land/lipgloss/v2 v2.0.5` | `go.mod`; full CI suite |
+| Bubble Tea | `charm.land/bubbletea/v2 v2.1.0` | `go.mod`; full CI suite and consumer runtime test |
+| Lip Gloss | `charm.land/lipgloss/v2 v2.0.6` | `go.mod`; full CI suite |
 | Glamour | `charm.land/glamour/v2 v2.0.1` | `go.mod`; agentic Markdown tests |
-| Ultraviolet | `v0.0.0-20260703014108-f5a850f9c2b7` | `go.mod`; layout, overlay, and SnapCells coverage |
-| ANSI utilities | `github.com/charmbracelet/x/ansi v0.11.7` | `go.mod`; rendering and cell-width coverage |
+| Ultraviolet | `v0.0.0-20261008173134-6b8d4baf91b4` | `go.mod`; layout, overlay, and SnapCells coverage |
+| ANSI utilities | `github.com/charmbracelet/x/ansi v0.11.9` | `go.mod`; rendering and cell-width coverage |
 
 The supported dependency graph is the graph selected by `go.mod`. tuiweave
 does not promise compatibility with arbitrary newer upstream versions merely
@@ -39,15 +39,32 @@ go test -race ./...
 
 ## Go version and module boundary
 
-tuiweave v1 will remain one Go module and will require Go 1.25.8 or newer.
-`glamour/v2`, used behind `agentic/markdown.Renderer`, currently establishes
-that floor. Splitting `agentic` into another module would add coordinated
+tuiweave v1 will remain one Go module and will require Go 1.26.0 or newer.
+Bubble Tea v2.1.0 and the selected Ultraviolet revision establish that floor.
+Splitting `agentic` into another module would add coordinated
 release tags, dependency wiring, and example complexity without demonstrated
 application demand.
 
 The decision can be revisited in a future major version if applications need a
 lower Go floor or the agentic packages require an independent release cadence.
 Until then, all top-level and `agentic/...` packages share one module version.
+
+### Go 1.26 decision (2026-10-10)
+
+The next pre-v1 release raises the minimum from Go 1.25.8 to Go 1.26.0 to
+adopt [Bubble Tea v2.1.0](https://github.com/charmbracelet/bubbletea/releases/tag/v2.1.0).
+The upgrade brings fixes for shutdown signal deadlocks, zero-size terminal
+startup and resizing, and terminal queries issued with input disabled. Its
+required Ultraviolet update also fixes renderer repainting and input handling.
+These runtime fixes justify revising the earlier Go floor; the review found
+no documented consumer requirement to retain Go 1.25.8. This does not imply
+that every external consumer has been audited.
+
+Consumers must install Go 1.26.0 or newer before adopting the next release.
+With `GOTOOLCHAIN=local`, Go 1.25 rejects the upgraded module. Existing tags
+retain their original requirements. No tuiweave API migration is required,
+and terminal Program Status Protocol reporting remains application-owned and
+opt-in through Bubble Tea's `tea.View`.
 
 ## Layout compatibility
 

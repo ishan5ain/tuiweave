@@ -7,7 +7,7 @@ stable v1 release. It is a decision aid, not a release schedule.
 
 - [x] Publish the supported Go, Bubble Tea, Lip Gloss, Glamour, and Ultraviolet
       versions as a tested compatibility matrix.
-- [x] Keep Go 1.25.8 as the minimum and the optional `agentic` layer in the
+- [x] Adopt Go 1.26.0 as the minimum and keep the optional `agentic` layer in the
       main module; see [COMPATIBILITY.md](COMPATIBILITY.md#go-version-and-module-boundary).
 - [x] Keep `layout.Rect` as a standard-library alias and own the
       `layout.Constraint` representation while preserving its constructor API;
