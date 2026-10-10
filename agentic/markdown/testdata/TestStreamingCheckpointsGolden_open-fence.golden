@@ -1,0 +1,24 @@
+# Service investigation
+Review request latency and queue depth
+before changing the worker
+configuration. Keep batchSize small
+while checking the first result. The
+café dashboard includes 界 labels.
+
+## Checks
+• Confirm the current deployment.
+• Inspect the pending work.
+• Compare the latest measurements.
+
+1. Capture the baseline.
+2. Repeat the same workload.
+
+Read the runbook
+https://example.com/runbook for details.
+
+│ Keep the source and measurements
+│ together.
+
+ func ready(pending int) bool {
+     // A small, repeatable check.
+     return pending < 12

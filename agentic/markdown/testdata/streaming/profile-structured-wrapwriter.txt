@@ -1,0 +1,34 @@
+Total: 14.22GB
+ROUTINE ======================== charm.land/lipgloss/v2.(*WrapWriter).Write in /Users/ishansain/go/pkg/mod/charm.land/lipgloss/v2@v2.0.6/wrap.go
+    1.20GB     8.41GB (flat, cum) 59.17% of Total
+         .          .     65:func (w *WrapWriter) Write(p []byte) (int, error) {
+         .          .     66:	if w.p == nil {
+         .          .     67:		// The writer has been closed and its parser returned to the pool.
+         .          .     68:		// Writing after close can happen during out-of-order teardown of
+         .          .     69:		// nested writer chains; treat it as a no-op rather than panicking.
+         .          .     70:		return len(p), nil
+         .          .     71:	}
+         .          .     72:	for i := range p {
+         .          .     73:		b := p[i]
+         .   186.51MB     74:		w.p.Advance(b)
+         .          .     75:		if b == '\n' {
+         .          .     76:			if !w.style.IsZero() {
+       1MB        1MB     77:				_, _ = w.w.Write([]byte(ansi.ResetStyle))
+         .          .     78:			}
+         .          .     79:			if !w.link.IsZero() {
+         .          .     80:				_, _ = w.w.Write([]byte(ansi.ResetHyperlink()))
+         .          .     81:			}
+         .          .     82:		}
+         .          .     83:
+    1.20GB     8.21GB     84:		_, _ = w.w.Write([]byte{b})
+         .          .     85:		if b == '\n' {
+         .          .     86:			if !w.link.IsZero() {
+         .          .     87:				_, _ = w.w.Write([]byte(ansi.SetHyperlink(w.link.URL, w.link.Params)))
+         .          .     88:			}
+         .          .     89:			if !w.style.IsZero() {
+       4MB       17MB     90:				_, _ = w.w.Write([]byte(w.style.String()))
+         .          .     91:			}
+         .          .     92:		}
+         .          .     93:	}
+         .          .     94:
+         .          .     95:	return len(p), nil

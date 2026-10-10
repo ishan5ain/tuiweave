@@ -1,0 +1,32 @@
+File: markdown.test
+Type: alloc_objects
+Time: 2026-10-10 09:17:36 PDT
+Showing nodes accounting for 249299168, 95.29% of 261615555 total
+Dropped 231 nodes (cum <= 1308077)
+Showing top 25 nodes out of 68
+      flat  flat%   sum%        cum   cum%
+  80555889 30.79% 30.79%  226476045 86.57%  charm.land/lipgloss/v2.(*WrapWriter).Write
+  34177537 13.06% 43.86%   63800253 24.39%  github.com/charmbracelet/x/ansi.foregroundColorString
+  33711563 12.89% 56.74%   34847541 13.32%  github.com/charmbracelet/x/ansi.Style.Styled
+  33587708 12.84% 69.58%   97387961 37.23%  github.com/charmbracelet/x/ansi.Style.ForegroundColor (inline)
+  29622716 11.32% 80.90%   29622716 11.32%  internal/strconv.FormatUint
+   8945797  3.42% 84.32%    8945797  3.42%  github.com/charmbracelet/x/ansi.ReadStyleColor
+   5242958  2.00% 86.33%    5242958  2.00%  charm.land/lipgloss/v2.Color
+   3768879  1.44% 87.77%    3908151  1.49%  charm.land/glamour/v2/ansi.(*ANSIRenderer).NewElement
+   2537284  0.97% 88.74%    2548032  0.97%  charm.land/lipgloss/v2.NewWrapWriter
+   2495209  0.95% 89.69%    2495209  0.95%  github.com/dlclark/regexp2.newMatch (inline)
+   2106477  0.81% 90.50%    2106477  0.81%  strings.(*genericReplacer).Replace
+   1868105  0.71% 91.21%    1868105  0.71%  bytes.growSlice
+   1817909  0.69% 91.91%    6990933  2.67%  github.com/alecthomas/chroma/v2.matchRules
+   1544115  0.59% 92.50%    1544115  0.59%  bytes.(*Buffer).String (inline)
+   1450063  0.55% 93.05%    3318168  1.27%  bytes.(*Buffer).grow
+   1376276  0.53% 93.58%   13649898  5.22%  github.com/alecthomas/chroma/v2/formatters.(*indexedTTYFormatter).Format
+   1245208  0.48% 94.05%    1835040   0.7%  github.com/alecthomas/chroma/v2.TokenType.Emit
+    961677  0.37% 94.42%    3081624  1.18%  charm.land/glamour/v2/ansi.NewMarginWriter
+    899379  0.34% 94.76%    1637699  0.63%  github.com/yuin/goldmark/parser.(*ids).Generate
+    606073  0.23% 94.99%  226133958 86.44%  io.WriteString
+    491527  0.19% 95.18%    1627505  0.62%  github.com/charmbracelet/x/ansi.Style.String (inline)
+    251231 0.096% 95.28%   33042117 12.63%  charm.land/lipgloss/v2.Wrap
+     32769 0.013% 95.29%   14229996  5.44%  charm.land/glamour/v2/ansi.(*CodeBlockElement).Render
+      1800 0.00069% 95.29%  261429600 99.93%  charm.land/glamour/v2.(*TermRenderer).Render (inline)
+      1019 0.00039% 95.29%  261430619 99.93%  github.com/ishan5ain/tuiweave/agentic/markdown_test.BenchmarkStreaming.func1

@@ -1,0 +1,33 @@
+File: markdown.test
+Type: cpu
+Time: 2026-10-10 09:16:55 PDT
+Duration: 8.46s, Total samples = 7.61s (89.91%)
+Showing nodes accounting for 6.98s, 91.72% of 7.61s total
+Dropped 87 nodes (cum <= 0.04s)
+Showing top 25 nodes out of 110
+      flat  flat%   sum%        cum   cum%
+     2.47s 32.46% 32.46%      2.47s 32.46%  runtime.madvise
+     2.08s 27.33% 59.79%      2.08s 27.33%  runtime.kevent
+     0.25s  3.29% 63.07%      0.34s  4.47%  github.com/charmbracelet/x/ansi.(*Parser).performAction
+     0.22s  2.89% 65.97%      0.30s  3.94%  runtime.mallocgcTiny
+     0.22s  2.89% 68.86%      0.22s  2.89%  runtime.pthread_cond_wait
+     0.19s  2.50% 71.35%      0.19s  2.50%  runtime.pthread_cond_signal
+     0.15s  1.97% 73.32%      1.85s 24.31%  charm.land/lipgloss/v2.(*WrapWriter).Write
+     0.15s  1.97% 75.30%      0.65s  8.54%  runtime.mallocgc
+     0.12s  1.58% 76.87%      1.06s 13.93%  charm.land/glamour/v2/ansi.(*PaddingWriter).Write
+     0.12s  1.58% 78.45%      0.12s  1.58%  internal/runtime/atomic.(*UnsafePointer).Load (inline)
+     0.11s  1.45% 79.89%      0.11s  1.45%  runtime.memmove
+     0.10s  1.31% 81.21%      0.51s  6.70%  github.com/charmbracelet/x/ansi.(*Parser).advance
+     0.10s  1.31% 82.52%      0.10s  1.31%  runtime.pthread_kill
+     0.09s  1.18% 83.71%      0.09s  1.18%  runtime.usleep
+     0.08s  1.05% 84.76%      0.14s  1.84%  bytes.(*Buffer).Write
+     0.08s  1.05% 85.81%      0.08s  1.05%  github.com/charmbracelet/x/ansi/parser.TransitionTable.Transition (inline)
+     0.08s  1.05% 86.86%      0.48s  6.31%  runtime.newobject
+     0.07s  0.92% 87.78%      1.62s 21.29%  charm.land/glamour/v2/ansi.(*IndentWriter).Write
+     0.07s  0.92% 88.70%      0.07s  0.92%  runtime.releasem (inline)
+     0.05s  0.66% 89.36%      0.56s  7.36%  github.com/charmbracelet/x/ansi.(*Parser).Advance
+     0.05s  0.66% 90.01%      0.15s  1.97%  github.com/charmbracelet/x/ansi.wrap
+     0.04s  0.53% 90.54%      0.05s  0.66%  runtime.tryDeferToSpanScan
+     0.03s  0.39% 90.93%      0.07s  0.92%  bufio.(*Writer).Write
+     0.03s  0.39% 91.33%      0.06s  0.79%  github.com/charmbracelet/x/ansi.ReadStyleColor
+     0.03s  0.39% 91.72%      0.04s  0.53%  github.com/clipperhouse/displaywidth.Options.String

@@ -7,7 +7,11 @@ r := markdown.NewRenderer(theme)
 view := markdown.Sprint(r, source, width)
 ```
 
-Depend on `Renderer` rather than the concrete Glamour implementation. `Sprint` degrades to raw source if rendering fails, so malformed or partial streaming input remains visible. Reuse the renderer; it caches work by wrap width.
+Depend on `Renderer` rather than the concrete Glamour implementation. `Sprint`
+degrades to raw source if rendering fails, so malformed or partial streaming
+input remains visible. Reuse the renderer; it caches renderer construction by
+wrap width, not rendered documents. Every changed source still triggers a full
+render.
 
 See the [chat example](../../examples/chat) and [architecture rationale](../../DESIGN.md#d7--markdown-glamour-now-custom-later).
 
@@ -23,3 +27,17 @@ See the [chat example](../../examples/chat) and [architecture rationale](../../D
 - [Chat example](../../examples/chat)
 - [Markdown architecture](../../DESIGN.md#d7--markdown-glamour-now-custom-later)
 - [Compatibility and module policy](../../COMPATIBILITY.md)
+
+## Streaming performance
+
+The [streaming investigation](STREAMING-PERFORMANCE.md) documents deterministic
+append-and-render benchmarks, raw measurements, profiles, reproduction commands,
+and the decision to scope ANSI writer allocation improvements separately.
+One streaming operation replays an entire response, and the full matrix is
+intentionally expensive. See the report for repeated measurement commands;
+for a single pass:
+
+```sh
+go test ./agentic/markdown -run '^$' -bench 'Streaming|Completed' \
+  -benchmem -benchtime=1x
+```

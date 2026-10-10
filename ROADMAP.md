@@ -1,13 +1,16 @@
 # Roadmap
 
-tuiweave is working toward a stable v1 component vocabulary. Two active
-investigation areas have scoped evidence requirements:
+tuiweave is working toward a stable v1 component vocabulary. The current
+investigation and performance follow-up have scoped evidence requirements:
 
 - define and validate input-method handling from real terminal and application
   evidence in [Issue #19](https://github.com/ishan5ain/tuiweave/issues/19);
-- measure full-document Markdown rendering under realistic streaming workloads
-  before considering an incremental design in
-  [Issue #33](https://github.com/ishan5ain/tuiweave/issues/33).
+- reduce streaming Markdown ANSI writer allocation churn in
+  [Issue #49](https://github.com/ishan5ain/tuiweave/issues/49). The
+  [Issue #33 investigation](agentic/markdown/STREAMING-PERFORMANCE.md) found
+  material cost for long structured responses, with output/writer allocation
+  dominating parsing. Keep full-document rendering until a measured, compatible
+  optimization is reviewed; an incremental parser is not justified by this data.
 
 The foundations those investigations build on are now in place: bounded and
 cell-aware rendering, named interaction scenarios, semantic inspection and

@@ -1,0 +1,33 @@
+File: markdown.test
+Type: cpu
+Time: 2026-10-10 09:17:06 PDT
+Duration: 29.34s, Total samples = 27.27s (92.96%)
+Showing nodes accounting for 23.99s, 87.97% of 27.27s total
+Dropped 256 nodes (cum <= 0.14s)
+Showing top 25 nodes out of 114
+      flat  flat%   sum%        cum   cum%
+    11.36s 41.66% 41.66%     11.36s 41.66%  runtime.madvise
+     2.62s  9.61% 51.27%      2.62s  9.61%  runtime.kevent
+     1.38s  5.06% 56.33%      1.61s  5.90%  github.com/charmbracelet/x/ansi.(*Parser).performAction
+     0.80s  2.93% 59.26%      2.55s  9.35%  runtime.mallocgc
+     0.77s  2.82% 62.08%      0.77s  2.82%  runtime.pthread_cond_wait
+     0.76s  2.79% 64.87%      8.53s 31.28%  charm.land/lipgloss/v2.(*WrapWriter).Write
+     0.72s  2.64% 67.51%      1.11s  4.07%  runtime.mallocgcTiny
+     0.65s  2.38% 69.89%      0.65s  2.38%  runtime.memmove
+     0.61s  2.24% 72.13%      0.61s  2.24%  runtime.pthread_cond_signal
+     0.52s  1.91% 74.04%      0.52s  1.91%  runtime.pthread_kill
+     0.47s  1.72% 75.76%      2.32s  8.51%  github.com/charmbracelet/x/ansi.(*Parser).advance
+     0.44s  1.61% 77.37%      0.44s  1.61%  runtime.usleep
+     0.37s  1.36% 78.73%      0.75s  2.75%  runtime.concatstrings
+     0.35s  1.28% 80.01%      5.26s 19.29%  charm.land/glamour/v2/ansi.(*PaddingWriter).Write
+     0.32s  1.17% 81.19%      0.32s  1.17%  github.com/charmbracelet/x/ansi/parser.TransitionTable.Transition (inline)
+     0.27s  0.99% 82.18%         2s  7.33%  runtime.newobject
+     0.26s  0.95% 83.13%      2.59s  9.50%  github.com/charmbracelet/x/ansi.(*Parser).Advance
+     0.22s  0.81% 83.94%      0.36s  1.32%  bufio.(*Writer).Write
+     0.20s  0.73% 84.67%      0.58s  2.13%  bytes.(*Buffer).Write
+     0.19s   0.7% 85.37%      7.47s 27.39%  charm.land/glamour/v2/ansi.(*IndentWriter).Write
+     0.17s  0.62% 85.99%      0.37s  1.36%  github.com/charmbracelet/x/ansi.wrap
+     0.17s  0.62% 86.62%      0.17s  0.62%  runtime.releasem (inline)
+     0.16s  0.59% 87.20%      0.21s  0.77%  internal/runtime/maps.(*Iter).Next
+     0.11s   0.4% 87.61%      0.24s  0.88%  runtime.mallocgcSmallNoscan
+     0.10s  0.37% 87.97%      0.14s  0.51%  charm.land/glamour/v2/ansi.(*ANSIRenderer).NewElement
