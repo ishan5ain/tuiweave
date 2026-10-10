@@ -1,0 +1,32 @@
+File: markdown.test
+Type: alloc_objects
+Time: 2026-10-10 09:17:03 PDT
+Showing nodes accounting for 66290973, 98.93% of 67007282 total
+Dropped 113 nodes (cum <= 335036)
+Showing top 25 nodes out of 49
+      flat  flat%   sum%        cum   cum%
+  23582395 35.19% 35.19%   62724628 93.61%  charm.land/lipgloss/v2.(*WrapWriter).Write
+   9364090 13.97% 49.17%    9364090 13.97%  github.com/charmbracelet/x/ansi.Style.Styled
+   8781956 13.11% 62.27%   16777466 25.04%  github.com/charmbracelet/x/ansi.foregroundColorString
+   8454271 12.62% 74.89%   25231737 37.66%  github.com/charmbracelet/x/ansi.Style.ForegroundColor (inline)
+   7995510 11.93% 86.82%    7995510 11.93%  internal/strconv.FormatUint
+   2719784  4.06% 90.88%    2719784  4.06%  github.com/charmbracelet/x/ansi.ReadStyleColor
+   1343508  2.01% 92.89%    1343508  2.01%  charm.land/lipgloss/v2.Color
+    926901  1.38% 94.27%     928479  1.39%  charm.land/lipgloss/v2.NewWrapWriter
+    775697  1.16% 95.43%     775697  1.16%  bytes.(*Buffer).String (inline)
+    638513  0.95% 96.38%     638513  0.95%  bytes.growSlice
+    418962  0.63% 97.01%     418962  0.63%  strings.(*genericReplacer).Replace
+    390039  0.58% 97.59%     390039  0.58%  charm.land/glamour/v2/ansi.(*ANSIRenderer).NewElement
+    333162   0.5% 98.09%    1126217  1.68%  charm.land/glamour/v2/ansi.NewMarginWriter
+    270352   0.4% 98.49%     908865  1.36%  bytes.(*Buffer).grow
+    172847  0.26% 98.75%   63028334 94.06%  io.WriteString
+     65540 0.098% 98.85%     384122  0.57%  charm.land/glamour/v2/ansi.NewPaddingWriter (inline)
+     54615 0.082% 98.93%   10021940 14.96%  charm.land/lipgloss/v2.Wrap
+      1825 0.0027% 98.93%   66954433 99.92%  charm.land/glamour/v2.(*TermRenderer).Render (inline)
+      1006 0.0015% 98.93%   66955439 99.92%  github.com/ishan5ain/tuiweave/agentic/markdown_test.BenchmarkStreaming.func1
+         0     0% 98.93%     620610  0.93%  bytes.(*Buffer).Write
+         0     0% 98.93%   66952608 99.92%  charm.land/glamour/v2.(*TermRenderer).RenderBytes
+         0     0% 98.93%   66618663 99.42%  charm.land/glamour/v2/ansi.(*ANSIRenderer).renderNode
+         0     0% 98.93%    1164650  1.74%  charm.land/glamour/v2/ansi.(*BaseElement).Render
+         0     0% 98.93%    1164650  1.74%  charm.land/glamour/v2/ansi.(*BaseElement).doRender
+         0     0% 98.93%   41754337 62.31%  charm.land/glamour/v2/ansi.(*BlockElement).Finish

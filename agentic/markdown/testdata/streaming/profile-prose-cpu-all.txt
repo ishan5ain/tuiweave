@@ -1,0 +1,203 @@
+File: markdown.test
+Type: cpu
+Time: 2026-10-10 09:16:55 PDT
+Duration: 8.46s, Total samples = 7.61s (89.91%)
+Showing nodes accounting for 7.61s, 100% of 7.61s total
+      flat  flat%   sum%        cum   cum%
+         0     0%     0%      4.95s 65.05%  runtime.systemstack
+         0     0%     0%      2.47s 32.46%  runtime.(*mheap).alloc.func1
+         0     0%     0%      2.47s 32.46%  runtime.(*mheap).allocSpan
+     2.47s 32.46% 32.46%      2.47s 32.46%  runtime.madvise
+         0     0% 32.46%      2.46s 32.33%  runtime.sysUsed (inline)
+         0     0% 32.46%      2.46s 32.33%  runtime.sysUsedOS (inline)
+         0     0% 32.46%      2.25s 29.57%  charm.land/glamour/v2.(*TermRenderer).Render (inline)
+         0     0% 32.46%      2.25s 29.57%  github.com/ishan5ain/tuiweave/agentic/markdown.(*glamourRenderer).Render
+         0     0% 32.46%      2.25s 29.57%  github.com/ishan5ain/tuiweave/agentic/markdown_test.BenchmarkStreaming.func1
+         0     0% 32.46%      2.25s 29.57%  testing.(*B).run1.func1
+         0     0% 32.46%      2.25s 29.57%  testing.(*B).runN
+         0     0% 32.46%      2.21s 29.04%  charm.land/glamour/v2.(*TermRenderer).RenderBytes
+         0     0% 32.46%      2.21s 29.04%  github.com/yuin/goldmark.(*markdown).Convert
+     0.01s  0.13% 32.59%      2.19s 28.78%  charm.land/glamour/v2/ansi.(*ANSIRenderer).renderNode
+         0     0% 32.59%      2.19s 28.78%  github.com/yuin/goldmark/ast.Walk (inline)
+         0     0% 32.59%      2.19s 28.78%  github.com/yuin/goldmark/ast.walkHelper
+         0     0% 32.59%      2.19s 28.78%  github.com/yuin/goldmark/renderer.(*renderer).Render
+         0     0% 32.59%      2.19s 28.78%  github.com/yuin/goldmark/renderer.(*renderer).Render.func2
+         0     0% 32.59%      2.08s 27.33%  runtime.gcStart.func4
+     2.08s 27.33% 59.92%      2.08s 27.33%  runtime.kevent
+         0     0% 59.92%      2.08s 27.33%  runtime.netpoll
+         0     0% 59.92%      2.08s 27.33%  runtime.startTheWorldWithSema
+         0     0% 59.92%      1.96s 25.76%  io.WriteString
+     0.15s  1.97% 61.89%      1.85s 24.31%  charm.land/lipgloss/v2.(*WrapWriter).Write
+         0     0% 61.89%      1.82s 23.92%  charm.land/glamour/v2/ansi.(*BlockElement).Finish
+     0.07s  0.92% 62.81%      1.62s 21.29%  charm.land/glamour/v2/ansi.(*IndentWriter).Write
+         0     0% 62.81%      1.62s 21.29%  charm.land/glamour/v2/ansi.(*MarginWriter).Write
+     0.12s  1.58% 64.39%      1.06s 13.93%  charm.land/glamour/v2/ansi.(*PaddingWriter).Write
+     0.15s  1.97% 66.36%      0.65s  8.54%  runtime.mallocgc
+     0.05s  0.66% 67.02%      0.56s  7.36%  github.com/charmbracelet/x/ansi.(*Parser).Advance
+     0.10s  1.31% 68.33%      0.51s  6.70%  github.com/charmbracelet/x/ansi.(*Parser).advance
+         0     0% 68.33%      0.50s  6.57%  charm.land/lipgloss/v2.Wrap
+     0.08s  1.05% 69.38%      0.48s  6.31%  runtime.newobject
+         0     0% 69.38%      0.35s  4.60%  runtime.schedule
+     0.25s  3.29% 72.67%      0.34s  4.47%  github.com/charmbracelet/x/ansi.(*Parser).performAction
+         0     0% 72.67%      0.32s  4.20%  charm.land/glamour/v2/ansi.(*ParagraphElement).Finish
+         0     0% 72.67%      0.32s  4.20%  runtime.gcBgMarkWorker.func2
+         0     0% 72.67%      0.32s  4.20%  runtime.gcDrain
+     0.22s  2.89% 75.56%      0.30s  3.94%  runtime.mallocgcTiny
+         0     0% 75.56%      0.30s  3.94%  runtime.mcall
+         0     0% 75.56%      0.30s  3.94%  runtime.park_m
+         0     0% 75.56%      0.28s  3.68%  runtime.gcDrainMarkWorkerDedicated (inline)
+         0     0% 75.56%      0.27s  3.55%  runtime.findRunnable
+     0.01s  0.13% 75.69%      0.25s  3.29%  charm.land/glamour/v2/ansi.NewMarginWriter.func1
+         0     0% 75.69%      0.25s  3.29%  charm.land/glamour/v2/ansi.renderText
+         0     0% 75.69%      0.24s  3.15%  runtime.semasleep
+     0.22s  2.89% 78.58%      0.22s  2.89%  runtime.pthread_cond_wait
+         0     0% 78.58%      0.22s  2.89%  runtime.stopm
+         0     0% 78.58%      0.21s  2.76%  runtime.mPark (inline)
+         0     0% 78.58%      0.21s  2.76%  runtime.notesleep
+         0     0% 78.58%      0.20s  2.63%  runtime.(*gcControllerState).enlistWorker
+     0.19s  2.50% 81.08%      0.19s  2.50%  runtime.pthread_cond_signal
+         0     0% 81.08%      0.19s  2.50%  runtime.semawakeup
+         0     0% 81.08%      0.19s  2.50%  runtime.wakep
+         0     0% 81.08%      0.18s  2.37%  runtime.notewakeup
+         0     0% 81.08%      0.18s  2.37%  runtime.startm
+         0     0% 81.08%      0.15s  1.97%  github.com/charmbracelet/x/ansi.Style.ForegroundColor (inline)
+         0     0% 81.08%      0.15s  1.97%  github.com/charmbracelet/x/ansi.Wrap (inline)
+     0.05s  0.66% 81.73%      0.15s  1.97%  github.com/charmbracelet/x/ansi.wrap
+     0.01s  0.13% 81.87%      0.15s  1.97%  runtime.slicebytetostring
+     0.08s  1.05% 82.92%      0.14s  1.84%  bytes.(*Buffer).Write
+         0     0% 82.92%      0.14s  1.84%  runtime.gcBgMarkWorker
+         0     0% 82.92%      0.14s  1.84%  runtime.mProf_Malloc
+         0     0% 82.92%      0.14s  1.84%  runtime.profilealloc
+         0     0% 82.92%      0.14s  1.84%  runtime.stkbucket
+         0     0% 82.92%      0.12s  1.58%  github.com/charmbracelet/x/ansi.foregroundColorString
+     0.12s  1.58% 84.49%      0.12s  1.58%  internal/runtime/atomic.(*UnsafePointer).Load (inline)
+         0     0% 84.49%      0.12s  1.58%  runtime.gopreempt_m (inline)
+         0     0% 84.49%      0.12s  1.58%  runtime.goschedImpl
+         0     0% 84.49%      0.12s  1.58%  runtime.newstack
+     0.01s  0.13% 84.63%      0.11s  1.45%  runtime.mallocgcSmallNoscan
+     0.11s  1.45% 86.07%      0.11s  1.45%  runtime.memmove
+         0     0% 86.07%      0.11s  1.45%  runtime.morestack
+         0     0% 86.07%      0.10s  1.31%  runtime.lock (inline)
+         0     0% 86.07%      0.10s  1.31%  runtime.lock2
+         0     0% 86.07%      0.10s  1.31%  runtime.lockWithRank (inline)
+         0     0% 86.07%      0.10s  1.31%  runtime.preemptM
+         0     0% 86.07%      0.10s  1.31%  runtime.preemptone
+     0.10s  1.31% 87.39%      0.10s  1.31%  runtime.pthread_kill
+         0     0% 87.39%      0.10s  1.31%  runtime.signalM (inline)
+         0     0% 87.39%      0.09s  1.18%  github.com/charmbracelet/x/ansi.StringWidth (inline)
+         0     0% 87.39%      0.09s  1.18%  github.com/charmbracelet/x/ansi.stringWidth
+         0     0% 87.39%      0.09s  1.18%  runtime.osyield (inline)
+     0.09s  1.18% 88.57%      0.09s  1.18%  runtime.usleep
+         0     0% 88.57%      0.08s  1.05%  charm.land/lipgloss/v2.NewWrapWriter.func1
+     0.02s  0.26% 88.83%      0.08s  1.05%  github.com/charmbracelet/ultraviolet.ReadStyle
+     0.02s  0.26% 89.09%      0.08s  1.05%  github.com/charmbracelet/x/ansi.FirstGraphemeCluster[go.shape.string]
+     0.08s  1.05% 90.14%      0.08s  1.05%  github.com/charmbracelet/x/ansi/parser.TransitionTable.Transition (inline)
+     0.01s  0.13% 90.28%      0.08s  1.05%  runtime.concatstrings
+     0.03s  0.39% 90.67%      0.07s  0.92%  bufio.(*Writer).Write
+         0     0% 90.67%      0.07s  0.92%  internal/strconv.FormatUint
+     0.07s  0.92% 91.59%      0.07s  0.92%  runtime.releasem (inline)
+         0     0% 91.59%      0.07s  0.92%  strconv.FormatUint (inline)
+     0.03s  0.39% 91.98%      0.06s  0.79%  github.com/charmbracelet/x/ansi.ReadStyleColor
+     0.01s  0.13% 92.12%      0.06s  0.79%  github.com/charmbracelet/x/ansi.Style.Styled
+         0     0% 92.12%      0.06s  0.79%  runtime.resetspinning
+     0.02s  0.26% 92.38%      0.06s  0.79%  runtime.scanObject
+     0.03s  0.39% 92.77%      0.06s  0.79%  runtime.scanObjectsSmall
+         0     0% 92.77%      0.06s  0.79%  runtime.scanSpan
+         0     0% 92.77%      0.05s  0.66%  runtime.mallocgcLarge
+     0.04s  0.53% 93.30%      0.05s  0.66%  runtime.tryDeferToSpanScan
+         0     0% 93.30%      0.04s  0.53%  bytes.(*Buffer).String (inline)
+     0.03s  0.39% 93.69%      0.04s  0.53%  github.com/clipperhouse/displaywidth.Options.String
+         0     0% 93.69%      0.04s  0.53%  runtime.concatstring3
+         0     0% 93.69%      0.04s  0.53%  runtime.convTnoptr
+         0     0% 93.69%      0.04s  0.53%  runtime.forEachPInternal
+         0     0% 93.69%      0.04s  0.53%  runtime.gcDrainMarkWorkerIdle (inline)
+     0.01s  0.13% 93.82%      0.04s  0.53%  runtime.growslice
+         0     0% 93.82%      0.04s  0.53%  runtime.rawstring (inline)
+         0     0% 93.82%      0.04s  0.53%  runtime.rawstringtmp
+     0.03s  0.39% 94.22%      0.03s  0.39%  bytes.(*Buffer).WriteByte
+         0     0% 94.22%      0.03s  0.39%  bytes.(*Buffer).grow
+         0     0% 94.22%      0.03s  0.39%  bytes.growSlice
+     0.01s  0.13% 94.35%      0.03s  0.39%  gcWriteBarrier
+         0     0% 94.35%      0.03s  0.39%  github.com/charmbracelet/x/ansi.wrap.func2 (inline)
+     0.03s  0.39% 94.74%      0.03s  0.39%  internal/abi.(*Type).Pointers (inline)
+         0     0% 94.74%      0.03s  0.39%  runtime.runSafePointFn
+     0.03s  0.39% 95.14%      0.03s  0.39%  unicode/utf8.DecodeRune (inline)
+     0.02s  0.26% 95.40%      0.02s  0.26%  bufio.(*Writer).Available (inline)
+         0     0% 95.40%      0.02s  0.26%  bytes.(*Buffer).WriteRune
+     0.01s  0.13% 95.53%      0.02s  0.26%  bytes.(*Buffer).WriteString
+         0     0% 95.53%      0.02s  0.26%  charm.land/glamour/v2/ansi.(*ANSIRenderer).NewElement
+         0     0% 95.53%      0.02s  0.26%  charm.land/lipgloss/v2.Color
+         0     0% 95.53%      0.02s  0.26%  github.com/charmbracelet/x/ansi.Style.String (inline)
+     0.02s  0.26% 95.80%      0.02s  0.26%  github.com/charmbracelet/x/ansi.runeContainsAny (inline)
+         0     0% 95.80%      0.02s  0.26%  github.com/charmbracelet/x/ansi.wrap.func1 (inline)
+     0.01s  0.13% 95.93%      0.02s  0.26%  github.com/clipperhouse/uax29/v2/graphemes.(*Iterator[go.shape.string]).First
+         0     0% 95.93%      0.02s  0.26%  github.com/yuin/goldmark/extension.(*linkifyParser).Parse
+         0     0% 95.93%      0.02s  0.26%  github.com/yuin/goldmark/parser.(*parser).Parse
+         0     0% 95.93%      0.02s  0.26%  github.com/yuin/goldmark/parser.(*parser).Parse.func2
+         0     0% 95.93%      0.02s  0.26%  github.com/yuin/goldmark/parser.(*parser).parseBlock
+         0     0% 95.93%      0.02s  0.26%  github.com/yuin/goldmark/parser.(*parser).walkBlock
+     0.01s  0.13% 96.06%      0.02s  0.26%  runtime.execute
+         0     0% 96.06%      0.02s  0.26%  runtime.gcMarkDone.forEachP.func5
+         0     0% 96.06%      0.02s  0.26%  runtime.gcMarkTermination.forEachP.func7
+     0.02s  0.26% 96.32%      0.02s  0.26%  runtime.getMCache (inline)
+     0.02s  0.26% 96.58%      0.02s  0.26%  runtime.mmap
+         0     0% 96.58%      0.02s  0.26%  runtime.notetsleep
+         0     0% 96.58%      0.02s  0.26%  runtime.notetsleep_internal
+         0     0% 96.58%      0.02s  0.26%  runtime.persistentalloc.func1
+         0     0% 96.58%      0.02s  0.26%  runtime.persistentalloc1
+     0.02s  0.26% 96.85%      0.02s  0.26%  runtime.pthread_cond_timedwait_relative_np
+         0     0% 96.85%      0.02s  0.26%  runtime.rawbyteslice
+         0     0% 96.85%      0.02s  0.26%  runtime.stringtoslicebyte
+         0     0% 96.85%      0.02s  0.26%  runtime.sysAlloc
+         0     0% 96.85%      0.02s  0.26%  runtime.sysAllocOS (inline)
+         0     0% 96.85%      0.02s  0.26%  runtime.wbBufFlush
+         0     0% 96.85%      0.02s  0.26%  runtime.wbBufFlush.func1
+     0.01s  0.13% 96.98%      0.02s  0.26%  runtime.wbBufFlush1
+     0.01s  0.13% 97.11%      0.01s  0.13%  bytes.(*Buffer).tryGrowByReslice (inline)
+         0     0% 97.11%      0.01s  0.13%  charm.land/glamour/v2/ansi.(*BaseElement).Render
+         0     0% 97.11%      0.01s  0.13%  charm.land/glamour/v2/ansi.(*BaseElement).doRender
+     0.01s  0.13% 97.24%      0.01s  0.13%  charm.land/glamour/v2/ansi.NewMarginWriter
+     0.01s  0.13% 97.37%      0.01s  0.13%  charm.land/glamour/v2/ansi.isChild
+         0     0% 97.37%      0.01s  0.13%  charm.land/lipgloss/v2.(*WrapWriter).Close
+     0.01s  0.13% 97.50%      0.01s  0.13%  charm.land/lipgloss/v2.parseHex
+     0.01s  0.13% 97.63%      0.01s  0.13%  github.com/charmbracelet/x/ansi.(*Parser).Params (inline)
+         0     0% 97.63%      0.01s  0.13%  github.com/charmbracelet/x/ansi.PutParser
+     0.01s  0.13% 97.77%      0.01s  0.13%  github.com/charmbracelet/x/ansi.shift[go.shape.uint32] (inline)
+     0.01s  0.13% 97.90%      0.01s  0.13%  github.com/clipperhouse/displaywidth.printableASCIILength[go.shape.string] (inline)
+     0.01s  0.13% 98.03%      0.01s  0.13%  github.com/clipperhouse/uax29/v2/graphemes.(*Iterator[go.shape.string]).Next
+     0.01s  0.13% 98.16%      0.01s  0.13%  github.com/yuin/goldmark/text.(*blockReader).PeekLine
+     0.01s  0.13% 98.29%      0.01s  0.13%  github.com/yuin/goldmark/util.FindEmailIndex
+     0.01s  0.13% 98.42%      0.01s  0.13%  internal/strconv.formatBase10
+         0     0% 98.42%      0.01s  0.13%  runtime.(*mcache).nextFree
+         0     0% 98.42%      0.01s  0.13%  runtime.(*mcache).refill
+         0     0% 98.42%      0.01s  0.13%  runtime.(*mcentral).cacheSpan
+         0     0% 98.42%      0.01s  0.13%  runtime.(*mcentral).grow
+         0     0% 98.42%      0.01s  0.13%  runtime.(*mheap).alloc
+         0     0% 98.42%      0.01s  0.13%  runtime.(*mheap).initSpan
+     0.01s  0.13% 98.55%      0.01s  0.13%  runtime.(*mspan).init
+         0     0% 98.55%      0.01s  0.13%  runtime.(*pageAlloc).scavenge.func1
+         0     0% 98.55%      0.01s  0.13%  runtime.(*pageAlloc).scavengeOne
+         0     0% 98.55%      0.01s  0.13%  runtime.(*spanInlineMarkBits).tryAcquire
+     0.01s  0.13% 98.69%      0.01s  0.13%  runtime.(*spanScanOwnership).or (inline)
+     0.01s  0.13% 98.82%      0.01s  0.13%  runtime.extractHeapBitsSmall
+     0.01s  0.13% 98.95%      0.01s  0.13%  runtime.gcMarkTermination.func4
+         0     0% 98.95%      0.01s  0.13%  runtime.gopark
+         0     0% 98.95%      0.01s  0.13%  runtime.mallocgcSmallScanNoHeader
+     0.01s  0.13% 99.08%      0.01s  0.13%  runtime.memclrNoHeapPointers
+         0     0% 99.08%      0.01s  0.13%  runtime.nanotime (inline)
+     0.01s  0.13% 99.21%      0.01s  0.13%  runtime.nanotime1
+     0.01s  0.13% 99.34%      0.01s  0.13%  runtime.newBucket
+         0     0% 99.34%      0.01s  0.13%  runtime.preemptall
+     0.01s  0.13% 99.47%      0.01s  0.13%  runtime.readUintptr (inline)
+     0.01s  0.13% 99.61%      0.01s  0.13%  runtime.stealWork
+         0     0% 99.61%      0.01s  0.13%  runtime.sysUnused (inline)
+         0     0% 99.61%      0.01s  0.13%  runtime.sysUnusedOS (inline)
+         0     0% 99.61%      0.01s  0.13%  runtime.typePointers.next
+     0.01s  0.13% 99.74%      0.01s  0.13%  runtime.typePointers.nextFast (inline)
+         0     0% 99.74%      0.01s  0.13%  runtime.unlock (inline)
+         0     0% 99.74%      0.01s  0.13%  runtime.unlock2
+         0     0% 99.74%      0.01s  0.13%  runtime.unlock2Wake
+         0     0% 99.74%      0.01s  0.13%  runtime.unlockWithRank (inline)
+     0.01s  0.13% 99.87%      0.01s  0.13%  strings.Join
+         0     0% 99.87%      0.01s  0.13%  sync.(*Pool).Put
+     0.01s  0.13%   100%      0.01s  0.13%  unicode.IsSpace

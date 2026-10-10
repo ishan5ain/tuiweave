@@ -1,0 +1,33 @@
+File: markdown.test
+Type: cpu
+Time: 2026-10-10 09:16:55 PDT
+Duration: 8.46s, Total samples = 7.61s (89.91%)
+Showing nodes accounting for 4.71s, 61.89% of 7.61s total
+Dropped 87 nodes (cum <= 0.04s)
+Showing top 25 nodes out of 110
+      flat  flat%   sum%        cum   cum%
+         0     0%     0%      4.95s 65.05%  runtime.systemstack
+         0     0%     0%      2.47s 32.46%  runtime.(*mheap).alloc.func1
+         0     0%     0%      2.47s 32.46%  runtime.(*mheap).allocSpan
+     2.47s 32.46% 32.46%      2.47s 32.46%  runtime.madvise
+         0     0% 32.46%      2.46s 32.33%  runtime.sysUsed (inline)
+         0     0% 32.46%      2.46s 32.33%  runtime.sysUsedOS (inline)
+         0     0% 32.46%      2.25s 29.57%  charm.land/glamour/v2.(*TermRenderer).Render (inline)
+         0     0% 32.46%      2.25s 29.57%  github.com/ishan5ain/tuiweave/agentic/markdown.(*glamourRenderer).Render
+         0     0% 32.46%      2.25s 29.57%  github.com/ishan5ain/tuiweave/agentic/markdown_test.BenchmarkStreaming.func1
+         0     0% 32.46%      2.25s 29.57%  testing.(*B).run1.func1
+         0     0% 32.46%      2.25s 29.57%  testing.(*B).runN
+         0     0% 32.46%      2.21s 29.04%  charm.land/glamour/v2.(*TermRenderer).RenderBytes
+         0     0% 32.46%      2.21s 29.04%  github.com/yuin/goldmark.(*markdown).Convert
+     0.01s  0.13% 32.59%      2.19s 28.78%  charm.land/glamour/v2/ansi.(*ANSIRenderer).renderNode
+         0     0% 32.59%      2.19s 28.78%  github.com/yuin/goldmark/ast.Walk (inline)
+         0     0% 32.59%      2.19s 28.78%  github.com/yuin/goldmark/ast.walkHelper
+         0     0% 32.59%      2.19s 28.78%  github.com/yuin/goldmark/renderer.(*renderer).Render
+         0     0% 32.59%      2.19s 28.78%  github.com/yuin/goldmark/renderer.(*renderer).Render.func2
+         0     0% 32.59%      2.08s 27.33%  runtime.gcStart.func4
+     2.08s 27.33% 59.92%      2.08s 27.33%  runtime.kevent
+         0     0% 59.92%      2.08s 27.33%  runtime.netpoll
+         0     0% 59.92%      2.08s 27.33%  runtime.startTheWorldWithSema
+         0     0% 59.92%      1.96s 25.76%  io.WriteString
+     0.15s  1.97% 61.89%      1.85s 24.31%  charm.land/lipgloss/v2.(*WrapWriter).Write
+         0     0% 61.89%      1.82s 23.92%  charm.land/glamour/v2/ansi.(*BlockElement).Finish

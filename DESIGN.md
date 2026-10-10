@@ -152,6 +152,15 @@ degrades to raw source on error; transcripts must not fail on bad markdown.
 The revision changes for replacements as well as appends; append-only
 streaming is a useful optimization, not a hidden correctness requirement.
 
+The [Issue #33 measurements](agentic/markdown/STREAMING-PERFORMANCE.md) find
+material cost for long structured streams: the 32 KiB fixture takes about
+56 ms for a final render at width 80 on the documented machine. Profiles point
+to styled ANSI writer allocation churn, with Markdown parsing a small sampled
+fraction. Production rendering and the seam remain unchanged;
+[Issue #49](https://github.com/ishan5ain/tuiweave/issues/49) scopes a compatible
+writer-path optimization with concrete workload targets. Re-measure that path
+before considering an incremental parser or renderer replacement.
+
 ### D8 — Domain packages live above generic primitives
 
 Generic primitives (`list`, `textinput`, `viewport`, `dialog`, …) live in
@@ -539,11 +548,12 @@ immutable.
   chat-cell headers and tool-call output to their assigned width. Dialog and
   permission panels apply the same bounded-width rule to their outer frame and
   inner action/content rows.
-- **Streaming markdown renderer design:** measure realistic cumulative
-  append-and-render workloads in
-  [Issue #33](https://github.com/ishan5ain/tuiweave/issues/33), then retain
-  full-document rendering or scope an incremental design from evidence rather
-  than assumptions about Glamour.
+- **Streaming Markdown performance:** the
+  [Issue #33 investigation](agentic/markdown/STREAMING-PERFORMANCE.md) keeps
+  full-document rendering and scopes ANSI writer allocation improvements in
+  [Issue #49](https://github.com/ishan5ain/tuiweave/issues/49). Preserve output
+  and the renderer seam, meet the documented workload targets, and re-profile
+  before considering a broader streaming design.
 - **Inspection/action schema hardening:** evolve the initial data-only schema
   without turning tuiweave into a framework; preserve stable IDs as APIs mature.
 - **Scenario format expansion:** the initial Go-native plain golden is in place;
