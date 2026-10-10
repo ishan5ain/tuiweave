@@ -1,0 +1,6 @@
+goos: darwin
+goarch: arm64
+pkg: github.com/ishan5ain/tuiweave/agentic/markdown
+cpu: Apple M4 Pro
+BenchmarkStreaming/Renderer/structured/32768/bytes32/w80-14         	       1	22193057000 ns/op	      1025 deltas/op	  21651763 ns/delta	     32768 source-B	13302957288 B/op	322325784 allocs/op
+PASS

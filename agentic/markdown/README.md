@@ -33,6 +33,8 @@ See the [chat example](../../examples/chat) and [architecture rationale](../../D
 The [streaming investigation](STREAMING-PERFORMANCE.md) documents deterministic
 append-and-render benchmarks, raw measurements, profiles, reproduction commands,
 and the decision to scope ANSI writer allocation improvements separately.
+The [writer batching experiment](WRITER-BATCHING.md) records the first upstream
+dependency improvement and the remaining targets.
 One streaming operation replays an entire response, and the full matrix is
 intentionally expensive. See the report for repeated measurement commands;
 for a single pass:

@@ -1,0 +1,32 @@
+File: markdown.test
+Type: alloc_objects
+Time: 2026-10-10 12:12:02 PDT
+Showing nodes accounting for 175398566, 94.89% of 184841750 total
+Dropped 220 nodes (cum <= 924208)
+Showing top 25 nodes out of 81
+      flat  flat%   sum%        cum   cum%
+  36635173 19.82% 19.82%   57082709 30.88%  github.com/charmbracelet/x/ansi.foregroundColorString
+  34603529 18.72% 38.54%   91686238 49.60%  github.com/charmbracelet/x/ansi.Style.ForegroundColor (inline)
+  34491000 18.66% 57.20%   35517751 19.22%  github.com/charmbracelet/x/ansi.Style.Styled
+  20447536 11.06% 68.26%   20447536 11.06%  internal/strconv.FormatUint
+  13598923  7.36% 75.62%   13598923  7.36%  charm.land/lipgloss/v2.Color
+  10518685  5.69% 81.31%   10518685  5.69%  github.com/charmbracelet/x/ansi.ReadStyleColor
+   3899607  2.11% 83.42%    4006108  2.17%  charm.land/glamour/v2/ansi.(*ANSIRenderer).NewElement
+   2495153  1.35% 84.77%    2504678  1.36%  charm.land/lipgloss/v2.NewWrapWriter
+   2376817  1.29% 86.06%    2376817  1.29%  strings.(*genericReplacer).Replace
+   2368818  1.28% 87.34%    2368818  1.28%  github.com/dlclark/regexp2.newMatch (inline)
+   1929873  1.04% 88.38%    6607859  3.57%  github.com/alecthomas/chroma/v2.matchRules
+   1660801   0.9% 89.28%    1660801   0.9%  bytes.(*Buffer).String (inline)
+   1570583  0.85% 90.13%    1570583  0.85%  bytes.growSlice
+   1267053  0.69% 90.81%    1627505  0.88%  github.com/alecthomas/chroma/v2.TokenType.Emit
+   1187904  0.64% 91.46%    2758487  1.49%  bytes.(*Buffer).grow
+   1114128   0.6% 92.06%   11731761  6.35%  github.com/alecthomas/chroma/v2/formatters.(*indexedTTYFormatter).Format
+   1081364  0.59% 92.65%    1081364  0.59%  internal/bytealg.MakeNoZero
+    974873  0.53% 93.17%    1794601  0.97%  github.com/yuin/goldmark/parser.(*ids).Generate
+    830595  0.45% 93.62%    3094008  1.67%  charm.land/glamour/v2/ansi.NewMarginWriter
+    671757  0.36% 93.99%    1248515  0.68%  github.com/charmbracelet/ultraviolet.ReadLink
+    537451  0.29% 94.28%     932878   0.5%  github.com/dlclark/regexp2.(*Match).Groups
+    464049  0.25% 94.53%  150643306 81.50%  io.WriteString
+    262154  0.14% 94.67%     945627  0.51%  charm.land/glamour/v2/ansi.NewIndentWriter (inline)
+    225053  0.12% 94.79%    1065818  0.58%  github.com/alecthomas/chroma/v2/formatters.styleToEscapeSequence
+    185687   0.1% 94.89%    1245206  0.67%  github.com/charmbracelet/x/ansi.Style.String (inline)

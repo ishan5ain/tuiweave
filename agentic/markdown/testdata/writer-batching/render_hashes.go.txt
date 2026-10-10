@@ -1,0 +1,51 @@
+package main
+
+import (
+	"crypto/sha256"
+	"fmt"
+	"os"
+	"path/filepath"
+	"strings"
+	"unicode/utf8"
+
+	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/agentic/markdown"
+)
+
+func main() {
+	for _, kind := range []string{"prose", "structured"} {
+		data, err := os.ReadFile(filepath.Join(os.Args[1], "agentic/markdown/testdata/streaming", kind+".md"))
+		if err != nil {
+			panic(err)
+		}
+		unit := string(data) + "\n"
+		sources := map[string]string{"fixture": unit}
+		for _, size := range []int{2048, 8192, 32768} {
+			s := strings.Repeat(unit, (size+len(unit)-1)/len(unit))
+			n := size
+			for n < len(s) && !utf8.RuneStart(s[n]) {
+				n--
+			}
+			sources[fmt.Sprint(size)] = s[:n]
+		}
+		if kind == "structured" {
+			for _, end := range []string{"**request", "[runbook](https://example.com/", "    return pending < 12\n"} {
+				i := strings.Index(unit, end)
+				if i < 0 {
+					panic("missing checkpoint")
+				}
+				sources[fmt.Sprintf("prefix-%d", i+len(end))] = unit[:i+len(end)]
+			}
+		}
+		for label, source := range sources {
+			for _, width := range []int{40, 80} {
+				r := markdown.NewRenderer(tuiweave.Dark())
+				out, err := r.Render(source, width)
+				if err != nil {
+					panic(err)
+				}
+				fmt.Printf("%s/%s/w%d %x\n", kind, label, width, sha256.Sum256([]byte(out)))
+			}
+		}
+	}
+}
