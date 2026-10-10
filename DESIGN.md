@@ -160,6 +160,9 @@ fraction. Production rendering and the seam remain unchanged;
 [Issue #49](https://github.com/ishan5ain/tuiweave/issues/49) scopes a compatible
 writer-path optimization with concrete workload targets. Re-measure that path
 before considering an incremental parser or renderer replacement.
+The [writer batching follow-up](agentic/markdown/WRITER-BATCHING.md) adopts
+the exact upstream writer commits after compatibility checks and re-measurement;
+the broader targets in issue #49 remain open.
 
 ### D8 — Domain packages live above generic primitives
 
@@ -496,7 +499,7 @@ migration policy. This section records the architectural reasons behind it.
   COMPATIBILITY.md. The v1 policy keeps the top-level
   and `agentic` packages in one module at that floor; splitting their release
   and example wiring has no demonstrated application benefit today.
-- `charm.land/bubbletea/v2` (v2.1.0), `charm.land/lipgloss/v2` (v2.0.6) —
+- `charm.land/bubbletea/v2` (v2.1.0), `charm.land/lipgloss/v2` (v2.0.7-0.20260901023042-868e8b5c4fb6) —
   beta; pinned, upgraded deliberately. Note: charm's v2 modules live on
   `charm.land` vanity paths.
 - `github.com/charmbracelet/ultraviolet` — v0, pseudo-versioned; expect

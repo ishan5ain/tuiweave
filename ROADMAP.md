@@ -11,6 +11,8 @@ investigation and performance follow-up have scoped evidence requirements:
   material cost for long structured responses, with output/writer allocation
   dominating parsing. Keep full-document rendering until a measured, compatible
   optimization is reviewed; an incremental parser is not justified by this data.
+  The [writer batching follow-up](agentic/markdown/WRITER-BATCHING.md) validates
+  the first upstream dependency improvement and records remaining targets.
 
 The foundations those investigations build on are now in place: bounded and
 cell-aware rendering, named interaction scenarios, semantic inspection and

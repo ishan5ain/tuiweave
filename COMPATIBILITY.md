@@ -13,7 +13,7 @@ watch report, not a support promise.
 | Go | 1.26.0 minimum | `go.mod`; Linux CI at the exact floor |
 | Go | current stable | Linux, macOS, and Windows CI |
 | Bubble Tea | `charm.land/bubbletea/v2 v2.1.0` | `go.mod`; full CI suite and consumer runtime test |
-| Lip Gloss | `charm.land/lipgloss/v2 v2.0.6` | `go.mod`; full CI suite |
+| Lip Gloss | `charm.land/lipgloss/v2 v2.0.7-0.20260901023042-868e8b5c4fb6` | `go.mod`; full CI suite and writer-boundary tests |
 | Glamour | `charm.land/glamour/v2 v2.0.1` | `go.mod`; agentic Markdown tests |
 | Ultraviolet | `v0.0.0-20261008173134-6b8d4baf91b4` | `go.mod`; layout, overlay, and SnapCells coverage |
 | ANSI utilities | `github.com/charmbracelet/x/ansi v0.11.9` | `go.mod`; rendering and cell-width coverage |
@@ -65,6 +65,18 @@ With `GOTOOLCHAIN=local`, Go 1.25 rejects the upgraded module. Existing tags
 retain their original requirements. No tuiweave API migration is required,
 and terminal Program Status Protocol reporting remains application-owned and
 opt-in through Bubble Tea's `tea.View`.
+
+## Lip Gloss writer update (2026-10-10)
+
+The selected Lip Gloss commit includes upstream batching between newlines and
+pre-sizing of wrapped output buffers. It is pinned by commit because these
+changes are not yet in a tagged release. The
+[writer experiment](agentic/markdown/WRITER-BATCHING.md) records compatibility
+checks, benchmark evidence, and the remaining performance targets in issue #49.
+Compared with v2.0.6, the upstream production change is limited to `wrap.go`;
+module requirements are unchanged. No tuiweave API migration or Go minimum
+change is required, and existing rendering goldens remain unchanged. A later
+release adoption requires the same dependency review and validation.
 
 ## Layout compatibility
 

@@ -1,0 +1,72 @@
+[
+  {
+    "name": "empty",
+    "source": "",
+    "width": 8,
+    "breakpoints": "",
+    "want": ""
+  },
+  {
+    "name": "words",
+    "source": "one two three",
+    "width": 7,
+    "breakpoints": "",
+    "want": "one two\nthree"
+  },
+  {
+    "name": "unicode",
+    "source": "café 界 é next",
+    "width": 6,
+    "breakpoints": "",
+    "want": "café\n界 é\nnext"
+  },
+  {
+    "name": "explicit-newlines",
+    "source": "one\ntwo\n",
+    "width": 8,
+    "breakpoints": "",
+    "want": "one\ntwo\n"
+  },
+  {
+    "name": "crlf",
+    "source": "one\r\ntwo\r\n",
+    "width": 8,
+    "breakpoints": "",
+    "want": "one\r\ntwo\r\n"
+  },
+  {
+    "name": "bold",
+    "source": "\u001b[1mone two three\u001b[0m",
+    "width": 7,
+    "breakpoints": "",
+    "want": "\u001b[1mone two\u001b[m\n\u001b[1mthree\u001b[0m"
+  },
+  {
+    "name": "bold-crlf",
+    "source": "\u001b[1mone\r\ntwo\u001b[0m",
+    "width": 8,
+    "breakpoints": "",
+    "want": "\u001b[1mone\r\u001b[m\n\u001b[1mtwo\u001b[0m"
+  },
+  {
+    "name": "link",
+    "source": "\u001b]8;id=fixture;https://example.com\u0007one two three\u001b]8;;\u0007",
+    "width": 7,
+    "breakpoints": "",
+    "want": "\u001b]8;id=fixture;https://example.com\u0007one two\u001b]8;;\u0007\n\u001b]8;id=fixture;https://example.com\u0007three\u001b]8;;\u0007"
+  },
+  {
+    "name": "link-crlf",
+    "source": "\u001b]8;;https://example.com\u0007one\r\ntwo\u001b]8;;\u0007",
+    "width": 8,
+    "breakpoints": "",
+    "want": "\u001b]8;;https://example.com\u0007one\r\u001b]8;;\u0007\n\u001b]8;;https://example.com\u0007two\u001b]8;;\u0007"
+  },
+  {
+    "name": "breakpoints",
+    "source": "one/two/three",
+    "width": 5,
+    "breakpoints": "/",
+    "want": "one/\ntwo/\nthree"
+  }
+]

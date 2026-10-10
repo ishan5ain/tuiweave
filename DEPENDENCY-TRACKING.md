@@ -19,13 +19,28 @@ from 2026-07-17; they have not been refreshed by the pin review.
 | Dependency | Version | Minimum Go |
 |---|---|---|
 | `charm.land/bubbletea/v2` | `v2.1.0` (tagged) | **1.26.0** ← compatibility floor |
-| `charm.land/lipgloss/v2` | `v2.0.6` (tagged) | 1.25.0 |
+| `charm.land/lipgloss/v2` | `v2.0.7-0.20260901023042-868e8b5c4fb6` (unreleased commit) | 1.25.0 |
 | `github.com/charmbracelet/ultraviolet` | `v0.0.0-20261008173134-6b8d4baf91b4` (pseudo) | **1.26.0** |
 | `charm.land/glamour/v2` | `v2.0.1` (tagged) | 1.25.8 |
 | `github.com/charmbracelet/x/ansi` | `v0.11.9` (tagged) | 1.24.2 |
 
 The Go 1.26.0 floor is set by Bubble Tea v2.1.0 and Ultraviolet. Lowering the floor
 requires an upstream or module-structure change (see DESIGN.md §6).
+
+### Lip Gloss writer upgrade review (2026-10-10)
+
+The unreleased commit `868e8b5c4fb6056c294b9fda2fb9d1090052daee` contains
+writer batching and wrap-buffer sizing improvements measured in the
+[writer experiment](agentic/markdown/WRITER-BATCHING.md). Upstream production
+changes from v2.0.6 are limited to `wrap.go`; module requirements and the Go
+minimum are unchanged. The selected graph still requires Go 1.26.0.
+
+Consumers adopting this tuiweave revision also resolve the unreleased Lip Gloss
+commit through minimal version selection; its pseudo-version ranks above
+v2.0.6. Revisit the pin when a v2.0.7-or-later tag includes both writer fixes,
+retains compatibility with the Go 1.26.0 floor, and passes the same output,
+module-graph, and performance checks. A second unreleased dependency pin needs
+its own evidence and compatibility review.
 
 ### Bubble Tea v2.1.0 upgrade review (2026-10-10)
 
@@ -59,7 +74,8 @@ Go 1.26.0 on Linux.
 
 ## Stability policy
 
-> `charm.land/bubbletea/v2` (v2.1.0), `charm.land/lipgloss/v2` (v2.0.6) —
+> `charm.land/bubbletea/v2` (v2.1.0) and
+> `charm.land/lipgloss/v2` (v2.0.7-0.20260901023042-868e8b5c4fb6, unreleased commit) —
 > **beta**; pinned, upgraded deliberately.
 >
 > `github.com/charmbracelet/ultraviolet` — **v0**, pseudo-versioned; expect

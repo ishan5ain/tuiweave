@@ -1,0 +1,33 @@
+File: markdown.test
+Type: cpu
+Time: 2026-10-10 12:11:40 PDT
+Duration: 22.39s, Total samples = 21.13s (94.37%)
+Showing nodes accounting for 18.47s, 87.41% of 21.13s total
+Dropped 249 nodes (cum <= 0.11s)
+Showing top 25 nodes out of 126
+      flat  flat%   sum%        cum   cum%
+     9.06s 42.88% 42.88%      9.06s 42.88%  runtime.madvise
+     2.38s 11.26% 54.14%      2.38s 11.26%  runtime.kevent
+     0.99s  4.69% 58.83%      1.24s  5.87%  github.com/charmbracelet/x/ansi.(*Parser).performAction
+     0.75s  3.55% 62.38%      0.75s  3.55%  runtime.memmove
+     0.63s  2.98% 65.36%      0.63s  2.98%  runtime.pthread_cond_wait
+     0.59s  2.79% 68.15%      2.12s 10.03%  github.com/charmbracelet/x/ansi.(*Parser).advance
+     0.55s  2.60% 70.75%      5.63s 26.64%  charm.land/lipgloss/v2.(*WrapWriter).Write
+     0.42s  1.99% 72.74%      0.42s  1.99%  runtime.pthread_cond_signal
+     0.34s  1.61% 74.35%      0.34s  1.61%  github.com/charmbracelet/x/ansi/parser.TransitionTable.Transition (inline)
+     0.33s  1.56% 75.91%      0.33s  1.56%  runtime.usleep
+     0.30s  1.42% 77.33%      0.30s  1.42%  runtime.pthread_kill
+     0.23s  1.09% 78.42%      3.74s 17.70%  charm.land/glamour/v2/ansi.(*PaddingWriter).Write
+     0.22s  1.04% 79.46%      0.43s  2.04%  bufio.(*Writer).Write
+     0.22s  1.04% 80.50%      0.46s  2.18%  bytes.(*Buffer).Write
+     0.21s  0.99% 81.50%      2.33s 11.03%  github.com/charmbracelet/x/ansi.(*Parser).Advance
+     0.19s   0.9% 82.39%      0.92s  4.35%  runtime.mallocgc
+     0.15s  0.71% 83.10%      0.37s  1.75%  github.com/charmbracelet/x/ansi.wrap
+     0.15s  0.71% 83.81%      0.18s  0.85%  internal/runtime/maps.(*Iter).Next
+     0.15s  0.71% 84.52%      0.65s  3.08%  runtime.concatstrings
+     0.14s  0.66% 85.19%      0.21s  0.99%  runtime.mallocgcTiny
+     0.13s  0.62% 85.80%      0.24s  1.14%  github.com/charmbracelet/x/ansi.stringWidth
+     0.11s  0.52% 86.32%      5.22s 24.70%  charm.land/glamour/v2/ansi.(*IndentWriter).Write
+     0.10s  0.47% 86.80%      0.15s  0.71%  runtime.tryDeferToSpanScan
+     0.07s  0.33% 87.13%      0.33s  1.56%  github.com/alecthomas/chroma/v2/formatters.findClosest
+     0.06s  0.28% 87.41%      0.13s  0.62%  charm.land/glamour/v2/ansi.(*ANSIRenderer).NewElement

@@ -1,0 +1,32 @@
+File: markdown.test
+Type: alloc_space
+Time: 2026-10-10 12:12:02 PDT
+Showing nodes accounting for 12141.94MB, 95.06% of 12773.01MB total
+Dropped 221 nodes (cum <= 63.87MB)
+Showing top 25 nodes out of 80
+      flat  flat%   sum%        cum   cum%
+ 4883.22MB 38.23% 38.23%  4883.22MB 38.23%  bytes.growSlice
+ 1523.75MB 11.93% 50.16%  1523.75MB 11.93%  bytes.(*Buffer).String (inline)
+  818.52MB  6.41% 56.57%   842.02MB  6.59%  github.com/charmbracelet/x/ansi.Style.Styled
+  814.90MB  6.38% 62.95% 12745.27MB 99.78%  charm.land/glamour/v2.(*TermRenderer).Render (inline)
+  724.80MB  5.67% 68.62%  7154.40MB 56.01%  io.WriteString
+  559.01MB  4.38% 73.00%   871.01MB  6.82%  github.com/charmbracelet/x/ansi.foregroundColorString
+  528.01MB  4.13% 77.13%  1399.02MB 10.95%  github.com/charmbracelet/x/ansi.Style.ForegroundColor (inline)
+  450.09MB  3.52% 80.66%   456.59MB  3.57%  charm.land/glamour/v2/ansi.(*ANSIRenderer).NewElement
+     312MB  2.44% 83.10%      312MB  2.44%  internal/strconv.FormatUint
+  207.50MB  1.62% 84.72%   207.50MB  1.62%  charm.land/lipgloss/v2.Color
+  206.05MB  1.61% 86.34%   496.09MB  3.88%  github.com/alecthomas/chroma/v2.matchRules
+  166.03MB  1.30% 87.64%   166.03MB  1.30%  github.com/dlclark/regexp2.newMatch (inline)
+  160.50MB  1.26% 88.89%   160.50MB  1.26%  github.com/charmbracelet/x/ansi.ReadStyleColor
+  123.09MB  0.96% 89.86%   123.09MB  0.96%  github.com/alecthomas/chroma/v2.(*Style).Types
+  119.51MB  0.94% 90.79%   230.98MB  1.81%  charm.land/lipgloss/v2.NewWrapWriter
+  114.52MB   0.9% 91.69%   114.52MB   0.9%  github.com/yuin/goldmark/ast.NewTextSegment (inline)
+  106.96MB  0.84% 92.53%   106.96MB  0.84%  github.com/charmbracelet/x/ansi.(*Parser).SetDataSize (inline)
+   90.60MB  0.71% 93.24%   229.69MB  1.80%  github.com/alecthomas/chroma/v2/formatters.styleToEscapeSequence
+   72.50MB  0.57% 93.80%  4955.73MB 38.80%  bytes.(*Buffer).grow
+   58.51MB  0.46% 94.26%   189.02MB  1.48%  charm.land/glamour/v2/ansi.NewMarginWriter
+   58.01MB  0.45% 94.72%    86.51MB  0.68%  github.com/dlclark/regexp2.(*Match).Groups
+      17MB  0.13% 94.85%   802.78MB  6.28%  github.com/alecthomas/chroma/v2/formatters.(*indexedTTYFormatter).Format
+   16.85MB  0.13% 94.98% 12762.12MB 99.91%  github.com/ishan5ain/tuiweave/agentic/markdown_test.BenchmarkStreaming.func1
+    7.50MB 0.059% 95.04%  2803.59MB 21.95%  charm.land/lipgloss/v2.Wrap
+    2.50MB  0.02% 95.06%  6331.57MB 49.57%  charm.land/lipgloss/v2.(*WrapWriter).Write

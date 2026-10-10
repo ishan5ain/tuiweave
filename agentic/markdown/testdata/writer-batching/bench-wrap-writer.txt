@@ -1,0 +1,16 @@
+goos: darwin
+goarch: arm64
+pkg: charm.land/lipgloss/v2
+cpu: Apple M4 Pro
+BenchmarkWrapBatch/legacy-14         	     906	    393788 ns/op	  25.90 MB/s	   37577 B/op	   34013 allocs/op
+BenchmarkWrapBatch/legacy-14         	     978	    376383 ns/op	  27.10 MB/s	   37417 B/op	   34013 allocs/op
+BenchmarkWrapBatch/legacy-14         	     930	    380679 ns/op	  26.79 MB/s	   37419 B/op	   34013 allocs/op
+BenchmarkWrapBatch/legacy-14         	     955	    382925 ns/op	  26.64 MB/s	   37420 B/op	   34013 allocs/op
+BenchmarkWrapBatch/legacy-14         	     950	    371863 ns/op	  27.43 MB/s	   37346 B/op	   34013 allocs/op
+BenchmarkWrapBatch/batched-14        	    2023	    183715 ns/op	  55.52 MB/s	    3734 B/op	     610 allocs/op
+BenchmarkWrapBatch/batched-14        	    2036	    181607 ns/op	  56.17 MB/s	    3733 B/op	     610 allocs/op
+BenchmarkWrapBatch/batched-14        	    2079	    185382 ns/op	  55.02 MB/s	    3733 B/op	     610 allocs/op
+BenchmarkWrapBatch/batched-14        	    2066	    182829 ns/op	  55.79 MB/s	    3733 B/op	     610 allocs/op
+BenchmarkWrapBatch/batched-14        	    1911	    186949 ns/op	  54.56 MB/s	    3736 B/op	     610 allocs/op
+PASS
+ok  	charm.land/lipgloss/v2	4.016s

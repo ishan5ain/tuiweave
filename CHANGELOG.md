@@ -5,6 +5,23 @@ before v1, a minor release may contain breaking changes when clearly called out.
 
 ## [Unreleased]
 
+### Performance
+
+- Pinned Lip Gloss's upstream writer batching and wrap-buffer sizing commits
+  to reduce repeated Markdown rendering overhead. Downstream consumers resolve
+  the unreleased `v2.0.7-0.20260901023042-868e8b5c4fb6` commit through Go's
+  minimal version selection. Revisit the pin when a v2.0.7-or-later tag contains
+  both fixes and preserves the Go 1.26.0 floor, after compatibility validation.
+  Public APIs, Go minimum, and existing rendering goldens are unchanged; the
+  [writer experiment](agentic/markdown/WRITER-BATCHING.md) records measurements
+  and remaining targets in issue #49.
+
+### Added
+
+- Writer-boundary compatibility coverage for split ANSI/UTF-8 input, newline
+  style/link restoration, CRLF, nested writers, and writes after close, plus
+  direct `Wrap` output comparisons with v2.0.6.
+
 ## [0.3.0] - 2026-10-10
 
 ### Compatibility

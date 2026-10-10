@@ -1,0 +1,138 @@
+// Historical reproduction harness; living CI coverage: ../../lipgloss_writer_compat_test.go.
+// Frozen for the original measurements; changes to living tests need not be copied here.
+package lipgloss
+
+import (
+	"bytes"
+	"io"
+	"strings"
+	"testing"
+
+	"github.com/charmbracelet/x/ansi"
+)
+
+// legacyWrapWriter is the v2.0.6 byte-forwarding implementation, retained only
+// as an output and benchmark oracle for the upstream batching experiment.
+type legacyWrapWriter struct{ *WrapWriter }
+
+func (w *legacyWrapWriter) Write(p []byte) (int, error) {
+	if w.p == nil {
+		return len(p), nil
+	}
+	for _, b := range p {
+		w.p.Advance(b)
+		if b == '\n' {
+			if !w.style.IsZero() {
+				_, _ = w.w.Write([]byte(ansi.ResetStyle))
+			}
+			if !w.link.IsZero() {
+				_, _ = w.w.Write([]byte(ansi.ResetHyperlink()))
+			}
+		}
+		_, _ = w.w.Write([]byte{b})
+		if b == '\n' {
+			if !w.link.IsZero() {
+				_, _ = w.w.Write([]byte(ansi.SetHyperlink(w.link.URL, w.link.Params)))
+			}
+			if !w.style.IsZero() {
+				_, _ = w.w.Write([]byte(w.style.String()))
+			}
+		}
+	}
+	return len(p), nil
+}
+
+func wrapChain(dst io.Writer, depth int, legacy bool) (io.Writer, []io.Closer) {
+	var closers []io.Closer
+	for range depth {
+		w := NewWrapWriter(dst)
+		if legacy {
+			dst = &legacyWrapWriter{w}
+		} else {
+			dst = w
+		}
+		closers = append(closers, dst.(io.Closer))
+	}
+	return dst, closers
+}
+
+func renderChain(t *testing.T, input string, split, depth int, legacy bool) string {
+	t.Helper()
+	var buf bytes.Buffer
+	w, closers := wrapChain(&buf, depth, legacy)
+	for _, part := range []string{input[:split], input[split:]} {
+		n, err := w.Write([]byte(part))
+		if err != nil || n != len(part) {
+			t.Fatalf("write: n=%d err=%v", n, err)
+		}
+	}
+	for i := len(closers) - 1; i >= 0; i-- {
+		if err := closers[i].Close(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if n, err := w.Write([]byte("after close")); n != 11 || err != nil {
+		t.Fatalf("write after close: n=%d err=%v", n, err)
+	}
+	return buf.String()
+}
+
+func TestWrapBatchCompatibility(t *testing.T) {
+	inputs := []string{
+		"", "plain café 界 e\u0301", "\n\n", "first\nsecond\n",
+		"\x1b[1mfirst\nsecond\x1b[0m\n",
+		ansi.SetHyperlink("https://example.com", "id=fixture") + "one\ntwo" + ansi.ResetHyperlink(),
+		"\x1b[1m" + ansi.SetHyperlink("https://example.com", "") + "café 界\nnext\n" + ansi.ResetHyperlink() + "\x1b[0m",
+		"\x1b[1mone\x1b[0m\nplain",
+		"\x1b[1m", "\x1b[", "\x1b]8;;https://example.com",
+	}
+	for _, input := range inputs {
+		for depth := 1; depth <= 3; depth++ {
+			for split := 0; split <= len(input); split++ {
+				want := renderChain(t, input, split, depth, true)
+				got := renderChain(t, input, split, depth, false)
+				if got != want {
+					t.Fatalf("depth=%d split=%d input=%q\ngot %q\nwant %q", depth, split, input, got, want)
+				}
+			}
+		}
+	}
+}
+
+type countingWriter struct{ calls int }
+
+func (w *countingWriter) Write(p []byte) (int, error) {
+	w.calls++
+	return len(p), nil
+}
+
+func TestWrapBatchWriteCalls(t *testing.T) {
+	var dst countingWriter
+	w := NewWrapWriter(&dst)
+	_, _ = w.Write([]byte("one\ntwo\nthree"))
+	_ = w.Close()
+	if dst.calls != 5 { // three runs, two newline writes
+		t.Fatalf("downstream writes = %d, want 5", dst.calls)
+	}
+}
+
+func BenchmarkWrapBatch(b *testing.B) {
+	input := []byte(strings.Repeat("\x1b[1mThe café 界 service is ready.\nNext line.\x1b[0m\n", 200))
+	for _, legacy := range []bool{true, false} {
+		name := "batched"
+		if legacy {
+			name = "legacy"
+		}
+		b.Run(name, func(b *testing.B) {
+			b.SetBytes(int64(len(input)))
+			b.ReportAllocs()
+			for b.Loop() {
+				w, closers := wrapChain(io.Discard, 3, legacy)
+				_, _ = w.Write(input)
+				for i := len(closers) - 1; i >= 0; i-- {
+					_ = closers[i].Close()
+				}
+			}
+		})
+	}
+}
