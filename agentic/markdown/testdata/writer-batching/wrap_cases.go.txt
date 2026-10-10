@@ -1,0 +1,41 @@
+package main
+
+import (
+	"encoding/json"
+	"os"
+
+	lipgloss "charm.land/lipgloss/v2"
+	"github.com/charmbracelet/x/ansi"
+)
+
+type wrapCase struct {
+	Name        string `json:"name"`
+	Source      string `json:"source"`
+	Width       int    `json:"width"`
+	Breakpoints string `json:"breakpoints"`
+	Want        string `json:"want"`
+}
+
+func main() {
+	cases := []wrapCase{
+		{Name: "empty", Width: 8},
+		{Name: "words", Source: "one two three", Width: 7},
+		{Name: "unicode", Source: "café 界 e\u0301 next", Width: 6},
+		{Name: "explicit-newlines", Source: "one\ntwo\n", Width: 8},
+		{Name: "crlf", Source: "one\r\ntwo\r\n", Width: 8},
+		{Name: "bold", Source: "\x1b[1mone two three\x1b[0m", Width: 7},
+		{Name: "bold-crlf", Source: "\x1b[1mone\r\ntwo\x1b[0m", Width: 8},
+		{Name: "link", Source: ansi.SetHyperlink("https://example.com", "id=fixture") + "one two three" + ansi.ResetHyperlink(), Width: 7},
+		{Name: "link-crlf", Source: ansi.SetHyperlink("https://example.com", "") + "one\r\ntwo" + ansi.ResetHyperlink(), Width: 8},
+		{Name: "breakpoints", Source: "one/two/three", Width: 5, Breakpoints: "/"},
+	}
+	for i := range cases {
+		c := &cases[i]
+		c.Want = lipgloss.Wrap(c.Source, c.Width, c.Breakpoints)
+	}
+	encoder := json.NewEncoder(os.Stdout)
+	encoder.SetIndent("", "  ")
+	if err := encoder.Encode(cases); err != nil {
+		panic(err)
+	}
+}

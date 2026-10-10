@@ -1,3 +1,5 @@
+// Historical reproduction harness; living CI coverage: ../../lipgloss_writer_compat_test.go.
+// Frozen for the original measurements; changes to living tests need not be copied here.
 package lipgloss
 
 import (

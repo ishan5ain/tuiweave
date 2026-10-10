@@ -40,12 +40,28 @@ other changes and a higher Go minimum, so this experiment deliberately pins the
 specific writer commits. There is no application-local fork or committed
 `replace` directive.
 
+## Writer semantics and ownership
+
+Batching changes downstream write boundaries and forwards sub-slices of the
+caller's buffer instead of allocating one-byte arrays. Write-call granularity
+is not an `io.Writer` guarantee. The [Go writer contract](https://pkg.go.dev/io#Writer)
+requires implementations to neither modify nor retain the supplied slice;
+a writer needing data after return must copy it. The selected stack satisfies
+that requirement. Retaining the slice was already outside the interface
+contract, even if the previous allocation pattern happened to tolerate it.
+The byte-stream compatibility checks preserve output, not incidental call
+boundaries or allocation ownership beyond that contract.
+
 ## Isolated writer checks
 
 An isolated upstream checkout contains the
 [writer test/benchmark harness](testdata/writer-batching/wrap_batch_test.go.txt).
-Its test-only legacy writer reproduces v2.0.6's byte-forwarding implementation
-as an oracle. The new writer matches its exact output for plain text, bold
+This is a frozen historical reproduction artifact, compiled manually in the
+upstream module for the original measurements. The living tuiweave CI tests are
+in `lipgloss_writer_compat_test.go`; the two files serve different purposes and
+are not synchronized copies. The archive's first-line marker identifies the
+living coverage. Its test-only legacy writer reproduces v2.0.6's byte-forwarding
+implementation as an oracle. The new writer matches its exact output for plain text, bold
 styling, hyperlink opening/closing, style changes, Unicode, combining text,
 empty lines, incomplete control sequences, every two-chunk byte split, and
 chains of one to three nested writers. Writes after close remain harmless.
@@ -129,6 +145,11 @@ Streaming ns/op, B/op, and allocations/op describe an entire response;
 ns/delta is an average and completed controls describe one full render.
 Neither is a measured p95 or delivery latency. Allocated bytes measure cumulative
 churn rather than resident memory. Source/delta cadence remains application-owned.
+
+The [artifact manifest](testdata/writer-batching/ARTIFACTS.md) maps every raw
+file to its producing code/dependency snapshot, command, and machine context,
+including working-tree measurements later archived in a commit. It also
+identifies the frozen reproduction sources and review-added correctness cases.
 
 ## Completed-document results
 
@@ -224,7 +245,11 @@ and sampling are machine-specific. Object profile estimates do not exactly match
 benchmark allocation counts, especially for tiny allocations.
 
 This supports a next focused experiment in nested writer forwarding, padding
-style generation, and output-buffer copying. Preserve callback behavior and
+style generation, and output-buffer copying. Shipping the remaining #49
+improvements likely requires another upstream change; isolated local experiments
+can continue to produce evidence. Prefer upstreaming a demonstrated Glamour
+improvement and adopting a compatible tag. Any additional unreleased pin requires
+its own compatibility decision and measurements. Preserve callback behavior and
 style/link boundaries when investigating those paths. It does not support
 implementing an incremental Markdown parser as the next step.
 
@@ -253,8 +278,9 @@ rather than precise accounting for just the timed operation.
 Adopt the exact upstream writer commit as a measured, compatible first
 improvement. It requires no renderer or application API change, retains the
 Go floor and dependency requirements, and improves every sampled renderer case
-in this matrix. The pin is an unreleased upstream commit, not a tagged release;
-upgrade to a later tag only after an equivalent compatibility review.
+in this matrix. The pin is an unreleased upstream commit, not a tagged release.
+Revisit the pin when a v2.0.7-or-later tag contains both writer fixes and
+preserves the Go 1.26.0 floor; adopt it after the same compatibility checks.
 
 The broader [issue #49](https://github.com/ishan5ain/tuiweave/issues/49) remains
 open. Against its illustrative workload-specific targets:
@@ -279,7 +305,7 @@ The isolated upstream checkout passes its full test and race suites, including
 legacy byte-for-byte checks at all split positions. tuiweave additionally keeps
 writer chunk-invariance, single-byte input, nested writers, post-close behavior,
 and plain-run write-call regression tests in
-`agentic/markdown/writer_compatibility_test.go` so they run in normal CI.
+`agentic/markdown/lipgloss_writer_compat_test.go` so they run in normal CI.
 A separate baseline/candidate binary comparison hashes raw styled Markdown output
 for both fixtures, 2/8/32 KiB documents, partial emphasis/link/fence checkpoints,
 and widths 40/80 (22 renders). All hashes match exactly; the checked-in
@@ -292,7 +318,17 @@ root as its argument, and sorting/comparing stdout. This complements the writer
 oracle and role-aware goldens with a raw-byte check for the measured corpus.
 
 Existing Markdown/chat/example and other component goldens remain unchanged;
-no snapshot update was required because output is preserved.
+no snapshot update was required because output is preserved. Review follow-up
+adds CRLF split cases and ten direct `Wrap` cases covering plain/styled text,
+Unicode, explicit LF/CRLF, hyperlinks, and custom breakpoints. Expected raw bytes
+were generated on baseline revision `2e7042f` and independently matched with
+the candidate; `wrap-cases.json` is checked in and consumed by normal CI. The
+preserved `wrap_cases.go.txt` generator makes that comparison reproducible.
+
+Post-close return values and batching call counts are explicitly pin-specific
+regression guards: re-baseline on pin change after reviewing upstream behavior.
+The batching guard requires fewer calls than input bytes, allowing different
+batching strategies while catching a per-byte regression.
 
 Module verification and tidy, formatting, build, vet, normal tests, and race
 tests validate the pinned graph. Full cross-platform CI results are recorded in
