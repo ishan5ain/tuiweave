@@ -480,13 +480,14 @@ components do not expose their internal styles for mutation.
 [COMPATIBILITY.md](COMPATIBILITY.md) is the normative compatibility and
 migration policy. This section records the architectural reasons behind it.
 
-- **Compatibility floor:** the published module currently requires Go 1.25.8.
-  This is not only a development-environment choice: `glamour/v2` v2.0.1
-  declares the same minimum, while Bubble Tea v2, Lip Gloss v2, and
-  Ultraviolet currently declare Go 1.25.0. The v1 policy keeps the top-level
+- **Compatibility floor:** the current development version and next release
+  require Go 1.26.0, as declared by Bubble Tea v2.1.0 and the selected
+  Ultraviolet revision. The runtime correctness fixes justify raising the
+  earlier Go 1.25.8 floor; the decision and consumer migration are recorded in
+  COMPATIBILITY.md. The v1 policy keeps the top-level
   and `agentic` packages in one module at that floor; splitting their release
   and example wiring has no demonstrated application benefit today.
-- `charm.land/bubbletea/v2` (v2.0.8), `charm.land/lipgloss/v2` (v2.0.5) —
+- `charm.land/bubbletea/v2` (v2.1.0), `charm.land/lipgloss/v2` (v2.0.6) —
   beta; pinned, upgraded deliberately. Note: charm's v2 modules live on
   `charm.land` vanity paths.
 - `github.com/charmbracelet/ultraviolet` — v0, pseudo-versioned; expect

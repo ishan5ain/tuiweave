@@ -29,7 +29,8 @@ decisions, visibility, routing, persistence, and side effects.
 
 ## Install
 
-tuiweave requires Go 1.25.8 or newer and is coupled to Bubble Tea v2.
+The current development version and next release require Go 1.26.0 or newer
+and use Bubble Tea v2.1.0. Existing release tags retain their own Go requirements.
 
 ```sh
 go get github.com/ishan5ain/tuiweave@v0.1.0
