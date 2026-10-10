@@ -29,11 +29,11 @@ decisions, visibility, routing, persistence, and side effects.
 
 ## Install
 
-The current development version and next release require Go 1.26.0 or newer
-and use Bubble Tea v2.1.0. Existing release tags retain their own Go requirements.
+tuiweave v0.3.0 requires Go 1.26.0 or newer and uses Bubble Tea v2.1.0.
+Earlier release tags retain their own Go requirements.
 
 ```sh
-go get github.com/ishan5ain/tuiweave@v0.1.0
+go get github.com/ishan5ain/tuiweave@v0.3.0
 ```
 
 ```go
