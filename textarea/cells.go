@@ -6,6 +6,9 @@ import (
 	"github.com/charmbracelet/x/ansi"
 )
 
+// Tabs occupy four cells, matching the component's explicit render expansion.
+const tabWidth = 4
+
 type runeCluster struct {
 	start int
 	end   int
@@ -21,6 +24,9 @@ func clustersOf(line []rune) []runeCluster {
 	byteOffset, runeOffset := 0, 0
 	for byteOffset < len(text) {
 		cluster, width := ansi.FirstGraphemeCluster(text[byteOffset:], ansi.GraphemeWidth)
+		if cluster == "\t" {
+			width = tabWidth
+		}
 		runeCount := utf8.RuneCountInString(cluster)
 		if runeCount == 0 {
 			runeCount = 1
@@ -34,10 +40,6 @@ func clustersOf(line []rune) []runeCluster {
 		runeOffset += runeCount
 	}
 	return clusters
-}
-
-func cellWidth(runes []rune) int {
-	return ansi.StringWidth(string(runes))
 }
 
 func previousClusterStart(line []rune, pos int) int {
@@ -69,19 +71,30 @@ func nextClusterEnd(line []rune, pos int) int {
 	return len(line)
 }
 
-func runeOffsetAtCell(text []rune, target int) int {
+func runeOffsetAtCell(text []rune, target, rowWidth int) int {
 	if target <= 0 {
 		return 0
 	}
 	used := 0
 	for _, cluster := range clustersOf(text) {
-		if used+cluster.width > target {
+		width := min(cluster.width, rowWidth)
+		if used+width > target {
 			return cluster.start
 		}
-		used += cluster.width
+		used += width
 		if used == target {
 			return cluster.end
 		}
 	}
 	return len(text)
+}
+
+// cellWidth matches clipped clusters in visualRows, including a tab wider
+// than the available row. Logical offsets still count each tab as one rune.
+func cellWidth(text []rune, rowWidth int) int {
+	width := 0
+	for _, cluster := range clustersOf(text) {
+		width += min(cluster.width, rowWidth)
+	}
+	return width
 }

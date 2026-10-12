@@ -265,9 +265,9 @@ func TestCursorAtExactWrapBoundary(t *testing.T) {
 	}
 }
 
-func TestPasteWithNewlines(t *testing.T) {
+func TestKeyTextWithNewlines(t *testing.T) {
 	ta := newFocused(20, 5)
-	// bubbletea v2 delivers a paste as one KeyPressMsg.Text
+	// Multi-rune key text remains supported separately from tea.PasteMsg.
 	ta, _ = ta.Update(tea.KeyPressMsg{Text: "func main() {\n\tgo()\n}"})
 	if got := ta.Value(); got != "func main() {\n\tgo()\n}" {
 		t.Fatalf("Value() = %q", got)

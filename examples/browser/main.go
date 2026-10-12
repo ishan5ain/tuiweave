@@ -189,6 +189,17 @@ func (m *model) delegate(msg tea.Msg) tea.Cmd {
 	return tea.Batch(cmds...)
 }
 
+// syncInputAndPreview handles edits from keys or paste. Tab changes reload
+// the entry set separately through loadEntries.
+func (m *model) syncInputAndPreview(beforeQuery string, beforeFile int) {
+	if beforeQuery != m.filter.Value() {
+		m.files.SetFilter(m.filter.Value())
+	}
+	if beforeQuery != m.filter.Value() || beforeFile != m.files.Selected() {
+		m.syncPreview()
+	}
+}
+
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmds []tea.Cmd
 
@@ -219,22 +230,16 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				if beforeTab != m.tabs.SelectedID() {
 					m.loadEntries()
 				} else {
-					if beforeQuery != m.filter.Value() {
-						m.files.SetFilter(m.filter.Value())
-					}
-					if beforeFile != m.files.Selected() || beforeQuery != m.filter.Value() {
-						m.syncPreview()
-					}
+					m.syncInputAndPreview(beforeQuery, beforeFile)
 				}
 			}
 		}
 
 	default:
+		beforeQuery := m.filter.Value()
 		beforeFile := m.files.Selected()
 		cmds = append(cmds, m.delegate(msg))
-		if beforeFile != m.files.Selected() {
-			m.syncPreview()
-		}
+		m.syncInputAndPreview(beforeQuery, beforeFile)
 	}
 
 	m.syncStatus()

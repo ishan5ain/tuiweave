@@ -23,6 +23,7 @@ import (
 	"github.com/charmbracelet/x/ansi"
 
 	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/internal/paste"
 )
 
 // Model is a textarea component. Create one with New.
@@ -253,7 +254,7 @@ func (m Model) cursorVisual(rows []vrow) (idx, vcol int) {
 			if m.col == r.startCol+len(r.text) && i+1 < len(rows) && rows[i+1].line == m.row && rows[i+1].startCol == m.col {
 				continue
 			}
-			return i, min(r.width, cellWidth(r.text[:m.col-r.startCol]))
+			return i, min(r.width, cellWidth(r.text[:m.col-r.startCol], m.wrapWidth()))
 		}
 	}
 	return max(0, len(rows)-1), 0
@@ -433,7 +434,7 @@ func (m *Model) moveVertical(delta int) {
 	}
 	r := rows[target]
 	m.row = r.line
-	m.col = r.startCol + runeOffsetAtCell(r.text, vcol)
+	m.col = r.startCol + runeOffsetAtCell(r.text, vcol, m.wrapWidth())
 }
 
 func (m *Model) moveWithSelection(extend bool, collapse int, move func()) {
@@ -459,12 +460,19 @@ func (m *Model) moveWithSelection(extend bool, collapse int, move func()) {
 }
 
 // Update handles editing keys while focused. Enter inserts a newline; the
-// app decides what sends.
+// app decides what sends. Paste is accepted only while focused, normalizes
+// CRLF/CR to LF, preserves tabs, and removes terminal escapes and other C0/C1
+// controls (including DEL). Nonempty paste replaces selection as one undoable
+// edit and does not emit a command.
 func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 	if next, handled := m.applyAction(msg); handled {
 		return next, nil
 	}
 	if !m.focused {
+		return m, nil
+	}
+	if msg, ok := msg.(tea.PasteMsg); ok {
+		m.InsertString(paste.Normalize(msg.Content, paste.Multiline))
 		return m, nil
 	}
 	key, ok := msg.(tea.KeyPressMsg)
@@ -474,7 +482,7 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 
 	commandMods := tea.ModCtrl | tea.ModAlt | tea.ModMeta | tea.ModSuper | tea.ModHyper
 	if key.Text != "" && key.Mod&commandMods == 0 {
-		m.InsertString(key.Text) // handles pasted newlines too
+		m.InsertString(key.Text)
 		return m, nil
 	}
 
@@ -693,8 +701,10 @@ func (m Model) renderText(r vrow, vi, cursorIdx, vcol int) string {
 	runStart, runKind := 0, normalRun
 	flush := func(end int) {
 		if end > runStart {
-			text := string(r.text[runStart:end])
-			if width := cellWidth(r.text[runStart:end]); width > m.wrapWidth() {
+			// Expand tabs before styling so clipping and style-run boundaries
+			// cannot change their rendered width. A tab wider than a row fills it.
+			text := strings.ReplaceAll(string(r.text[runStart:end]), "\t", strings.Repeat(" ", min(tabWidth, m.wrapWidth())))
+			if width := ansi.StringWidth(text); width > m.wrapWidth() {
 				text = strings.Repeat(" ", m.wrapWidth())
 			}
 			b.WriteString(styleFor(runKind).Render(text))

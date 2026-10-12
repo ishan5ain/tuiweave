@@ -49,3 +49,13 @@ func TestPaletteExampleScenarioGolden(t *testing.T) {
 	)
 	snaptest.SnapScenario(t, result)
 }
+
+func TestPaletteExamplePaste(t *testing.T) {
+	m := sized(t)
+	next, cmd := m.Update(tea.PasteMsg{Content: "format"})
+	m = next.(model)
+	if cmd != nil || m.commands.Query() != "format" || m.commands.SelectedID() != "format" {
+		t.Fatalf("paste query=%q", m.commands.Query())
+	}
+	snaptest.Snap(t, m.render())
+}
