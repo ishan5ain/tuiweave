@@ -1,0 +1,16 @@
+1: "> " [fg=Accent] | " " [fg=Text]
+2: "  " | "a" [fg=Text]
+3: "  " | "b" [fg=Text]
+4: "  " | "c" [fg=Text]
+5: "  " | "d" [fg=Text]
+6: "  " | "e" [fg=Text]
+7: "  " | "f" [fg=Text]
+8: "  " | "g" [fg=Text]
+9: "  " | "h" [fg=Text]
+10: "  " | "i" [fg=Text]
+11: "  " | "j" [fg=Text]
+12: "  " | " " [fg=Text reverse]
+13:
+14:
+15:
+16:

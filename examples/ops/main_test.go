@@ -432,3 +432,30 @@ func assertRejectedSemanticAction(t *testing.T, m model, id string) {
 		t.Fatalf("rejected action %q mutated inspection state", id)
 	}
 }
+
+func TestOpsPasteRoutesToVisiblePalette(t *testing.T) {
+	m := sized(t)
+	m, cmd := update(t, m, tea.PasteMsg{Content: "ignored"})
+	if cmd != nil || m.commands.Query() != "" {
+		t.Fatal("hidden palette accepted paste")
+	}
+	m, _ = update(t, m, tea.KeyPressMsg{Code: 'p', Mod: tea.ModCtrl})
+	m, cmd = update(t, m, tea.PasteMsg{Content: "restart"})
+	if cmd != nil || m.commands.Query() != "restart" || m.commands.SelectedID() != "restart" {
+		t.Fatalf("palette paste=%q", m.commands.Query())
+	}
+	snaptest.Snap(t, m.render())
+	snaptest.SnapCells(t, m.render(), snaptest.WithRoles(tuiweave.Dark()))
+	m, cmd = update(t, m, tea.KeyPressMsg{Code: tea.KeyEnter})
+	if cmd == nil {
+		t.Fatal("no activation command")
+	}
+	m, _ = update(t, m, cmd())
+	if !m.showConfirm {
+		t.Fatal("confirmation not opened")
+	}
+	m, cmd = update(t, m, tea.PasteMsg{Content: "hidden"})
+	if cmd != nil || m.commands.Query() != "restart" || !m.showConfirm {
+		t.Fatal("confirmation leaked paste to palette")
+	}
+}

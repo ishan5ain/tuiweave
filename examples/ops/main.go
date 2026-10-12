@@ -236,6 +236,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			break
 		}
 		cmds = append(cmds, m.routeRootClick(msg))
+	case tea.PasteMsg:
+		if m.showPalette && !m.showConfirm {
+			m.commands, cmd = m.commands.Update(msg)
+			cmds = append(cmds, cmd)
+		}
 	case tea.KeyPressMsg:
 		if m.showConfirm {
 			m.confirm, cmd = m.confirm.Update(msg)

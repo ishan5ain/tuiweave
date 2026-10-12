@@ -248,3 +248,35 @@ func (m scenarioModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m scenarioModel) View() tea.View { return tea.NewView(m.palette.View()) }
+
+func TestPalettePaste(t *testing.T) {
+	m := newTestPalette(44, 5)
+	m.Focus()
+	m, cmd := m.Update(tea.PasteMsg{Content: "format"})
+	if cmd != nil || m.Query() != "format" || m.FilteredLen() != 1 || m.SelectedID() != "format" {
+		t.Fatalf("paste query=%q count=%d selected=%q", m.Query(), m.FilteredLen(), m.SelectedID())
+	}
+	snaptest.Snap(t, m.View())
+	snaptest.SnapCells(t, m.View(), snaptest.WithRoles(tuiweave.Dark()))
+	m.Blur()
+	m, cmd = m.Update(tea.PasteMsg{Content: "ignored"})
+	if cmd != nil || m.Query() != "format" {
+		t.Fatal("blurred palette accepted paste")
+	}
+}
+
+func TestPalettePastePreservesVisibleSelection(t *testing.T) {
+	m := newTestPalette(30, 4)
+	m.Focus()
+	m.SelectID("settings")
+	m, cmd := m.Update(tea.PasteMsg{Content: "open"})
+	if cmd != nil || m.Query() != "open" || m.FilteredLen() != 2 || m.SelectedID() != "settings" {
+		t.Fatalf("paste selection=%q query=%q", m.SelectedID(), m.Query())
+	}
+	for _, msg := range []tea.Msg{tea.PasteStartMsg{}, tea.PasteEndMsg{}, tea.PasteMsg{}} {
+		m, cmd = m.Update(msg)
+		if cmd != nil || m.Query() != "open" || m.SelectedID() != "settings" {
+			t.Fatal("paste boundary/empty paste changed palette")
+		}
+	}
+}

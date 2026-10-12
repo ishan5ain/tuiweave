@@ -134,3 +134,29 @@ func TestDemoInspectionGolden(t *testing.T) {
 	}
 	snaptest.Snap(t, string(data))
 }
+
+func TestDemoPasteFocusAndModal(t *testing.T) {
+	m := sized(t)
+	next, cmd := m.Update(tea.PasteMsg{Content: "ignored"})
+	m = next.(model)
+	if cmd != nil || m.input.Value() != "" {
+		t.Fatal("blurred input accepted paste")
+	}
+	for range 2 {
+		next, cmd = m.Update(tea.KeyPressMsg{Code: tea.KeyTab})
+		m = next.(model)
+	}
+	next, cmd = m.Update(tea.PasteMsg{Content: "pasted\r\nitem"})
+	m = next.(model)
+	if cmd != nil || m.input.Value() != "pasted item" {
+		t.Fatalf("paste=%q", m.input.Value())
+	}
+	snaptest.Snap(t, m.render())
+	next, cmd = m.Update(tea.KeyPressMsg{Code: 'd', Mod: tea.ModCtrl})
+	m = next.(model)
+	next, cmd = m.Update(tea.PasteMsg{Content: "hidden"})
+	m = next.(model)
+	if cmd != nil || m.input.Value() != "pasted item" {
+		t.Fatal("modal leaked paste")
+	}
+}

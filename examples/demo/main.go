@@ -165,6 +165,13 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		}
 
+	case tea.PasteMsg:
+		if m.showDialog {
+			break
+		}
+		m.input, cmd = m.input.Update(msg)
+		cmds = append(cmds, cmd)
+
 	case tea.MouseWheelMsg:
 		m.view, cmd = m.view.Update(msg)
 		cmds = append(cmds, cmd)

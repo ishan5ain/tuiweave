@@ -1,0 +1,27 @@
+## initial
+command: no
+>
+
+## blurred paste ignored
+command: no
+>
+
+## focus
+command: no
+>
+
+## paste starts
+command: no
+>
+
+## paste unicode and multiline
+command: no
+> 界é x
+
+## paste ends
+command: no
+> 界é x
+
+## resize narrow
+command: no
+>  x

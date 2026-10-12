@@ -10,6 +10,7 @@ import (
 	"github.com/charmbracelet/x/ansi"
 
 	"github.com/ishan5ain/tuiweave"
+	"github.com/ishan5ain/tuiweave/internal/paste"
 	"github.com/ishan5ain/tuiweave/layout"
 )
 
@@ -84,12 +85,20 @@ func (m *Model) Reset() {
 // Update handles editing keys while focused: printable text inserts at the
 // cursor; backspace/delete remove; left/right/home/end (and ctrl+a/ctrl+e)
 // move; ctrl+u clears before the cursor, ctrl+k after, ctrl+w deletes the
-// previous word.
+// previous word. Paste is accepted only while focused: CRLF/CR become LF,
+// LF and tabs become spaces, and terminal escapes and other C0/C1 controls
+// (including DEL) are removed. Paste does not emit a command.
 func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 	if next, handled := m.applyAction(msg); handled {
 		return next, nil
 	}
 	if !m.focused {
+		return m, nil
+	}
+	if msg, ok := msg.(tea.PasteMsg); ok {
+		if content := paste.Normalize(msg.Content, paste.SingleLine); content != "" {
+			m.insert([]rune(content))
+		}
 		return m, nil
 	}
 	key, ok := msg.(tea.KeyPressMsg)

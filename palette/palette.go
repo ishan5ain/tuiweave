@@ -234,33 +234,30 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 	if !m.focused {
 		return m, nil
 	}
-	key, ok := msg.(tea.KeyPressMsg)
-	if !ok {
-		return m, nil
+	if key, ok := msg.(tea.KeyPressMsg); ok {
+		switch key.String() {
+		case "up", "k":
+			m.selectRelative(-1)
+			return m, nil
+		case "down", "j":
+			m.selectRelative(1)
+			return m, nil
+		case "pgup":
+			m.selectRelative(-max(1, m.VisibleLines()))
+			return m, nil
+		case "pgdown":
+			m.selectRelative(max(1, m.VisibleLines()))
+			return m, nil
+		case "home", "g":
+			m.selectFirst()
+			return m, nil
+		case "end", "G":
+			m.selectLast()
+			return m, nil
+		case "enter", "space":
+			return m, m.Activate()
+		}
 	}
-	switch key.String() {
-	case "up", "k":
-		m.selectRelative(-1)
-		return m, nil
-	case "down", "j":
-		m.selectRelative(1)
-		return m, nil
-	case "pgup":
-		m.selectRelative(-max(1, m.VisibleLines()))
-		return m, nil
-	case "pgdown":
-		m.selectRelative(max(1, m.VisibleLines()))
-		return m, nil
-	case "home", "g":
-		m.selectFirst()
-		return m, nil
-	case "end", "G":
-		m.selectLast()
-		return m, nil
-	case "enter", "space":
-		return m, m.Activate()
-	}
-
 	keepIndex, keepID := m.Selected(), m.SelectedID()
 	before := m.Query()
 	var cmd tea.Cmd
