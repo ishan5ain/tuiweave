@@ -5,15 +5,20 @@ before v1, a minor release may contain breaking changes when clearly called out.
 
 ## [Unreleased]
 
+### Compatibility
+
+- Raised the minimum Go version from 1.26.0 to 1.26.7 to adopt Lip Gloss
+  v2.1.0. Consumers must upgrade their Go toolchain; public tuiweave APIs are
+  unchanged. Earlier release tags retain their original Go requirements.
+
 ### Performance
 
 - Pinned Lip Gloss's upstream writer batching and wrap-buffer sizing commits
   to reduce repeated Markdown rendering overhead. Downstream consumers resolve
-  the unreleased `v2.0.7-0.20260901023042-868e8b5c4fb6` commit through Go's
-  minimal version selection. Revisit the pin when a v2.0.7-or-later tag contains
-  both fixes and preserves the Go 1.26.0 floor, after compatibility validation.
-  Public APIs, Go minimum, and existing rendering goldens are unchanged; the
-  [writer experiment](agentic/markdown/WRITER-BATCHING.md) records measurements
+  tagged `v2.1.0` release through Go's minimal version selection, replacing
+  `v2.0.7-0.20260901023042-868e8b5c4fb6`. This deliberately supersedes the
+  original Go 1.26.0 adoption condition with the Go 1.26.7 minimum above. The
+  [writer experiment](agentic/markdown/WRITER-BATCHING.md) records historical measurements
   and remaining targets in issue #49.
 
 ### Added
