@@ -12,6 +12,7 @@ permissions:
 
 jobs:
   test:
+    name: test (${{ matrix.os }}, ${{ matrix.go || 'minimum' }})
     env:
       GOTOOLCHAIN: local
     strategy:
