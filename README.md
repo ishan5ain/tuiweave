@@ -30,6 +30,7 @@ decisions, visibility, routing, persistence, and side effects.
 ## Install
 
 tuiweave v0.3.0 requires Go 1.26.0 or newer and uses Bubble Tea v2.1.0.
+The unreleased development version requires Go 1.26.7 or newer for Lip Gloss v2.1.0.
 Earlier release tags retain their own Go requirements.
 
 ```sh

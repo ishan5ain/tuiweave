@@ -282,6 +282,17 @@ in this matrix. The pin is an unreleased upstream commit, not a tagged release.
 Revisit the pin when a v2.0.7-or-later tag contains both writer fixes and
 preserves the Go 1.26.0 floor; adopt it after the same compatibility checks.
 
+### Tagged release adoption
+
+PR #55 replaces the experimental pseudo-version with Lip Gloss v2.1.0,
+which contains both writer commits listed above. This deliberately supersedes
+the original Go-floor condition: the dependency and tuiweave now require Go
+1.26.7. Earlier release tags retain their original requirements. The measurements
+and validation results elsewhere in this report describe the original pinned
+experiment, not new measurements of v2.1.0. Existing writer compatibility tests
+and rendering goldens remain the acceptance checks for the tagged release;
+do not regenerate snapshots to mask a dependency regression.
+
 The broader [issue #49](https://github.com/ishan5ain/tuiweave/issues/49) remains
 open. Against its illustrative workload-specific targets:
 
