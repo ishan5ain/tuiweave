@@ -1,0 +1,12 @@
+╭ Command completion ──────────────────────────────────────────╮
+│                                                              │
+│ > git                                                        │
+│ ▸ git checkout  switch branch                                │
+│   git status  show changes                                   │
+│                                                              │
+│                                                              │
+│                                                              │
+│                                                              │
+│                                                              │
+╰──────────────────────────────────────────────────────────────╯
+ completion  git-checkout    2 matches  ↑↓ choose  enter accept

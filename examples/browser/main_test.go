@@ -126,3 +126,20 @@ func TestBrowserScenarioGolden(t *testing.T) {
 	)
 	snaptest.SnapScenario(t, result)
 }
+
+func TestBrowserPasteFiltersAndPreviews(t *testing.T) {
+	m := sized(t, 88, 24)
+	m, cmd := update(t, m, tea.PasteMsg{Content: "ignored"})
+	if cmd != nil || m.filter.Value() != "" {
+		t.Fatal("blurred paste changed filter")
+	}
+	m, _ = update(t, m, tea.KeyPressMsg{Code: tea.KeyTab})
+	m, cmd = update(t, m, tea.PasteMsg{Content: "main"})
+	if cmd != nil || m.filter.Value() != "main" || m.files.SelectedItem() != "cmd/tuiweave/main.go" || m.files.FilteredLen() == 0 {
+		t.Fatalf("paste did not update filter: %q", m.filter.Value())
+	}
+	if !strings.Contains(ansi.Strip(m.preview.View()), "loadConfig") {
+		t.Fatal("preview did not follow pasted query")
+	}
+	snaptest.Snap(t, m.render())
+}

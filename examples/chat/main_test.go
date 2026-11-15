@@ -133,3 +133,30 @@ func TestDenyStopsSession(t *testing.T) {
 		t.Error("transcript missing denial note")
 	}
 }
+
+func TestChatPasteGrowsWithoutSending(t *testing.T) {
+	m := sized(t)
+	next, cmd := m.Update(tea.PasteMsg{Content: "line one\r\n界e\u0301"})
+	m = next.(model)
+	if cmd != nil || m.step != stepIdle || m.input.Value() != "line one\n界e\u0301" {
+		t.Fatalf("paste = %q, step=%v", m.input.Value(), m.step)
+	}
+	if m.input.ContentHeight() != 2 || len(strings.Split(m.render(), "\n")) != 22 {
+		t.Fatal("paste did not resize input within frame")
+	}
+	snaptest.Snap(t, m.render())
+	m.showPerm = true
+	next, cmd = m.Update(tea.PasteMsg{Content: "hidden"})
+	m = next.(model)
+	if cmd != nil || m.input.Value() != "line one\n界e\u0301" {
+		t.Fatal("modal leaked paste into background")
+	}
+	m.showPerm = false
+	next, cmd = m.Update(tea.KeyPressMsg{Code: tea.KeyTab})
+	m = next.(model)
+	next, cmd = m.Update(tea.PasteMsg{Content: "blurred"})
+	m = next.(model)
+	if cmd != nil || m.input.Value() != "line one\n界e\u0301" {
+		t.Fatal("blurred paste changed input")
+	}
+}

@@ -1,0 +1,4 @@
+1: "> " [fg=Accent] | "界é" [fg=Text]
+2: "  " | "👩\u200d💻 " [fg=Text]
+3: "  " | "end" [fg=Text]
+4: "  " | " " [fg=Text reverse]

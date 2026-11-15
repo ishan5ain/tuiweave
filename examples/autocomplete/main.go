@@ -73,6 +73,12 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			statusbar.Segment{Text: msg.Label, Kind: statusbar.KindNormal},
 		)
 		return m, nil
+	case tea.PasteMsg:
+		var inputCmd tea.Cmd
+		m.input, inputCmd = m.input.Update(msg)
+		cmds = append(cmds, inputCmd)
+		m.syncQuery()
+		m.layout()
 	case tea.KeyPressMsg:
 		if msg.String() == "ctrl+c" || msg.String() == "q" {
 			return m, tea.Quit

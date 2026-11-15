@@ -1,0 +1,4 @@
+1: "  " | "e" [fg=Text]
+2: "  " | "n" [fg=Text]
+3: "  " | "d" [fg=Text]
+4: "  " | " " [fg=Text reverse]

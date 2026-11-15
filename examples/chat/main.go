@@ -293,6 +293,14 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.layout() // input may have grown or shrunk
 		}
 
+	case tea.PasteMsg:
+		if m.showPerm {
+			return m, nil
+		}
+		m.input, cmd = m.input.Update(msg)
+		cmds = append(cmds, cmd)
+		m.layout()
+
 	case tea.MouseWheelMsg:
 		m.transcript, cmd = m.transcript.Update(msg)
 		cmds = append(cmds, cmd)

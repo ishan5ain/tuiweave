@@ -1,0 +1,14 @@
+╭ Textarea completion ─────────────────────────────────────────────────╮
+│                                                                      │
+│ > git                                                                │
+│ ▸ git status  show changes                                           │
+│   git log --oneline  show commits                                    │
+│                                                                      │
+│                                                                      │
+│                                                                      │
+│                                                                      │
+│                                                                      │
+│                                                                      │
+│                                                                      │
+╰──────────────────────────────────────────────────────────────────────╯
+ textarea  git-status                2 matches  ↑↓ choose  enter accept

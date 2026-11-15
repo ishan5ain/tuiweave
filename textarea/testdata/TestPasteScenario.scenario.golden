@@ -1,0 +1,41 @@
+## initial
+command: no
+> old
+
+
+
+## select all
+command: no
+> old
+
+
+
+## paste starts
+command: no
+> old
+
+
+
+## paste replaces selection
+command: no
+> 界é
+  x
+
+
+## paste ends
+command: no
+> 界é
+  x
+
+
+## undo paste
+command: no
+> old
+
+
+
+## redo paste
+command: no
+> 界é
+  x
+

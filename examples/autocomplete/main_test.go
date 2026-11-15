@@ -58,3 +58,13 @@ func TestAutocompleteExampleScenarioGolden(t *testing.T) {
 	)
 	snaptest.SnapScenario(t, result)
 }
+
+func TestPasteSyncsCompletionQuery(t *testing.T) {
+	m := sized(t)
+	next, cmd := m.Update(tea.PasteMsg{Content: "git"})
+	m = next.(model)
+	if cmd != nil || m.input.Value() != "git" || m.suggestions.Query() != "git" || m.suggestions.FilteredLen() != 2 {
+		t.Fatalf("paste did not synchronize completion: value=%q query=%q", m.input.Value(), m.suggestions.Query())
+	}
+	snaptest.Snap(t, m.render())
+}

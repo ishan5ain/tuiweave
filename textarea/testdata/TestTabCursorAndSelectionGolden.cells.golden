@@ -1,0 +1,4 @@
+1: "> " [fg=Accent] | "    " [fg=Text bg=SelectionBg] | "a" [fg=Text reverse] | "bcdef" [fg=Text]
+2: "  " | "ghij" [fg=Text]
+3:
+4:

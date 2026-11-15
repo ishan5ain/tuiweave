@@ -1,0 +1,5 @@
+1: "› " [fg=Accent bg=SurfaceSunken] | "format" [fg=Text] | " " [fg=Text reverse]
+2: "▸ Format document  Run the formatter        " [fg=Text bg=SelectionBg]
+3: "                                            " [fg=Text bg=SurfaceRaised]
+4: "                                            " [fg=Text bg=SurfaceRaised]
+5: "                                            " [fg=Text bg=SurfaceRaised]

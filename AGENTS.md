@@ -684,6 +684,17 @@ case "enter":     /* read ta.Value(), send, ta.Reset() */
 case "alt+enter": ta.InsertString("\n")
 ```
 
+- Forward `tea.PasteMsg` to inputs as well as key messages; bracketed paste
+  arrives separately from `tea.KeyPressMsg` in Bubble Tea v2. Only focused
+  inputs accept it. Paste normalizes CRLF/CR to LF and removes terminal escape
+  sequences and C0/C1 controls other than LF/tab (including DEL). `textinput`
+  replaces each LF/tab with a space; `textarea` preserves them, renders each tab
+  as four spaces (clipped to a row narrower than four cells), and replaces
+  selections as one undoable edit. Empty/filtered-empty paste and paste boundary
+  messages are no-ops. Submission remains app-owned. Synchronize filters,
+  completion queries, and input layout after paste just as after typed edits;
+  route paste to the active modal only while a modal is open. Input-owning
+  containers such as `palette` must also forward paste to their internal input.
 - `textinput` and `textarea` calculate display geometry in terminal cells while
   keeping logical cursor positions rune-based. Wide and combining graphemes
   stay intact at prompt, placeholder, cursor, and wrap/window boundaries.

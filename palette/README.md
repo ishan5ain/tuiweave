@@ -28,3 +28,10 @@ See the [palette example](../examples/palette) and [palette recipe](../AGENTS.md
 - [API reference](https://pkg.go.dev/github.com/ishan5ain/tuiweave/palette)
 - [Palette example](../examples/palette)
 - [Palette recipe](../AGENTS.md#palette)
+
+## Terminal paste
+
+Forward `tea.PasteMsg` to a visible palette alongside key messages. Its focused
+query input accepts normalized paste and refreshes filtering and selection;
+paste never activates a command. Hidden palettes must remain blurred or be
+excluded from application routing, and the top modal owns all input.
