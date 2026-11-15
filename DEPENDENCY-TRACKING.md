@@ -1,6 +1,6 @@
 # Dependency Tracking Report
 
-Upstream watch generated: 2026-07-17. Pins and upgrade review refreshed: 2026-10-10.
+Upstream watch generated: 2026-07-17. Pins and upgrade review refreshed: 2026-11-15.
 
 Tracking upstream API changes in tuiweave's core dependencies that may require
 deliberate upgrades to tuiweave.
@@ -18,16 +18,26 @@ from 2026-07-17; they have not been refreshed by the pin review.
 
 | Dependency | Version | Minimum Go |
 |---|---|---|
-| `charm.land/bubbletea/v2` | `v2.1.0` (tagged) | **1.26.0** ← compatibility floor |
-| `charm.land/lipgloss/v2` | `v2.0.7-0.20260901023042-868e8b5c4fb6` (unreleased commit) | 1.25.0 |
+| `charm.land/bubbletea/v2` | `v2.1.1` (tagged) | 1.26.0 |
+| `charm.land/lipgloss/v2` | `v2.1.0` (tagged) | **1.26.7** ← compatibility floor |
 | `github.com/charmbracelet/ultraviolet` | `v0.0.0-20261008173134-6b8d4baf91b4` (pseudo) | **1.26.0** |
 | `charm.land/glamour/v2` | `v2.0.1` (tagged) | 1.25.8 |
 | `github.com/charmbracelet/x/ansi` | `v0.11.9` (tagged) | 1.24.2 |
 
-The Go 1.26.0 floor is set by Bubble Tea v2.1.0 and Ultraviolet. Lowering the floor
+The Go 1.26.7 floor is set by Lip Gloss v2.1.0. Lowering the floor
 requires an upstream or module-structure change (see DESIGN.md §6).
 
-### Lip Gloss writer upgrade review (2026-10-10)
+### Tagged release review (2026-11-15)
+
+Lip Gloss v2.1.0 replaces the experimental pin and includes both writer fixes.
+Its Go 1.26.7 requirement deliberately supersedes the Go 1.26.0 adoption
+condition in the historical review below. Bubble Tea v2.1.1 fixes
+[untrusted terminal-size reports](https://github.com/charmbracelet/bubbletea/security/advisories/GHSA-qc58-pfg9-7pph).
+Post-merge CI passes on exact minimum Go and stable Go across Linux, macOS,
+and Windows, including quality and vulnerability checks. The writer experiment
+remains historical measurement evidence.
+
+### Lip Gloss writer upgrade review (2026-10-10; historical)
 
 The unreleased commit `868e8b5c4fb6056c294b9fda2fb9d1090052daee` contains
 writer batching and wrap-buffer sizing improvements measured in the
@@ -74,8 +84,8 @@ Go 1.26.0 on Linux.
 
 ## Stability policy
 
-> `charm.land/bubbletea/v2` (v2.1.0) and
-> `charm.land/lipgloss/v2` (v2.0.7-0.20260901023042-868e8b5c4fb6, unreleased commit) —
+> `charm.land/bubbletea/v2` (v2.1.1) and
+> `charm.land/lipgloss/v2` (v2.1.0) —
 > **beta**; pinned, upgraded deliberately.
 >
 > `github.com/charmbracelet/ultraviolet` — **v0**, pseudo-versioned; expect

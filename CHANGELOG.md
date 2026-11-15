@@ -5,21 +5,48 @@ before v1, a minor release may contain breaking changes when clearly called out.
 
 ## [Unreleased]
 
+Planned release: **v0.4.0**.
+
 ### Compatibility
 
 - Raised the minimum Go version from 1.26.0 to 1.26.7 to adopt Lip Gloss
   v2.1.0. Consumers must upgrade their Go toolchain; public tuiweave APIs are
   unchanged. Earlier release tags retain their original Go requirements.
+- Applications must forward `tea.PasteMsg` to the focused input or visible
+  palette and refresh application-owned filters, completion queries, and layout
+  after edits. The top modal retains input ownership. Textarea tabs now render
+  as four cells (or fill a narrower row), while remaining one logical rune.
 
 ### Performance
 
 - Pinned Lip Gloss's upstream writer batching and wrap-buffer sizing commits
   to reduce repeated Markdown rendering overhead. Downstream consumers resolve
-  tagged `v2.1.0` release through Go's minimal version selection, replacing
+  the tagged `v2.1.0` release through Go's minimal version selection, replacing
   `v2.0.7-0.20260901023042-868e8b5c4fb6`. This deliberately supersedes the
   original Go 1.26.0 adoption condition with the Go 1.26.7 minimum above. The
-  [writer experiment](agentic/markdown/WRITER-BATCHING.md) records historical measurements
-  and remaining targets in issue #49.
+  [writer experiment](agentic/markdown/WRITER-BATCHING.md) records historical
+  measurements and remaining targets in issue #49.
+
+### Fixed
+
+- Accept focused bracketed paste in textinput, textarea, and palette queries.
+  Normalize line endings and strip terminal escapes and unsupported controls;
+  single-line input flattens LF/tab to spaces, while textarea preserves them
+  and replaces selections as one undoable edit. Paste never submits or activates
+  an action. Reference apps now refresh filters, completions, and layout.
+- Keep tab-bearing textarea content, cursor movement, wrapping, and selection
+  consistent at narrow widths.
+
+### Security
+
+- Upgraded Bubble Tea to v2.1.1 to reject implausible terminal-size reports,
+  fixing upstream denial of service via untrusted terminal input
+  ([GHSA-qc58-pfg9-7pph](https://github.com/charmbracelet/bubbletea/security/advisories/GHSA-qc58-pfg9-7pph)).
+
+### Changed
+
+- Derive the minimum-Go CI job from `go.mod`, disable automatic toolchain
+  switching for test jobs, and use a stable required-check name.
 
 ### Added
 

@@ -10,10 +10,10 @@ watch report, not a support promise.
 
 | Surface | Supported version | Evidence |
 |---|---|---|
-| Go | 1.26.0 minimum | `go.mod`; Linux CI at the exact floor |
+| Go | 1.26.7 minimum | `go.mod`; Linux CI at the exact floor |
 | Go | current stable | Linux, macOS, and Windows CI |
-| Bubble Tea | `charm.land/bubbletea/v2 v2.1.0` | `go.mod`; full CI suite and consumer runtime test |
-| Lip Gloss | `charm.land/lipgloss/v2 v2.0.7-0.20260901023042-868e8b5c4fb6` | `go.mod`; full CI suite and writer-boundary tests |
+| Bubble Tea | `charm.land/bubbletea/v2 v2.1.1` | `go.mod`; full CI suite and consumer runtime test |
+| Lip Gloss | `charm.land/lipgloss/v2 v2.1.0` | `go.mod`; full CI suite and writer-boundary tests |
 | Glamour | `charm.land/glamour/v2 v2.0.1` | `go.mod`; agentic Markdown tests |
 | Ultraviolet | `v0.0.0-20261008173134-6b8d4baf91b4` | `go.mod`; layout, overlay, and SnapCells coverage |
 | ANSI utilities | `github.com/charmbracelet/x/ansi v0.11.9` | `go.mod`; rendering and cell-width coverage |
@@ -39,8 +39,9 @@ go test -race ./...
 
 ## Go version and module boundary
 
-tuiweave v1 will remain one Go module and will require Go 1.26.0 or newer.
-Bubble Tea v2.1.0 and the selected Ultraviolet revision establish that floor.
+The current supported graph requires Go 1.26.7 or newer, established by
+Lip Gloss v2.1.0. The v1 policy keeps tuiweave in one Go module at the declared
+compatibility floor, subject to deliberate dependency review.
 Splitting `agentic` into another module would add coordinated
 release tags, dependency wiring, and example complexity without demonstrated
 application demand.
@@ -66,17 +67,50 @@ retain their original requirements. No tuiweave API migration is required,
 and terminal Program Status Protocol reporting remains application-owned and
 opt-in through Bubble Tea's `tea.View`.
 
-## Lip Gloss writer update (2026-10-10)
+### Go 1.26.7 decision (2026-11-15)
 
-The selected Lip Gloss commit includes upstream batching between newlines and
-pre-sizing of wrapped output buffers. It is pinned by commit because these
-changes are not yet in a tagged release. The
+The upcoming v0.4.0 adopts tagged Lip Gloss v2.1.0, retaining both writer
+batching fixes and deliberately raising the Go minimum from 1.26.0 to 1.26.7.
+This supersedes the experiment’s original requirement to preserve Go 1.26.0.
+Install Go 1.26.7 or newer before upgrading; no tuiweave API migration is
+required. CI reads the exact minimum from `go.mod` and sets `GOTOOLCHAIN=local`
+so an automatic toolchain upgrade cannot mask an unsupported minimum.
+
+Bubble Tea v2.1.1 also fixes untrusted terminal-size reports that could exhaust
+process memory; see [the upstream advisory](https://github.com/charmbracelet/bubbletea/security/advisories/GHSA-qc58-pfg9-7pph).
+Applications accepting remote terminal input should prioritize this upgrade.
+
+## Lip Gloss writer update (2026-10-10; historical)
+
+The originally selected Lip Gloss commit included upstream batching between
+newlines and pre-sizing of wrapped output buffers. It was pinned by commit
+because those changes were not yet in a tagged release. The
 [writer experiment](agentic/markdown/WRITER-BATCHING.md) records compatibility
 checks, benchmark evidence, and the remaining performance targets in issue #49.
 Compared with v2.0.6, the upstream production change is limited to `wrap.go`;
-module requirements are unchanged. No tuiweave API migration or Go minimum
-change is required, and existing rendering goldens remain unchanged. A later
-release adoption requires the same dependency review and validation.
+module requirements were unchanged. That adoption required no tuiweave API
+migration or Go minimum change, and existing rendering goldens were unchanged.
+Later release adoption requires the same dependency review and validation.
+
+The current graph uses tagged v2.1.0 instead of that pseudo-version. The
+experiment’s measurements remain historical evidence; they are not new
+benchmarks of the tagged release.
+
+## Paste adoption in v0.4.0
+
+Applications that previously forwarded only key messages must also delegate
+`tea.PasteMsg` to their focused input or visible palette, reassign the returned
+model, and collect its command. Refresh application-owned completion queries,
+filters, and layout after the value changes. Keep hidden controls blurred and
+route input to the top modal. Paste does not submit or activate a command.
+
+Single-line inputs replace pasted LF/tab with spaces; textarea preserves
+logical LF/tab and inserts nonempty paste as one undoable edit. Textarea tabs
+render as four cells, or fill a narrower row, while cursor positions remain
+rune-based. Programmatic setters retain their existing behavior. See the
+[textinput](textinput/README.md#terminal-paste),
+[textarea](textarea/README.md#terminal-paste), and
+[palette](palette/README.md#terminal-paste) contracts and runnable examples.
 
 ## Layout compatibility
 

@@ -492,16 +492,15 @@ components do not expose their internal styles for mutation.
 [COMPATIBILITY.md](COMPATIBILITY.md) is the normative compatibility and
 migration policy. This section records the architectural reasons behind it.
 
-- **Compatibility floor:** tuiweave v0.3.0 requires Go 1.26.0, as declared
-  by Bubble Tea v2.1.0 and the selected
-  Ultraviolet revision. The runtime correctness fixes justify raising the
-  earlier Go 1.25.8 floor; the decision and consumer migration are recorded in
-  COMPATIBILITY.md. The v1 policy keeps the top-level
-  and `agentic` packages in one module at that floor; splitting their release
-  and example wiring has no demonstrated application benefit today.
-- `charm.land/bubbletea/v2` (v2.1.0), `charm.land/lipgloss/v2` (v2.0.7-0.20260901023042-868e8b5c4fb6) —
-  beta; pinned, upgraded deliberately. Note: charm's v2 modules live on
-  `charm.land` vanity paths.
+- **Compatibility floor:** the v0.4.0 dependency graph requires Go 1.26.7,
+  established by Lip Gloss v2.1.0. The tagged release retains the measured
+  writer batching fixes; the deliberate floor increase and consumer migration
+  are recorded in COMPATIBILITY.md. The v1 policy keeps top-level and
+  `agentic` packages in one module at the declared floor; splitting their
+  release and example wiring has no demonstrated application benefit today.
+- `charm.land/bubbletea/v2` (v2.1.1), `charm.land/lipgloss/v2` (v2.1.0) —
+  pinned and upgraded deliberately. Charm's v2 modules live on `charm.land`
+  vanity paths.
 - `github.com/charmbracelet/ultraviolet` — v0, pseudo-versioned; expect
   churn; confined to `layout` (geometry), `overlay` (compositing), and
   `snaptest` (cell-grid parsing). Nothing else imports it.
