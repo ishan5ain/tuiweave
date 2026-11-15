@@ -29,13 +29,12 @@ decisions, visibility, routing, persistence, and side effects.
 
 ## Install
 
-The upcoming tuiweave v0.4.0 requires Go 1.26.7 or newer and uses Bubble Tea
-v2.1.1 and Lip Gloss v2.1.0. Until it is published, the latest release is v0.3.0
-(Go 1.26.0 minimum).
+tuiweave v0.4.0 requires Go 1.26.7 or newer and uses Bubble Tea v2.1.1
+and Lip Gloss v2.1.0.
 Earlier release tags retain their own Go requirements.
 
 ```sh
-go get github.com/ishan5ain/tuiweave@v0.3.0
+go get github.com/ishan5ain/tuiweave@v0.4.0
 ```
 
 ```go

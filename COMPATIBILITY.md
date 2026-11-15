@@ -69,7 +69,7 @@ opt-in through Bubble Tea's `tea.View`.
 
 ### Go 1.26.7 decision (2026-11-15)
 
-The upcoming v0.4.0 adopts tagged Lip Gloss v2.1.0, retaining both writer
+tuiweave v0.4.0 adopts tagged Lip Gloss v2.1.0, retaining both writer
 batching fixes and deliberately raising the Go minimum from 1.26.0 to 1.26.7.
 This supersedes the experiment’s original requirement to preserve Go 1.26.0.
 Install Go 1.26.7 or newer before upgrading; no tuiweave API migration is

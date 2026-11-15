@@ -5,7 +5,7 @@ before v1, a minor release may contain breaking changes when clearly called out.
 
 ## [Unreleased]
 
-Planned release: **v0.4.0**.
+## [0.4.0] - 2026-11-15
 
 ### Compatibility
 
@@ -145,7 +145,8 @@ and runnable general-purpose and agentic examples.
 Known limitations: pre-v1 API evolution, incomplete IME behavior, Bubble Tea v2
 coupling, and internal reliance on a pre-v1 Ultraviolet dependency.
 
-[Unreleased]: https://github.com/ishan5ain/tuiweave/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/ishan5ain/tuiweave/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/ishan5ain/tuiweave/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/ishan5ain/tuiweave/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/ishan5ain/tuiweave/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/ishan5ain/tuiweave/releases/tag/v0.1.0
